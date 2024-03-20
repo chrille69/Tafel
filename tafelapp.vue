@@ -8,6 +8,7 @@
                 </q-btn>
                 <q-toggle dense v-model="config.darkmode" size="xl" :checked-icon="icons['darkmode']" :unchecked-icon="icons['darkmode']" @update:modelValue="setdarkmode"/>
                 <q-toggle dense v-model="config.fullscreen" size="xl" :checked-icon="icons['fullscreen']" :unchecked-icon="icons['fullscreen']" @update:modelValue="setfullscreen"/>
+                <q-toggle dense v-model="config.geodreieckaktiv" size="xl" :checked-icon="icons['geodreieck']" :unchecked-icon="icons['geodreieck']" />
                 <template v-if="config.modus == 'radieren'">
                     <div>
                         <q-input type="number" v-model="config.rubbersize" label="Radierergröße"  />
@@ -45,7 +46,8 @@ const config = ref({
     brushWidth: 3,
     rubbersize: 10,
     darkmode: true,
-    fullscreen: false
+    fullscreen: false,
+    geodreieckaktiv: false
 })
 
 
@@ -67,6 +69,7 @@ const icons = ref({
     'radieren': 'svguse:icons.svg#radiergummi',
     'darkmode': 'svguse:icons.svg#dark|0 0 16 16',
     'fullscreen': 'svguse:icons.svg#fullscreen|0 0 16 16',
+    'geodreieck': 'svguse:icons.svg#geodreieck-icon|0 0 16 16',
 })
 
 const fullmenu = ref([

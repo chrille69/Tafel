@@ -9,6 +9,7 @@
             </g>
         </template>
         <rect v-show="zeigeRadierer" ref="radiergummi" :="radiergummiBox" width="50" height="100" style="stroke: red; stroke-width: 2px; fill: none;" />
+        <use id="#geodreieck" width="640" href="icons.svg#geodreieck" v-if="props.config.geodreieckaktiv" />
     </svg>
 </template>
 
@@ -21,6 +22,7 @@ const itemlist = ref([])
 const viewbox = ref({x:0, y:0, width: 1000, height: 700})
 const radiergummi = ref(null)
 const zeigeRadierer = ref(false)
+
 
 const viewboxattr = computed(() => `${viewbox.value.x} ${viewbox.value.y} ${viewbox.value.width} ${viewbox.value.height}`)
 const radiergummiBox = ref({x: 0, y: 0, width: 50, height: 100})
@@ -260,7 +262,6 @@ function drawellipse(pos) {
         let endy = startpos.y + ry*Math.sin(winkel*Math.PI/180.0)
         newItem.points.value.push(new PathPointA(rx, ry, 0, 0, 1, endx, endy))
     }
-    //newItem.points.value.isClosed = true
 }
 
 function drawkreis(pos) {
@@ -272,7 +273,6 @@ function drawkreis(pos) {
         let endy = startpos.y + r*Math.sin(winkel*Math.PI/180.0)
         newItem.points.value.push(new PathPointA(r, r, 0, 0, 1, endx, endy))
     }
-    //newItem.points.value.isClosed = true
 }
 
 const drawarray = {
@@ -298,4 +298,5 @@ const drawarray = {
     stroke-linecap: round;
     stroke-linejoin: round;
 }
+
 </style>
