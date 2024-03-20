@@ -1,0 +1,261 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+
+    <symbol id="copy" viewbox="0 0 16 16">
+        <path d="m2.0762.61816v11.193h3.375v3.5703h8.4727v-11.193h-3.375v-3.5703zm1.3184 1.3184h5.8359v2.252h-3.7793v6.3047h-2.0566zm3.375 3.5703h5.8359v8.5566h-5.8359z" style="fill:#444;opacity:.992;stroke-dasharray:2.6054, 1.3027;stroke-dashoffset:.45594;stroke-linejoin:round;stroke-width:.65135"/>
+    </symbol>
+    <symbol id="customcolor" viewbox="0 0 16 16">
+        <rect x="1.5" y="2.5" width="6" height="5"
+           style="fill:#ffcc00;stroke-width:2.923;stroke-linejoin:round;stroke-opacity:0" />
+        <rect x="8.5" y="2.5" width="6" height="5"
+           style="fill:#ff00cc;stroke-width:2.923;stroke-linejoin:round;stroke-opacity:0" />
+        <rect x="1.5" y="8.5" width="6" height="5"
+           style="fill:#2ad4ff;stroke-width:2.923;stroke-linejoin:round;stroke-opacity:0" />
+        <rect x="8.5" y="8.5" width="6" height="5"
+           style="fill:#8dd35f;stroke-width:2.923;stroke-linejoin:round;stroke-opacity:0"  />
+    </symbol>
+    <symbol id="dark" viewbox="0 0 16 16">
+        <path d="m10 9h-8v-6h8z" style="fill:none;stroke-width:1px;stroke:currentColor"/>
+        <path d="m14 13h-8v-6h8z" style="fill:currentColor;stroke-width:1px;stroke:currentColor"/>
+    </symbol>
+    <symbol id="delete" viewbox="0 0 16 16">
+        <path d="M 3.5,2 2,3.5 6.5,8 2,12.5 3.5,14 8,9.5 12.5,14 14,12.5 9.5000001,8 14,3.5 12.5,2 8,6.5 Z" style="fill:#444"/>
+    </symbol>
+    <symbol id="double_arrow" viewbox="0 0 16 16">
+        <path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z" />
+    </symbol>
+    <symbol id="edit" viewbox="0 0 16 16">
+        <path d="m11.899 13.314-4.2426-4.2426-1.4142 2.8284-4.2426-9.8995 9.8995 4.2426-2.8284 1.4142 4.2426 4.2426z" />
+    </symbol>
+    <symbol id="ellipse" viewbox="0 0 16 16">
+        <ellipse cx="8" cy="8" rx="7" ry="5" style="fill:none;stroke-width:2;stroke:currentColor"/>
+        <path d="m10 6-4 4m0-4 4 4" style="fill:none;stroke-width:1px;stroke:currentColor"/>
+    </symbol>
+    <symbol id="ellipsef" viewbox="0 0 16 16">
+        <path d="m7.9824 3a7 5 0 00-6.9824 5 7 5 0 007 5 7 5 0 007-5 7 5 0 00-7-5 7 5 0 00-.017578 0zm-1.6289 2.6465 1.6465 1.6465 1.6465-1.6465.70703.70703-1.6465 1.6465 1.6465 1.6465-.70703.70703-1.6465-1.6465-1.6465 1.6465-.70703-.70703 1.6465-1.6465-1.6465-1.6465.70703-.70703z" />
+    </symbol>
+    <symbol id="erease-noborder-rect" viewbox="0 0 16 16">
+        <rect x=".32455" y=".33192" width="13.004" height="13.019" ry="0" style="fill:none;opacity:.992;stroke-dasharray:2.4738, 0.651;stroke-width:.651;stroke:#454545"/>
+    </symbol>
+    <symbol id="erease-noborder" viewbox="0 0 16 16">
+        <path d="m6.8132.32568c3.5973 0 6.5135 2.9162 6.5135 6.5135s-2.9162 6.5135-6.5135 6.5135c-3.5973 0-6.5135-2.9162-6.5135-6.5135s2.9162-6.5135 6.5135-6.5135z" style="fill:none;stroke-dasharray:2.60539, 1.3027;stroke-width:.65135;stroke:#444"/>
+    </symbol>
+    <symbol id="exit" viewbox="0 0 16 16">
+        <path d="m6 2.5742c-2.5064.84091-4.3242 3.2102-4.3242 5.9922 2e-7 3.4807 2.8435 6.3242 6.3242 6.3242 3.4807 0 6.3242-2.8435 6.3242-6.3242 0-2.782-1.8178-5.1513-4.3242-5.9922v2.1758c1.3787.71968 2.3242 2.1441 2.3242 3.8164 0 2.3998-1.9244 4.3242-4.3242 4.3242-2.3998 0-4.3242-1.9244-4.3242-4.3242 0-1.6723.94552-3.0967 2.3242-3.8164z" style="color-rendering:auto;color:#000000;dominant-baseline:auto;fill:#444444;font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;font-variation-settings:normal;image-rendering:auto;inline-size:0;isolation:auto;mix-blend-mode:normal;opacity:.992;shape-margin:0;shape-padding:0;shape-rendering:auto;solid-color:#000000;stop-color:#000000;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal"/>
+        <path d="m7 1v6h2v-6z" style="color-rendering:auto;color:#000000;dominant-baseline:auto;fill:#444444;font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;font-variation-settings:normal;image-rendering:auto;inline-size:0;isolation:auto;mix-blend-mode:normal;shape-margin:0;shape-padding:0;shape-rendering:auto;solid-color:#000000;stop-color:#000000;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal"/>
+    </symbol>
+    <symbol id="file_open_black_24dp" fill="#000000" viewBox="0 0 20 20">
+        <g transform="translate(-4,-2)">
+            <path d="m15 22h-9c-1.1 0-2-.9-2-2v-16c0-1.1.9-2 2-2h8l6 6v6h-1.5v-5h-5.5v-5.5h-7.5v17h9.5zm4-.34v-2.24l2.95 2.95 1.41-1.41-2.95-2.96h2.24v-2h-5.65v5.66z"/>
+        </g>
+    </symbol>
+    <symbol id="fromclipboard" viewbox="0 0 16 16">
+        <path d="m1 1h9v10h-9v-10" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m1 7 3-3 6 4" style="fill:none;stroke-width:1px;stroke:#000000"/>
+        <path d="m13 15v-4" style="fill:none;stroke-width:1px;stroke:#000000"/>
+        <path d="m11 13h4" style="fill:none;stroke-width:1px;stroke:#000000"/>
+    </symbol>
+    <symbol id="fullscreen" viewbox="0 0 16 16">
+        <path d="m14 9v4h-4m-8-4v4h4m8-6v-4h-4m-8 4v-4h4" style="fill:none;stroke-width:1px;stroke:currentColor"/>
+    </symbol>
+    <symbol id="geodreieck-icon" viewbox="0 0 16 16">
+      <path d="M 11.761513,5.7511187 A 4.25,4.25 0 0 1 11.74944,11.760957 4.25,4.25 0 0 1 5.7395992,11.749998" style="fill:none;stroke:#ffff00" />
+      <path d="M 2.5,15 H 15 V 2.5 Z" style="fill:none;stroke:#444444;stroke-width:1px" />
+    </symbol>
+    <symbol id="go-bottom" viewbox="0 0 16 16">
+        <path style="fill:#444444" d="M 10,14 A 2,2 0 0 1 8,16 2,2 0 0 1 6,14 2,2 0 0 1 8,12 2,2 0 0 1 10,14 Z"/>
+        <path style="fill:#444444" d="M 7,0 V 7 L 3.5,3.5 2,5 8,11 14,5 12.5,3.5 9,7 V 0 Z"/>
+    </symbol>
+    <symbol id="go-left" viewbox="0 0 16 16">
+        <path d="m2.0012 5.9988c-.92278-.016981-1.7893.68916-1.9588 1.5964-.196.87657.28571 1.8429 1.1051 2.2122.84258.41778 1.951.12868 2.4822-.64746.56094-.75513.47283-1.8972-.19676-2.5577-.37067-.38304-.89864-.60558-1.4317-.60345z" style="fill:#444"/>
+        <path d="m16.001 8.9988h-7l3.5 3.5-1.5 1.5-6-6 6-6 1.5 1.5-3.5 3.5h7z" style="fill:#444"/>
+    </symbol>
+    <symbol id="go-right" viewbox="0 0 16 16">
+        <path d="m13.999 9.9988c.92278.016981 1.7893-.68916 1.9588-1.5964.196-.87657-.28571-1.8429-1.1051-2.2122-.84258-.41778-1.951-.12868-2.4822.64746-.56094.75513-.47283 1.8972.19676 2.5577.37067.38304.89864.60558 1.4317.60345z" style="fill:#444"/>
+        <path d="m-.001225 6.9988h7l-3.5-3.5 1.5-1.5 6 6-6 6-1.5-1.5 3.5-3.5h-7z" style="fill:#444"/>
+    </symbol>
+    <symbol id="go-top" viewbox="0 0 16 16">
+        <path d="m10 2c.016981-.92278-.68916-1.7893-1.5964-1.9588-.87657-.196-1.8429.28571-2.2122 1.1051-.41778.84258-.12868 1.951.64746 2.4822.75513.56094 1.8972.47283 2.5577-.19676.38304-.37067.60558-.89864.60345-1.4317z" style="fill:#444"/>
+        <path d="m7 16v-7l-3.5 3.5-1.5-1.5 6-6 6 6-1.5 1.5-3.5-3.5v7z" style="fill:#444"/>
+    </symbol>
+    <symbol id="help" viewbox="0 0 24 24">
+        <g style="opacity:0.75;">
+            <g>
+                <path style="fill-rule:evenodd;clip-rule:evenodd;" d="M12.001,2.085c-5.478,0-9.916,4.438-9.916,9.916
+                    c0,5.476,4.438,9.914,9.916,9.914c5.476,0,9.914-4.438,9.914-9.914C21.915,6.523,17.477,2.085,12.001,2.085z M12.002,20.085
+                    c-4.465,0-8.084-3.619-8.084-8.083c0-4.465,3.619-8.084,8.084-8.084c4.464,0,8.083,3.619,8.083,8.084
+                    C20.085,16.466,16.466,20.085,12.002,20.085z"/>
+                <g>
+                    <path style="fill-rule:evenodd;clip-rule:evenodd;" d="M11.766,6.688c-2.5,0-3.219,2.188-3.219,2.188l1.411,0.854
+                        c0,0,0.298-0.791,0.901-1.229c0.516-0.375,1.625-0.625,2.219,0.125c0.701,0.885-0.17,1.587-1.078,2.719
+                        C11.047,12.531,11,15,11,15h1.969c0,0,0.135-2.318,1.041-3.381c0.603-0.707,1.443-1.338,1.443-2.494S14.266,6.688,11.766,6.688z"
+                    />
+                    <rect x="11" y="16" style="fill-rule:evenodd;clip-rule:evenodd;" width="2" height="2"/>
+                </g>
+            </g>
+        </g>
+    </symbol>
+    <symbol id="karopapier" viewbox="0 0 16 16">
+        <path d="m2 2h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 6h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 10h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 14h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m6 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m10 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m14 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+    </symbol>
+    <symbol id="kreis" viewbox="0 0 16 16">
+        <circle cx="8" cy="8" r="7" style="fill:none;stroke-width:2;stroke:currentColor"/>
+        <path d="m10 6-4 4m0-4 4 4" style="fill:none;stroke-width:1px;stroke:currentColor"/>
+    </symbol>
+    <symbol id="kreisf" viewbox="0 0 16 16">
+        <path d="m7.9062 1a7 7 0 00-6.9062 7 7 7 0 007 7 7 7 0 007-7 7 7 0 00-7-7 7 7 0 00-.09375 0zm-1.5527 4.6465 1.6465 1.6465 1.6465-1.6465.70703.70703-1.6465 1.6465 1.6465 1.6465-.70703.70703-1.6465-1.6465-1.6465 1.6465-.70703-.70703 1.6465-1.6465-1.6465-1.6465.70703-.70703z" />
+    </symbol>
+    <symbol id="linie" viewbox="0 0 16 16">
+        <path d="M 12.778,13.778 C 12.778,13.778 13.278,14.278 13.778,13.778 14.278,13.278 13.778,12.778 13.778,12.778 L 3.2237,2.2237 C 3.2237,2.2237 2.7237,1.7237 2.2237,2.2237 1.7237,2.7237 2.2237,3.2237 2.2237,3.2237 Z"/>
+    </symbol>
+    <symbol id="liniesnap" viewbox="0 0 16 16">
+        <path d="m2 14s0 .56841.70711.56841.70711-.56841.70711-.56841v-11.998s0-.56841-.70711-.56841-.70711.56841-.70711.56841z" />
+        <path d="m5 8s-.44599 0-.44599.70711c0 .70711.44599.70711.44599.70711h9.4142s.44599 0 .44599-.70711-.44599-.70711-.44599-.70711z" />
+    </symbol>
+    <symbol id="linienpapier" viewbox="0 0 16 16">
+        <path d="m2 2h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 6h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 10h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 14h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+    </symbol>
+    <symbol id="logpapier" viewbox="0 0 16 16">
+        <path d="m2 2h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 4h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 8h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 14h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m14 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m12 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m8 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+    </symbol>
+    <symbol id="open" viewbox="0 0 16 16">
+        <path style="fill:#444444" d="M 8 1 L 3.5 7 L 6 7 L 6 13 L 10 13 L 10 7 L 12.5 7 L 8 1 z M 1 14 L 1 16 L 15 16 L 15 14 L 1 14 z"/>
+    </symbol>
+    <symbol id="pensize-1px" viewbox="0 0 16 16">
+        <path d="m7.9903 6.9428c.5837 0 1.0569.47334 1.0569 1.0572 0 .5839-.47318 1.0572-1.0569 1.0572s-1.0569-.47334-1.0569-1.0572c0-.5839.47318-1.0572 1.0569-1.0572z" style="fill:#444"/>
+    </symbol>
+    <symbol id="pensize-20px" viewbox="0 0 16 16">
+        <path d="m7.9903 1.6095c3.5282 0 6.3884 2.8612 6.3884 6.3906 0 3.5294-2.8602 6.3906-6.3884 6.3906-3.5282 0-6.3884-2.8612-6.3884-6.3906 0-3.5294 2.8602-6.3906 6.3884-6.3906z" style="fill:#444"/>
+    </symbol>
+    <symbol id="pensize-3px" viewbox="0 0 16 16">
+        <path d="m7.9903 5.3319c1.4731 0 2.6672 1.1946 2.6672 2.6681 0 1.4736-1.1942 2.6681-2.6672 2.6681s-2.6672-1.1946-2.6672-2.6681c0-1.4736 1.1942-2.6681 2.6672-2.6681z" style="fill:#444"/>
+    </symbol>
+    <symbol id="pensize-5px" viewbox="0 0 16 16">
+        <path d="m7.9903 3.8081c2.3144 0 4.1905 1.8768 4.1905 4.1919 0 2.3151-1.8762 4.1919-4.1905 4.1919-2.3144 0-4.1905-1.8768-4.1905-4.1919 0-2.3151 1.8762-4.1919 4.1905-4.1919z" style="fill:#444"/>
+    </symbol>
+    <symbol id="pfeil" viewbox="0 0 16 16">
+        <path d="m5.5929 3.0962-3.5912-1.0943 1.0943 3.5912.74849-.74848 8.7115 8.7115s.5.5 1 0 0-1 0-1l-8.7115-8.7115.74848-.74849z" />
+    </symbol>
+    <symbol id="pfeilsnap" viewbox="0 0 16 16">
+        <path d="m4.4726 5-1.7656-3.3131-1.7656 3.3131 1.0585 7.1e-6v8.9675s0 .70711.70711.70711c.70711 0 .70711-.70711.70711-.70711v-8.9675l1.0585-7.1e-6z" />
+        <path d="m11.687 11.766 3.3131-1.7656-3.3131-1.7656-7e-6 1.0585h-6.856s-.70711 0-.70711.70711c0 .70711.70711.70711.70711.70711h6.856l7e-6 1.0585z" />
+    </symbol>
+    <symbol id="prefs" viewbox="0 0 16 16">
+        <path style="fill:#444444" d="M 0.6,6 H 3.4 C 3.7324,6 4,6.2676 4,6.6 V 9.4 C 4,9.7324 3.7324,10 3.4,10 H 0.6 C 0.2676,10 0,9.7324 0,9.4 V 6.6 C 0,6.2676 0.2676,6 0.6,6 Z"/>
+        <path style="fill:#444444" d="M 6.6,6 H 9.4 C 9.7324,6 10,6.2676 10,6.6 V 9.4 C 10,9.7324 9.7324,10 9.4,10 H 6.6 C 6.2676,10 6,9.7324 6,9.4 V 6.6 C 6,6.2676 6.2676,6 6.6,6 Z"/>
+        <path style="fill:#444444" d="M 12.6,6 H 15.4 C 15.732,6 16,6.2676 16,6.6 V 9.4 C 16,9.7324 15.732,10 15.4,10 H 12.6 C 12.268,10 12,9.7324 12,9.4 V 6.6 C 12,6.2676 12.268,6 12.6,6 Z"/>
+    </symbol>
+    <symbol id="quadrat" viewbox="0 0 16 16">
+        <rect x="2" y="2" width="12" height="12" style="fill:none;stroke-width:2;stroke:currentColor"/>
+    </symbol>
+    <symbol id="quadratf" viewbox="0 0 16 16">
+        <rect x="2" y="2" width="12" height="12" />
+    </symbol>
+    <symbol id="radierer-kalibrieren" viewbox="0 0 16 16">
+        <path d="m5.0409 11.357 6.4693-6.4693s.51754-.51754 0-1.0351l-3.6228-3.6228c-.51754-.51754-1.0351 0-1.0351 0l-6.4693 6.4693c-.51754.51754-.51754 1.0351 0 1.5526l3.1052 3.1052zm-.51754-1.5526h-.51754l-1.8114-1.8114c-.51754-.51754-.51754-.51754 0-1.0351l3.1052-3.1052 2.5877 2.5877z" style="fill:#666666"/>
+        <g transform="matrix(1.3005 0 0 1.3005 -4.1375 -4.3885)" style="stroke-width:.8458">
+            <path d="m13.979 11.935a2.2371 2.2371 0 01-2.2371 2.2371 2.2371 2.2371 0 01-2.2371-2.2371 2.2371 2.2371 0 012.2371-2.2371 2.2371 2.2371 0 012.2371 2.2371z" style="fill:none;opacity:.992;stroke-width:.8458;stroke:#666666"/>
+            <g style="stroke-width:.8458">
+                <path d="m9.5049 11.935h-1.5049" style="fill:none;stroke-width:.8458;stroke:#666666"/>
+                <path d="m15.484 11.935h-1.5049" style="fill:none;stroke-width:.8458;stroke:#666666"/>
+                <path d="m11.742 9.6979v-1.5049" style="fill:none;stroke-width:.8458;stroke:#666666"/>
+                <path d="m11.742 15.677v-1.5049" style="fill:none;stroke-width:.8458;stroke:#666666"/>
+            </g>
+            <path d="m12.932 11.935a1.19 1.19 0 01-1.19 1.19 1.19 1.19 0 01-1.19-1.19 1.19 1.19 0 011.19-1.19 1.19 1.19 0 011.19 1.19z" style="fill:#666666;opacity:.992"/>
+        </g>
+    </symbol>
+    <symbol id="radierer" viewbox="0 0 16 16">
+        <path d="m6.8891 16.01 8.8388-8.8388s.70711-.70711 0-1.4142l-4.9497-4.9497c-.70711-.70711-1.4142 0-1.4142 0l-8.8388 8.8388c-.70711.70711-.70711 1.4142 0 2.1213l4.2426 4.2426zm-.70711-2.1213h-.70711l-2.4749-2.4749c-.70711-.70711-.70711-.70711 0-1.4142l4.2426-4.2426 3.5355 3.5355z" />
+    </symbol>
+    <symbol id="radiergummi" viewBox="0 0 24 24">
+        <path d="M 18.289368,19.64706 H 24 V 22 H 15.884892 Z M 3.2613903,22 0.70663397,19.5 C 0.24578613,19.04904 0.01032777,18.4902 3.1913041e-4,17.82352 -0.0096895,17.15686 0.21572115,16.58823 0.67657804,16.11765 L 13.901199,2.70588 C 14.362047,2.23531 14.928121,2 15.59936,2 c 0.67124,0 1.237314,0.22549 1.698162,0.67647 l 5.981135,5.85294 c 0.460848,0.45097 0.691287,1.0098 0.691287,1.67647 0,0.66667 -0.23043,1.2255 -0.691287,1.67646 L 13.179856,22 Z M 12.157953,19.64706 19.003197,12.71325 13.052118,6.8897 2.3597116,17.76471 4.2832929,19.64706 Z" />
+    </symbol>
+    <symbol id="radiergummi-kalibrieren" viewbox="0 0 22.494 21.081">
+        <g transform="matrix(1.5451 0 0 1.5451 -12.361 -12.659)" style="stroke-width:.71191;stroke:#000000">
+            <path
+                d="m13.979 11.935a2.2371 2.2371 0 01-2.2371 2.2371 2.2371 2.2371 0 01-2.2371-2.2371 2.2371 2.2371 0 012.2371-2.2371 2.2371 2.2371 0 012.2371 2.2371z"
+                style="fill:none;opacity:.992;stroke-width:.71191;stroke:#000000" />
+            <g style="stroke-width:.71191;stroke:#000000">
+                <path d="M 9.5049,11.935 H 8" style="fill:none;stroke-width:.71191;stroke:#000000" />
+                <path d="m15.484 11.935h-1.5049" style="fill:none;stroke-width:.71191;stroke:#000000" />
+                <path d="m11.742 9.6979v-1.5049" style="fill:none;stroke-width:.71191;stroke:#000000" />
+                <path d="m11.742 15.677v-1.5049" style="fill:none;stroke-width:.71191;stroke:#000000" />
+            </g>
+            <path
+                d="m12.932 11.935a1.19 1.19 0 01-1.19 1.19 1.19 1.19 0 01-1.19-1.19 1.19 1.19 0 011.19-1.19 1.19 1.19 0 011.19 1.19z"
+                style="fill:#000000;opacity:.992;stroke:none" />
+        </g>
+        <path
+            d="m17.744 19.081h4.75v2h-6.75zm-12.5 2-2.125-2.125c-.38332-.38332-.57918-.85832-.5875-1.425-.0083-.56668.17917-1.05.5625-1.45l11-11.4c.38332-.4.85418-.6 1.4125-.6s1.0292.19167 1.4125.575l4.975 4.975c.38332.38332.575.85832.575 1.425s-.19167 1.0417-.575 1.425l-8.4 8.6zm7.4-2 5.6938-5.8938-4.95-4.95-8.8938 9.2438 1.6 1.6z"
+            style="stroke-width:.025" />
+    </symbol>
+    <symbol id="rechteck" viewbox="0 0 16 16">
+        <path d="m1 4v8h14v-8zm2 2h10v4h-10z" />
+    </symbol>
+    <symbol id="rechteckf" viewbox="0 0 16 16">
+        <rect x="2" y="5" width="12" height="6" />
+    </symbol>
+    <symbol id="redo" viewbox="0 0 16 16">
+        <path style="fill:#444444" d="M 9,2 14,5 9,8 V 6 H 6 C 4.32,6 3,7.321 3,9 3,10.679 4.32,12 6,12 H 11 V 14 H 6 C 3.25,14 1,11.753 1,9 1,6.247 3.25,4 6,4 H 9 Z"/>
+    </symbol>
+    <symbol id="save" viewbox="0 0 16 16">
+        <path style="fill:#444444" d="M 6 1 L 6 7 L 3.5 7 L 8 13 L 12.5 7 L 10 7 L 10 1 L 6 1 z M 1 14 L 1 16 L 15 16 L 15 14 L 1 14 z"/>
+    </symbol>
+    <symbol id="save-black-24dp" viewbox="0 0 18 18">
+        <path d="m-3-3h24v24h-24z" fill="none"/>
+        <path d="m14 0h-12c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-12zm2.5 16.5h-15v-15h11.67l3.33 3.33zm-7.5-7.5c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm-6-6h9v4h-9z"/>
+    </symbol>
+    <symbol id="settings" viewbox="0 0 24 24">
+        <path d="M0 0h24v24H0V0z" fill="none"/>
+        <path d="m19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.09-.16-.26-.25-.44-.25-.06 0-.12.01-.17.03l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65c-.03-.24-.24-.42-.49-.42h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.06-.02-.12-.03-.18-.03-.17 0-.34.09-.43.25l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.09.16.26.25.44.25.06 0 .12-.01.17-.03l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.06.02.12.03.18.03.17 0 .34-.09.43-.25l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zm-1.98-1.71c.04.31.05.52.05.73s-.02.43-.05.73l-.14 1.13.89.7 1.08.84-.7 1.21-1.27-.51-1.04-.42-.9.68c-.43.32-.84.56-1.25.73l-1.06.43-.16 1.13-.2 1.35h-1.4l-.19-1.35-.16-1.13-1.06-.43c-.43-.18-.83-.41-1.23-.71l-.91-.7-1.06.43-1.27.51-.7-1.21 1.08-.84.89-.7-.14-1.13c-.03-.31-.05-.54-.05-.74s.02-.43.05-.73l.14-1.13-.89-.7-1.08-.84.7-1.21 1.27.51 1.04.42.9-.68c.43-.32.84-.56 1.25-.73l1.06-.43.16-1.13.2-1.35h1.39l.19 1.35.16 1.13 1.06.43c.43.18.83.41 1.23.71l.91.7 1.06-.43 1.27-.51.7 1.21-1.07.85-.89.7.14 1.13zm-5.45-3.27c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+    </symbol>
+    <symbol id="stift" viewbox="0 0 24 24">
+        <path d="m0 13v2.999l3 .001 8-8-3-3zm14-8c.3-.3.3-.7 0-1l-2-2c-.3-.3-.7-.3-1 0l-2 2 3 3z" />
+    </symbol>
+    <symbol id="toolbar" viewbox="0 0 11.213 11.213">
+        <g transform="translate(-6.6934 -6.3154)">
+            <path
+                d="m7.7856 6.3154-1.0922.98974 4.184 4.6164-4.184 4.6176 1.0922.98974 5.0809-5.6073zm5.04 0-1.0922.98974 4.184 4.6164-4.184 4.6176 1.0922.98974 5.0809-5.6073z"
+                style="fill-rule:evenodd;opacity:.992;stroke-width:.29104" />
+        </g>
+    </symbol>
+    <symbol id="trash" viewbox="0 0 16 16">
+        <path d="m10 7.5-.5 5m-2-5v5m-2.5-5 .5 5m-3-7.5 1 10h8l1-10z" style="fill:none;stroke-width:1px;stroke:#444"/>
+        <path d="m5 3.5.5-2h4l.5 2m-8 0h11" style="fill:none;stroke-width:1px;stroke:#444"/>
+    </symbol>
+    <symbol id="undo" viewbox="0 0 16 16">
+        <path style="fill:#444444" d="M 7,2 2,5 7,8 V 6 H 10 C 11.68,6 13,7.321 13,9 13,10.679 11.68,12 10,12 H 5 V 14 H 10 C 12.75,14 15,11.753 15,9 15,6.247 12.75,4 10,4 H 7 Z"/>
+    </symbol>
+    <symbol id="unknown" viewBox="0 0 8.4667 8.4667" >
+        <g transform="matrix(1.2911 0 0 1.2911 -3.0043 -.59313)" style="stroke-width:.20493" aria-label="?">
+            <path d="m4.9161 6.6146v-.74655h.74655v.74655zm0-1.4969v-.20464q0-.42444.11369-.70487.11748-.28043.44338-.6556l.23874-.27664q.59497-.68213.59497-1.1179 0-.33727-.26527-.53433-.26148-.19706-.70866-.19706-.57223 0-1.224.28043v-.63286q.70108-.21222 1.3188-.21222.76929 0 1.2203.34864.45475.34485.45475.93603 0 .33348-.13264.57602-.12885.23874-.50023.59118l-.23496.2198q-.35243.33348-.46233.56086-.1099.22359-.1099.60634v.41686z" style="stroke-width:.20493"/>
+        </g>
+    </symbol>
+    <symbol id="zoom-in" viewbox="0 0 16 16">
+        <path style="fill:#444444" d="M 3,2 C 2.45,2 2,2.446 2,3 V 13 C 2,13.554 2.45,14 3,14 H 13 C 13.55,14 14,13.554 14,13 V 3 C 14,2.446 13.55,2 13,2 Z M 7,5 H 9 V 7 H 11 V 9 H 9 V 11 H 7 V 9 H 5 V 7 H 7 Z"/>
+    </symbol>
+    <symbol id="zoom-original" viewbox="0 0 16 16">
+        <path style="fill:#444444" d="M 3,2 C 2.45,2 2,2.446 2,3 V 13 C 2,13.554 2.45,14 3,14 H 13 C 13.55,14 14,13.554 14,13 V 3 C 14,2.446 13.55,2 13,2 Z M 7,5 H 9 V 11 H 7 V 7 H 6 V 6 C 6,6 7,6 7,5 Z"/>
+    </symbol>
+    <symbol id="zoom-out" viewbox="0 0 16 16">
+        <path style="fill:#444444" d="M 3,2 C 2.45,2 2,2.446 2,3 V 13 C 2,13.554 2.45,14 3,14 H 13 C 13.55,14 14,13.554 14,13 V 3 C 14,2.446 13.55,2 13,2 Z M 5,7 H 11 V 9 H 5 Z"/>
+    </symbol>
+
+    <use href="#radiergummi" fill="blue" />
+</svg>
