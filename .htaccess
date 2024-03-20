@@ -1,0 +1,5 @@
+Header always set X-Robots-Tag "noindex, nofollow"
+Header set Cache-Control "no-cache, must-revalidate"
+
+#Options +ExecCGI
+#AddHandler cgi-script .py
