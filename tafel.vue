@@ -1,45 +1,54 @@
 <template>
-    <svg :viewBox="viewboxattr"
-        @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" @mouseleave="endWork"
-        @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" @touchcancel="endWork" @touchleave="endWork">
+    <svg ref="svgroot" :style="svgtransform"
+        @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" @mouseleave=""
+        @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" @touchcancel="" @touchleave=""
+        >
         <template v-for="item,idx in itemlist" :key="item.id">
-            <g style="pointer-events: bounding-box;">
-                <rect :="item.boundingBox" fill="none" stroke="red" v-if="item.selected" />
-                <path :ref="(el) => item.el = el" :d="item.points.toString()" :="item.svgattr" :data-idx="idx"/>
-            </g>
+            <mypath :item="item" :data-idx="idx" >
+                <path :ref="(el) => item.el = el" :d="item.points.toString()" :="item.svgattr" />
+            </mypath>
         </template>
         <rect v-show="zeigeRadierer" ref="radiergummi" :="radiergummiBox" width="50" height="100" style="stroke: red; stroke-width: 2px; fill: none;" />
-        <use id="#geodreieck" width="640" href="icons.svg#geodreieck" v-if="props.config.geodreieckaktiv" />
+        <geodreieck  ref="geodreieck_el"  v-if="props.config.geodreieckaktiv">
+            <path id="verschiebegriff" style="pointer-events: bounding-box; fill: #0000ff; stroke-width:.26458" d="m80 40-3 3h2v4h-4v-2l-3 3 3 3v-2h4v4h-2l3 3 3-3h-2v-4h4v2l3-3-3-3v2h-4v-4h2z"/>
+            <path id="drehgriff" style="pointer-events: bounding-box; fill: #ff0000; stroke-width:.026458" d="m79.368 11 c-.21279.0071-.3996.02137-.53513.04429-1.6929.26686-3.1357.95898-4.3198 2.0598-1.2426 1.1759-2.0097 2.5607-2.385 4.3203-.05013.22512-.06674.22488-.75887.25004l-.70905.02491 1.3175 1.9768c.71729 1.0924 1.3262 1.9763 1.3512 1.9763.02497 0 .63391-.88387 1.3512-1.9763l1.3175-1.9768-.91756-.02491-.9171-.02492.04982-.22512c.317-1.3261 1.4682-2.844 2.719-3.5863.98397-.58367 2.4351-.91716 3.4857-.8087 1.2926.14182 2.5934.65881 3.2606 1.2926l.35891.34184.67537-.67538.66707-.67583-.33353-.29156c-1.0091-.89228-2.4937-1.6431-3.7279-1.9016-.43775-.09378-1.3116-.14056-1.95-.11948zm7.3045 5.3315c-.02517 0-.63438.88433-1.3517 1.9768l-1.3175 1.9763 1.8347.04983-.04982.22513c-.317 1.3259-1.4675 2.8438-2.7186 3.5858-.98397.58386-2.4351.91762-3.4857.80916-1.2926-.14183-2.5939-.65882-3.2611-1.2926l-.35844-.34184-.67583.67583-.66707.67537.33353.29202c.58386.51714 1.7016 1.2089 2.4021 1.4924 2.7188 1.1008 5.9207.48388 8.0976-1.551 1.2676-1.1841 2.035-2.5688 2.4187-4.3452.04994-.22512.06674-.22488.75887-.25004l.70859-.02492-1.3175-1.9768c-.71729-1.0924-1.3256-1.9763-1.3507-1.9763z"/>
+        </geodreieck>
     </svg>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import geodreieck from './geodreieck.vue'
+import mypath from './path.vue'
 
 const props = defineProps(['config'])
 
 const itemlist = ref([])
-const viewbox = ref({x:0, y:0, width: 1000, height: 700})
+const svgtranslate = ref({x:0, y:0})
+const svgroot = ref(null)
 const radiergummi = ref(null)
+const geodreieck_el = ref(null)
 const zeigeRadierer = ref(false)
 
-
-const viewboxattr = computed(() => `${viewbox.value.x} ${viewbox.value.y} ${viewbox.value.width} ${viewbox.value.height}`)
+const svgtransform = computed(() => `transform: translate(${svgtranslate.value.x}px, ${svgtranslate.value.y}px)`)
 const radiergummiBox = ref({x: 0, y: 0, width: 50, height: 100})
 
 let newItem = null
 let selectedElement = null
 let isPainting = false
 let isDragging = false
-let startpos = null
+let dreheGD = false
+let schiebeGD = false
+let startpos = {x:0, y:0}
 let id = 0
 let drawitem = null
 
 
 function startWork(e) {
     startpos = getPosition(e)
+
     if (props.config.modus == 'edit') {
-        startDrag(e)
+        //startDrag(e)
         return
     }
 
@@ -47,6 +56,21 @@ function startWork(e) {
         zeigeRadierer.value = true
         radiere(e)
         return
+    }
+    
+    if(e.target.id == 'drehgriff') {
+        dreheGD = true
+        geodreieck_el.value.startRotate(getPosition(e))
+        return
+    }
+    if(e.target.id == 'verschiebegriff') {
+        schiebeGD = true
+        geodreieck_el.value.startTranslate(startpos)
+        return
+    }
+
+    if (props.config.geodreieckaktiv) {
+        startpos=geosnap(startpos)
     }
 
     let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(props.config.modus) >= 0
@@ -74,11 +98,19 @@ function startWork(e) {
 
 function furtherWork(e) {
     if (props.config.modus == 'edit') {
-        drag(e)
+        //drag(e)
         return
     }
     if (props.config.modus == 'radieren') {
         radiere(e)
+        return
+    }
+    if (dreheGD) {
+        geodreieck_el.value.rotate(getPosition(e, geodreieck_el.value))
+        return
+    }
+    if (schiebeGD) {
+        geodreieck_el.value.translate(getPosition(e))
         return
     }
     draw(e)
@@ -93,6 +125,15 @@ function endWork(e) {
         zeigeRadierer.value = false
         return
     }
+    if (dreheGD) {
+        dreheGD = false
+        return
+    }
+    if (schiebeGD) {
+        schiebeGD = false
+        return
+    }
+
     endDraw(e)
 }
 
@@ -105,8 +146,10 @@ function draw(e) {
     if (!isPainting) return
     e.preventDefault();
     let pos = getPosition(e)
+    if (props.config.geodreieckaktiv) {
+        pos=geosnap(pos)
+    }
     drawitem(pos)
-    newItem.boundingBox.value = newItem.el.getBBox()
 }
 
 function endDraw(e) {
@@ -132,8 +175,8 @@ function drag(e) {
         item.component.translate({x: pos.x - startpos.x, y: pos.y - startpos.y})
     }
     else {
-        viewbox.value.x += startpos.x - pos.x
-        viewbox.value.y += startpos.y - pos.y
+        svgtranslate.value.x = pos.x - startpos.x
+        svgtranslate.value.y = pos.y - startpos.y
     }
 }
 
@@ -141,6 +184,7 @@ function endDrag(e) {
     selectedElement = null
     isDragging = false
 }
+
 
 function radiere(e) {
     if (! zeigeRadierer.value) return
@@ -150,11 +194,10 @@ function radiere(e) {
     radiergummiBox.value.y = pos.y - 50
     let removelist = []
     for (let item of itemlist.value) {
-        if (checkIntersection(radiergummiBox.value, item.boundingBox)) {
+        if (checkIntersection(radiergummiBox.value, item.el.getBBox())) {
             let rect = radiergummiBox.value
             item.points.removePointsInRect(rect)
-            item.boundingBox = item.el.getBBox()
-            if (item.points.length < 2)
+            if (item.points.length < 2 && item.el.dataset)
                 removelist.push(item.el.dataset['idx'])
         }
     }
@@ -172,27 +215,30 @@ function checkIntersection(a, b) {
 }
 
 function getPosition(evt) {
-    let CTM = evt.target.getScreenCTM()
-    if (evt.target.ownerSVGElement)
-        CTM = evt.target.ownerSVGElement.getScreenCTM()
-
-    let x = null
-    let y = null
+    let CTM = svgroot.value.getScreenCTM()
+    let p = svgroot.value.createSVGPoint()
     if (evt.touches) {
-        x = evt.touches[0].clientX
-        y = evt.touches[0].clientY
+        p.x = evt.touches[0].clientX
+        p.y = evt.touches[0].clientY
     }
     else {
-        x = evt.clientX
-        y = evt.clientY
+        p.x = evt.clientX
+        p.y = evt.clientY
     }
-    return {
-        x: (x - CTM.e) / CTM.a,
-        y: (y - CTM.f) / CTM.d
-    }
+
+    return p.matrixTransform(CTM.inverse())
 }
 
-
+function geosnap(pos) {
+    let p = svgroot.value.createSVGPoint()
+    p.x = pos.x
+    p.y = pos.y
+    let matrix = geodreieck_el.value.getCTM()
+    let geop = p.matrixTransform(matrix.inverse())
+    if (geop.y < 90 && geop.y > 70) geop.y = 80
+    p = geop.matrixTransform(matrix)
+    return p
+}
 
 
 function drawstift(pos) {

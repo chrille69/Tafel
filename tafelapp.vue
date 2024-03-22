@@ -1,6 +1,6 @@
 <template>
     <div ref="anwendung" @fullscreenchange="fullscreenchange">
-        <tafel :config="config" style="width: 100vw; height: 100vh; overflow: visible"/>
+        <tafel :config="config" style="min-width: 100vw; height: 100vh; overflow: visible"/>
         <q-card class="q-ma-md" style="position: absolute; bottom: 10px ">
             <q-card-section class="row q-gutter-md items-center">
                 <q-btn color="primary" label="Werkzeuge" :icon="icons[config.modus]">
