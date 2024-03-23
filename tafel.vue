@@ -1,13 +1,13 @@
 <template>
-    <svg ref="svgroot" :style="svgtransform"
+    <svg ref="svgroot"
         @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" @mouseleave=""
         @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" @touchcancel="" @touchleave=""
         >
-        <template v-for="item,idx in itemlist" :key="item.id">
-            <mypath :item="item" :data-idx="idx" >
-                <path :ref="(el) => item.el = el" :d="item.points.toString()" :="item.svgattr" />
-            </mypath>
-        </template>
+        <g :style="svgtransform">
+            <template v-for="item,idx in itemlist" :key="item.id">
+                <path :ref="(el) => item.el = el" :d="item.points.toString()" :="item.svgattr" :data-idx="idx" style="pointer-events: bounding-box;"/>
+            </template>
+        </g>
         <rect v-show="zeigeRadierer" ref="radiergummi" :="radiergummiBox" width="50" height="100" style="stroke: red; stroke-width: 2px; fill: none;" />
         <geodreieck  ref="geodreieck_el"  v-if="props.config.geodreieckaktiv">
             <path id="verschiebegriff" style="pointer-events: bounding-box; fill: #0000ff; stroke-width:.26458" d="m80 40-3 3h2v4h-4v-2l-3 3 3 3v-2h4v4h-2l3 3 3-3h-2v-4h4v2l3-3-3-3v2h-4v-4h2z"/>
@@ -17,9 +17,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import geodreieck from './geodreieck.vue'
-import mypath from './path.vue'
 
 const props = defineProps(['config'])
 
@@ -28,36 +27,61 @@ const svgtranslate = ref({x:0, y:0})
 const svgroot = ref(null)
 const radiergummi = ref(null)
 const geodreieck_el = ref(null)
+const statusRadieren = computed(() => props.config.modus == 'radieren')
+const statusEditieren = computed(() => props.config.modus == 'editieren')
+const statusZeichnen = computed(() => props.config.modus == 'zeichnen')
 const zeigeRadierer = ref(false)
 
 const svgtransform = computed(() => `transform: translate(${svgtranslate.value.x}px, ${svgtranslate.value.y}px)`)
 const radiergummiBox = ref({x: 0, y: 0, width: 50, height: 100})
 
 let newItem = null
-let selectedElement = null
 let isPainting = false
-let isDragging = false
 let dreheGD = false
 let schiebeGD = false
 let startpos = {x:0, y:0}
 let id = 0
 let drawitem = null
 
+const moveable = new Moveable(document.body, {
+    container: document.body,
+    origin: true,
+    draggable: true,
+    rotatable: true,
+})
+.on("drag", updateTransform)
+.on("rotateStart", console.log)
+.on("resize", updateTransform)
+.on("rotate", updateTransform)
+
+const selecto = new Selecto({
+    container: svgroot.value,
+    selectedTargest: ['.selectable'],
+    selectByClick: true,
+})
+.on("dragStart", pass)
+.on("drag", pass)
+.on("select", e => {
+    e.added.forEach(el => {
+        el.classList.add("draggable");
+        moveable.target = document.querySelectorAll('.draggable')
+    });
+    e.removed.forEach(el => {
+        el.classList.remove("draggable");
+        moveable.target = document.querySelectorAll('.draggable')
+    });
+});
+
+function pass(e) {
+    if (props.config.geodreieckaktiv || !statusEditieren.value) {
+        e.stop()
+    }
+}
+function updateTransform(info) { info.target.style.transform = info.transform; }
 
 function startWork(e) {
     startpos = getPosition(e)
 
-    if (props.config.modus == 'edit') {
-        //startDrag(e)
-        return
-    }
-
-    if (props.config.modus == 'radieren') {
-        zeigeRadierer.value = true
-        radiere(e)
-        return
-    }
-    
     if(e.target.id == 'drehgriff') {
         dreheGD = true
         geodreieck_el.value.startRotate(getPosition(e))
@@ -69,39 +93,42 @@ function startWork(e) {
         return
     }
 
+    if (statusRadieren.value) {
+        zeigeRadierer.value = true
+        radiere(e)
+        return
+    }
+    
+    if (!statusZeichnen.value)
+        return
+
     if (props.config.geodreieckaktiv) {
         startpos=geosnap(startpos)
     }
 
-    let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(props.config.modus) >= 0
-    let ispfeil = ['pfeil','pfeilsnap'].indexOf(props.config.modus) >= 0
-    drawitem = drawarray[props.config.modus]
+    let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(props.config.tool) >= 0
+    let ispfeil = ['pfeil','pfeilsnap'].indexOf(props.config.tool) >= 0
+    drawitem = drawarray[props.config.tool]
     const color = props.config.useCurrentColor ? 'currentColor' : props.config.brushColor
     newItem = {
-        boundingBox: ref({x: 0, y: 0, width: 0, height: 0}),
-        selected: false,
         points: ref(new PathPointList(new PathPointM(startpos.x, startpos.y))),
         svgattr: {
             stroke: filledItem ? 'none' : color,
             'stroke-width': props.config.brushWidth,
             fill: filledItem || ispfeil ? color : 'none',
-            class: "rundeSache draggable"
+            class: "rundeSache selectable"
         },
         el: null,
         id: ++id,
     }
-    if (props.config.modus == 'stift') 
+    if (props.config.tool == 'stift') 
         newItem.points.value.push(new PathPointL(startpos.x, startpos.y))
     itemlist.value.push(newItem)
     startDraw(e)
 }
 
 function furtherWork(e) {
-    if (props.config.modus == 'edit') {
-        //drag(e)
-        return
-    }
-    if (props.config.modus == 'radieren') {
+    if (statusRadieren.value) {
         radiere(e)
         return
     }
@@ -113,15 +140,13 @@ function furtherWork(e) {
         geodreieck_el.value.translate(getPosition(e))
         return
     }
+    if (!statusZeichnen.value)
+        return
     draw(e)
 }
 
 function endWork(e) {
-    if (props.config.modus == 'edit') {
-        endDrag(e)
-        return
-    }
-    if (props.config.modus == 'radieren') {
+    if (statusRadieren.value) {
         zeigeRadierer.value = false
         return
     }
@@ -133,7 +158,8 @@ function endWork(e) {
         schiebeGD = false
         return
     }
-
+    if (!statusZeichnen.value)
+        return
     endDraw(e)
 }
 
@@ -154,35 +180,7 @@ function draw(e) {
 
 function endDraw(e) {
     isPainting = false;
-}
-
-function startDrag(e) {
-    isDragging = true
-    if (e.target.classList.contains('draggable')) {
-        selectedElement = e.target
-        let item = itemlist.value[selectedElement.dataset['idx']]
-        startpos.x -= item.component.translatepos.x
-        startpos.y -= item.component.translatepos.y
-    }
-}
-
-function drag(e) {
-    if (!isDragging) return
-    e.preventDefault()
-    let pos = getPosition(e)
-    if (selectedElement !== null) {
-        let item = itemlist.value[selectedElement.dataset['idx']]
-        item.component.translate({x: pos.x - startpos.x, y: pos.y - startpos.y})
-    }
-    else {
-        svgtranslate.value.x = pos.x - startpos.x
-        svgtranslate.value.y = pos.y - startpos.y
-    }
-}
-
-function endDrag(e) {
-    selectedElement = null
-    isDragging = false
+    selecto.selectableTargets = document.querySelectorAll('.selectable')
 }
 
 
@@ -344,5 +342,8 @@ const drawarray = {
     stroke-linecap: round;
     stroke-linejoin: round;
 }
-
+.origin {
+    transform-origin: center;
+    transform-box: content-box;
+}
 </style>

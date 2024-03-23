@@ -1,7 +1,9 @@
 <template>
-    <g ref="group" style="pointer-events: bounding-box;">
+    <g style="pointer-events: bounding-box;" class="draggable">
         <rect :="boundingBox" fill="none" stroke="red" v-if="true" />
-        <slot></slot>
+        <g ref="group" >
+            <slot></slot>
+        </g>
     </g>
 </template>
 

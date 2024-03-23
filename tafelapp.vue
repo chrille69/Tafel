@@ -1,10 +1,10 @@
 <template>
-    <div ref="anwendung" @fullscreenchange="fullscreenchange">
+    <div @fullscreenchange="fullscreenchange">
         <tafel :config="config" style="min-width: 100vw; height: 100vh; overflow: visible"/>
         <q-card class="q-ma-md" style="position: absolute; bottom: 10px ">
             <q-card-section class="row q-gutter-md items-center">
-                <q-btn color="primary" label="Werkzeuge" :icon="icons[config.modus]">
-                    <mymenu v-model="config.modus" :icons="icons" :items="fullmenu" />
+                <q-btn color="primary" label="Werkzeuge" :icon="icons[config.tool]">
+                    <mymenu v-model="config.tool" :icons="icons" :items="fullmenu" @update:modelValue="setConfig"/>
                 </q-btn>
                 <q-toggle dense v-model="config.darkmode" size="xl" :checked-icon="icons['darkmode']" :unchecked-icon="icons['darkmode']" @update:modelValue="setdarkmode"/>
                 <q-toggle dense v-model="config.fullscreen" size="xl" :checked-icon="icons['fullscreen']" :unchecked-icon="icons['fullscreen']" @update:modelValue="setfullscreen"/>
@@ -38,9 +38,9 @@ import mymenu from './mymenu.vue'
 
 Quasar.Dark.toggle()
 
-const anwendung = ref(null)
 const config = ref({
-    modus: 'stift',
+    tool: 'stift',
+    modus: 'zeichnen',
     useCurrentColor: true,
     brushColor: '#ffffff',
     brushWidth: 3,
@@ -52,7 +52,7 @@ const config = ref({
 
 
 const icons = ref({
-    'edit': 'svguse:icons.svg#edit|0 0 16 16',
+    'editieren': 'svguse:icons.svg#edit|0 0 16 16',
     'stift': 'svguse:icons.svg#stift|0 0 16 16',
     'linie': 'svguse:icons.svg#linie|0 0 16 16',
     'liniesnap': 'svguse:icons.svg#liniesnap|0 0 16 16',
@@ -72,9 +72,17 @@ const icons = ref({
     'geodreieck': 'svguse:icons.svg#geodreieck-icon|0 0 16 16',
 })
 
+function setConfig(tool) {
+    config.value.modus = tool
+    if (['stift','linie','liniesnap','pfeil','pfeilsnap',
+        'rechteck','rechteckf','quadrat','quadratf',
+        'ellipse','ellipsef','kreis','kreisf'].indexOf(tool) >= 0)
+        config.value.modus = 'zeichnen'
+}
+
 const fullmenu = ref([
     { value: 'radieren', label: 'Radieren'},
-    { value: 'edit', label: 'Bearbeiten'},
+    { value: 'editieren', label: 'Bearbeiten'},
     { value: 'zeichnen', label: 'Zeichnen',
         config: {
             anchor: "bottom end",
