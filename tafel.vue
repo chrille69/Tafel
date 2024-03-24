@@ -109,7 +109,7 @@ function startWork(e) {
     let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(props.config.tool) >= 0
     let ispfeil = ['pfeil','pfeilsnap'].indexOf(props.config.tool) >= 0
     drawitem = drawarray[props.config.tool]
-    const color = props.config.useCurrentColor ? 'currentColor' : props.config.brushColor
+    const color = props.config.brushColor
     newItem = {
         points: ref(new PathPointList(new PathPointM(startpos.x, startpos.y))),
         svgattr: {

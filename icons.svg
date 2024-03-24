@@ -2,7 +2,7 @@
     <symbol id="copy" viewbox="0 0 16 16">
         <path d="m2.0762.61816v11.193h3.375v3.5703h8.4727v-11.193h-3.375v-3.5703zm1.3184 1.3184h5.8359v2.252h-3.7793v6.3047h-2.0566zm3.375 3.5703h5.8359v8.5566h-5.8359z" style="fill:#444;opacity:.992;stroke-dasharray:2.6054, 1.3027;stroke-dashoffset:.45594;stroke-linejoin:round;stroke-width:.65135"/>
     </symbol>
-    <symbol id="customcolor" viewbox="0 0 16 16">
+    <symbol id="freecolor" viewbox="0 0 16 16">
         <rect x="1.5" y="2.5" width="6" height="5"
            style="fill:#ffcc00;stroke-width:2.923;stroke-linejoin:round;stroke-opacity:0" />
         <rect x="8.5" y="2.5" width="6" height="5"
@@ -11,6 +11,10 @@
            style="fill:#2ad4ff;stroke-width:2.923;stroke-linejoin:round;stroke-opacity:0" />
         <rect x="8.5" y="8.5" width="6" height="5"
            style="fill:#8dd35f;stroke-width:2.923;stroke-linejoin:round;stroke-opacity:0"  />
+    </symbol>
+    <symbol id="defaultcolor" viewbox="0 0 16 16">
+        <rect x="1.5" y="2.5" width="12" height="10"
+           style="fill:currentColor;stroke-width:2.923;stroke-linejoin:round;stroke-opacity:0" />
     </symbol>
     <symbol id="dark" viewbox="0 0 16 16">
         <path d="m10 9h-8v-6h8z" style="fill:none;stroke-width:1px;stroke:currentColor"/>
@@ -137,16 +141,16 @@
         <path style="fill:#444444" d="M 8 1 L 3.5 7 L 6 7 L 6 13 L 10 13 L 10 7 L 12.5 7 L 8 1 z M 1 14 L 1 16 L 15 16 L 15 14 L 1 14 z"/>
     </symbol>
     <symbol id="pensize-1px" viewbox="0 0 16 16">
-        <path d="m7.9903 6.9428c.5837 0 1.0569.47334 1.0569 1.0572 0 .5839-.47318 1.0572-1.0569 1.0572s-1.0569-.47334-1.0569-1.0572c0-.5839.47318-1.0572 1.0569-1.0572z" style="fill:#444"/>
+        <path d="m7.9903 6.9428c.5837 0 1.0569.47334 1.0569 1.0572 0 .5839-.47318 1.0572-1.0569 1.0572s-1.0569-.47334-1.0569-1.0572c0-.5839.47318-1.0572 1.0569-1.0572z" />
     </symbol>
     <symbol id="pensize-20px" viewbox="0 0 16 16">
-        <path d="m7.9903 1.6095c3.5282 0 6.3884 2.8612 6.3884 6.3906 0 3.5294-2.8602 6.3906-6.3884 6.3906-3.5282 0-6.3884-2.8612-6.3884-6.3906 0-3.5294 2.8602-6.3906 6.3884-6.3906z" style="fill:#444"/>
+        <path d="m7.9903 1.6095c3.5282 0 6.3884 2.8612 6.3884 6.3906 0 3.5294-2.8602 6.3906-6.3884 6.3906-3.5282 0-6.3884-2.8612-6.3884-6.3906 0-3.5294 2.8602-6.3906 6.3884-6.3906z" />
     </symbol>
     <symbol id="pensize-3px" viewbox="0 0 16 16">
-        <path d="m7.9903 5.3319c1.4731 0 2.6672 1.1946 2.6672 2.6681 0 1.4736-1.1942 2.6681-2.6672 2.6681s-2.6672-1.1946-2.6672-2.6681c0-1.4736 1.1942-2.6681 2.6672-2.6681z" style="fill:#444"/>
+        <path d="m7.9903 5.3319c1.4731 0 2.6672 1.1946 2.6672 2.6681 0 1.4736-1.1942 2.6681-2.6672 2.6681s-2.6672-1.1946-2.6672-2.6681c0-1.4736 1.1942-2.6681 2.6672-2.6681z" />
     </symbol>
     <symbol id="pensize-5px" viewbox="0 0 16 16">
-        <path d="m7.9903 3.8081c2.3144 0 4.1905 1.8768 4.1905 4.1919 0 2.3151-1.8762 4.1919-4.1905 4.1919-2.3144 0-4.1905-1.8768-4.1905-4.1919 0-2.3151 1.8762-4.1919 4.1905-4.1919z" style="fill:#444"/>
+        <path d="m7.9903 3.8081c2.3144 0 4.1905 1.8768 4.1905 4.1919 0 2.3151-1.8762 4.1919-4.1905 4.1919-2.3144 0-4.1905-1.8768-4.1905-4.1919 0-2.3151 1.8762-4.1919 4.1905-4.1919z" />
     </symbol>
     <symbol id="pfeil" viewbox="0 0 16 16">
         <path d="m5.5929 3.0962-3.5912-1.0943 1.0943 3.5912.74849-.74848 8.7115 8.7115s.5.5 1 0 0-1 0-1l-8.7115-8.7115.74848-.74849z" />

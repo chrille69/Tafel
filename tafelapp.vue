@@ -2,29 +2,76 @@
     <div @fullscreenchange="fullscreenchange">
         <tafel :config="config" style="min-width: 100vw; height: 100vh; overflow: visible"/>
         <q-card class="q-ma-md" style="position: absolute; bottom: 10px ">
-            <q-card-section class="row q-gutter-md items-center">
-                <q-btn color="primary" label="Werkzeuge" :icon="icons[config.tool]">
-                    <mymenu v-model="config.tool" :icons="icons" :items="fullmenu" @update:modelValue="setConfig"/>
-                </q-btn>
-                <q-toggle dense v-model="config.darkmode" size="xl" :checked-icon="icons['darkmode']" :unchecked-icon="icons['darkmode']" @update:modelValue="setdarkmode"/>
-                <q-toggle dense v-model="config.fullscreen" size="xl" :checked-icon="icons['fullscreen']" :unchecked-icon="icons['fullscreen']" @update:modelValue="setfullscreen"/>
-                <q-toggle dense v-model="config.geodreieckaktiv" size="xl" :checked-icon="icons['geodreieck']" :unchecked-icon="icons['geodreieck']" />
+            <q-card-section class="row q-gutter-md items-center q-pa-sm">
+                <q-btn dense :icon="icons['darkmode']" flat :unelevated="!config.darkmode" :glossy="config.darkmode" @click="toggleDarkmode" />
+                <q-btn dense :icon="icons['fullscreen']" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
+                <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
+                <q-btn-toggle v-model="config.modus" dense push glossy toggle-color="primary"
+                    :options="[
+                        {value: 'editieren', slot: 'editieren'},
+                        {value: 'radieren', slot: 'radieren'},
+                        {value: 'zeichnen', slot: 'zeichnen'},
+                    ]"
+                >
+                    <template v-slot:editieren>
+                        <q-icon :name="icons['editieren']" />
+                    </template>
+                    <template v-slot:radieren>
+                        <q-icon :name="icons['radieren']" />
+                    </template>
+                    <template v-slot:zeichnen>
+                        <q-btn  class="full-width" dense flat :icon="icons[config.tool]">
+                            <mymenu v-model="config.tool" :icons="icons" :items="toolmenu" />
+                        </q-btn>
+                    </template>
+                </q-btn-toggle>
                 <template v-if="config.modus == 'radieren'">
                     <div>
-                        <q-input type="number" v-model="config.rubbersize" label="Radierergröße"  />
+                        <q-input dense type="number" v-model="config.rubbersize" label="Radierergröße"  />
                     </div>
                 </template>
+                <template v-else-if="config.modus == 'editieren'">
+                </template>
                 <template v-else>
-                    <q-input type="number" v-model="config.brushWidth" label="Linienstärke"  />
-                    <q-btn
-                        icon="colorize"
-                        :style="styleColorButton"
-                        @click="config.useCurrentColor = false" >
-                        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                            <q-color v-model="config.brushColor" default-view="palette"/>
-                        </q-popup-proxy>
-                    </q-btn>
-                    <q-checkbox v-model="config.useCurrentColor" label="Standardfarbe" />
+                    <q-btn-toggle dense v-model="config.brushColor" push glossy toggle-color="primary"
+                        :options="[
+                            {value: 'currentColor', slot: 'standard'},
+                            {value: '#ff0000', slot: 'rot'},
+                            {value: '#00ff00', slot: 'gruen'},
+                            {value: '#4169e1', slot: 'blau'},
+                            {value: freeColor, slot: 'free'},
+                        ]"
+                    >
+                        <template v-slot:standard>
+                            <q-icon :name="icons['defaultcolor']" />
+                        </template>
+                        <template v-slot:rot>
+                            <q-icon color="red" :name="icons['defaultcolor']" />
+                        </template>
+                        <template v-slot:gruen>
+                            <q-icon color="green" :name="icons['defaultcolor']" />
+                        </template>
+                        <template v-slot:blau>
+                            <q-icon color="blue" :name="icons['defaultcolor']" />
+                        </template>
+                        <template v-slot:free>
+                            <q-btn dense flat
+                                :icon="icons['freecolor']"
+                                :style="styleColorButton"
+                            >
+                                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                                    <q-color v-model="freeColor" format-model="hex" no-header no-footer v-close-popup default-view="palette" @update:modelValue="config.brushColor = freeColor"/>
+                                </q-popup-proxy>
+                            </q-btn>
+                        </template>
+                    </q-btn-toggle>
+                    <q-input type="number" dense suffix="px" v-model="config.brushWidth" label="Linienstärke" input-style="width: 5em">
+                        <template v-slot:before>
+                            <q-btn dense flat :icon="icons[config.brushWidth] ? icons[config.brushWidth] : icons['3']">
+                                <mymenu v-model="config.brushWidth" :icons="icons" :items="linewidthmenu" />
+                            </q-btn>
+                        </template>
+                    </q-input>
                 </template>
             </q-card-section>
         </q-card>
@@ -41,15 +88,14 @@ Quasar.Dark.toggle()
 const config = ref({
     tool: 'stift',
     modus: 'zeichnen',
-    useCurrentColor: true,
-    brushColor: '#ffffff',
+    brushColor: 'currentColor',
     brushWidth: 3,
     rubbersize: 10,
     darkmode: true,
     fullscreen: false,
     geodreieckaktiv: false
 })
-
+const freeColor = ref('yellow')
 
 const icons = ref({
     'editieren': 'svguse:icons.svg#edit|0 0 16 16',
@@ -70,25 +116,22 @@ const icons = ref({
     'darkmode': 'svguse:icons.svg#dark|0 0 16 16',
     'fullscreen': 'svguse:icons.svg#fullscreen|0 0 16 16',
     'geodreieck': 'svguse:icons.svg#geodreieck-icon|0 0 16 16',
+    'defaultcolor': 'svguse:icons.svg#defaultcolor|0 0 16 16',
+    'freecolor': 'svguse:icons.svg#freecolor|0 0 16 16',
+    '1': 'svguse:icons.svg#pensize-1px|0 0 16 16',
+    '3': 'svguse:icons.svg#pensize-3px|0 0 16 16',
+    '5': 'svguse:icons.svg#pensize-5px|0 0 16 16',
+    '20': 'svguse:icons.svg#pensize-20px|0 0 16 16',
 })
 
-function setConfig(tool) {
-    config.value.modus = tool
-    if (['stift','linie','liniesnap','pfeil','pfeilsnap',
-        'rechteck','rechteckf','quadrat','quadratf',
-        'ellipse','ellipsef','kreis','kreisf'].indexOf(tool) >= 0)
-        config.value.modus = 'zeichnen'
-}
+const linewidthmenu = ref([
+    { value: '1', label: '1px'},
+    { value: '3', label: '3px'},
+    { value: '5', label: '5px'},
+    { value: '20', label: '20px'},
+])
 
-const fullmenu = ref([
-    { value: 'radieren', label: 'Radieren'},
-    { value: 'editieren', label: 'Bearbeiten'},
-    { value: 'zeichnen', label: 'Zeichnen',
-        config: {
-            anchor: "bottom end",
-            self: "bottom start"
-        },
-        children: [
+const toolmenu = ref([
             { value: 'linien', label: 'Linien', children: [
                 { value: 'linie', label: 'Linie'},
                 { value: 'liniesnap', label: 'Linie Snap'},
@@ -109,34 +152,22 @@ const fullmenu = ref([
             ]},
             { value: 'stift', label: 'Schreiben'},
         ]
-    },
-])
-
-function contrastYiq(color) {
-    const r = (color >>> 16) & 0xff
-    const g = (color >>> 8) & 0xff
-    const b = color & 0xff
-    return (r * 299 + g * 587 + b * 114) / 1000
-}
+)
 
 const styleColorButton = computed(() => {
-    const brushcolorint = parseInt('0x'+config.value.brushColor.substr(1), 16)
-    const color = config.value.useCurrentColor ? 0xffffff : brushcolorint
-    const yiq = contrastYiq(color)
-
-    const style = {
-        'backgroundColor': config.value.useCurrentColor ? 'white' : config.value.brushColor,
-        'color': config.value.useCurrentColor ? 'black' : (yiq >= 128 ? '#000000' : '#ffffff')
+    return {
+        'backgroundColor': config.value.brushColor,
     }
-    return style
 })
 
-function setdarkmode(isdarkmode) {
-    Quasar.Dark.set(isdarkmode)
+function toggleDarkmode() {
+    config.value.darkmode = ! config.value.darkmode
+    Quasar.Dark.set(config.value.darkmode)
 }
 
-function setfullscreen(isfullscreen) {
-    if (isfullscreen) {
+function toggleFullscreen() {
+    config.value.fullscreen = ! config.value.fullscreen
+    if (config.value.fullscreen) {
         document.documentElement.requestFullscreen()
     }
     else {
