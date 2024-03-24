@@ -5,7 +5,7 @@
         >
         <g :style="svgtransform">
             <template v-for="item,idx in itemlist" :key="item.id">
-                <path :ref="(el) => item.el = el" :d="item.points.toString()" :="item.svgattr" :data-idx="idx" style="pointer-events: bounding-box;"/>
+                <path :ref="(el) => item.el = el" :d="item.points.toString()" :="item.svgattr" :data-idx="idx" style="pointer-events: bounding-box; transform-origin: center; transform-box: fill-box"/>
             </template>
         </g>
         <rect v-show="zeigeRadierer" ref="radiergummi" :="radiergummiBox" width="50" height="100" style="stroke: red; stroke-width: 2px; fill: none;" />
@@ -43,41 +43,62 @@ let startpos = {x:0, y:0}
 let id = 0
 let drawitem = null
 
+let targets = []
+function setTargets(nextTargets) {
+    targets = nextTargets;
+    moveable.target = targets;
+}
+
 const moveable = new Moveable(document.body, {
-    container: document.body,
-    origin: true,
+    container: svgroot.value,
+    target: targets,
     draggable: true,
     rotatable: true,
 })
-.on("drag", updateTransform)
-.on("rotateStart", console.log)
-.on("resize", updateTransform)
-.on("rotate", updateTransform)
+.on("clickGroup", (e) => {
+    selecto.clickTarget(e.inputEvent, e.inputTarget)
+})
+.on("render", (e) => {
+    e.target.style.cssText += e.cssText
+})
+.on("renderGroup", (e) => {
+    e.events.forEach(ev => {
+        ev.target.style.cssText += ev.cssText;
+    });
+})
 
 const selecto = new Selecto({
     container: svgroot.value,
-    selectedTargest: ['.selectable'],
+    selectableTargest: ['.selectable'],
     selectByClick: true,
+    selectFromInside: false,
 })
-.on("dragStart", pass)
-.on("drag", pass)
-.on("select", e => {
-    e.added.forEach(el => {
-        el.classList.add("draggable");
-        moveable.target = document.querySelectorAll('.draggable')
-    });
-    e.removed.forEach(el => {
-        el.classList.remove("draggable");
-        moveable.target = document.querySelectorAll('.draggable')
-    });
-});
-
-function pass(e) {
+.on("dragStart",(e) => {
     if (props.config.geodreieckaktiv || !statusEditieren.value) {
         e.stop()
+        return
     }
-}
-function updateTransform(info) { info.target.style.transform = info.transform; }
+    const target = e.inputEvent.target
+    if (moveable.isMoveableElement(target) || targets.some(t => t === target || t.contains(target))) {
+        e.stop();
+    }
+})
+.on("select", e => {
+    if (e.isDragStartEnd) {
+        return
+    }
+    setTargets(e.selected)
+})
+.on("selectEnd", (e) => {
+    if (e.isDragStartEnd) {
+        e.inputEvent.preventDefault();
+        moveable.waitToChangeTarget().then(() => {
+            moveable.dragStart(e.inputEvent);
+        });
+    }
+    setTargets(e.selected)
+})
+
 
 function startWork(e) {
     startpos = getPosition(e)
@@ -116,7 +137,7 @@ function startWork(e) {
             stroke: filledItem ? 'none' : color,
             'stroke-width': props.config.brushWidth,
             fill: filledItem || ispfeil ? color : 'none',
-            class: "rundeSache selectable"
+            class: "rundeSache selectable origin"
         },
         el: null,
         id: ++id,
@@ -343,7 +364,8 @@ const drawarray = {
     stroke-linejoin: round;
 }
 .origin {
+    pointer-events: bounding-box;
     transform-origin: center;
-    transform-box: content-box;
+    transform-box: fill-box;
 }
 </style>
