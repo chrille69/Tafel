@@ -20,9 +20,10 @@
                         <q-icon :name="icons['radieren']" />
                     </template>
                     <template v-slot:zeichnen>
-                        <q-btn  class="full-width" dense flat :icon="icons[config.tool]">
-                            <mymenu v-model="config.tool" :icons="icons" :items="toolmenu" />
-                        </q-btn>
+                            <q-icon :name="icons[config.tool]" />
+                            <q-btn dense flat icon="arrow_drop_up" size="sm">
+                                <mymenu v-model="config.tool" :icons="icons" :items="toolmenu" />
+                            </q-btn>
                     </template>
                 </q-btn-toggle>
                 <template v-if="config.modus == 'radieren'">
@@ -65,7 +66,7 @@
                             </q-btn>
                         </template>
                     </q-btn-toggle>
-                    <q-input type="number" dense suffix="px" v-model="config.brushWidth" label="Linienstärke" input-style="width: 5em">
+                    <q-input type="number" dense shadow-text="px" v-model="config.brushWidth" label="Linienstärke" input-style="width: 5.5em">
                         <template v-slot:before>
                             <q-btn dense flat :icon="icons[config.brushWidth] ? icons[config.brushWidth] : icons['3']">
                                 <mymenu v-model="config.brushWidth" :icons="icons" :items="linewidthmenu" />
@@ -132,27 +133,26 @@ const linewidthmenu = ref([
 ])
 
 const toolmenu = ref([
-            { value: 'linien', label: 'Linien', children: [
-                { value: 'linie', label: 'Linie'},
-                { value: 'liniesnap', label: 'Linie Snap'},
-                { value: 'pfeil', label: 'Pfeil'},
-                { value: 'pfeilsnap', label: 'Pfeil Snap'},
-            ]},
-            { value: 'rechtecke', label: 'Rechtecke', children: [
-                { value: 'rechteck' },
-                { value: 'rechteckf', label: 'Rechteck gef.' },
-                { value: 'quadrat',  label: 'Quadrat' },
-                { value: 'quadratf', label: 'Quadrat gef.' },
-            ]},
-            { value: 'ellipsen', label: 'Ellipsen', children: [
-                { value: 'ellipse', label: 'Ellipse' },
-                { value: 'ellipsef', label: 'Ellipse gef.' },
-                { value: 'kreis', label: 'Kreis' },
-                { value: 'kreisf', label: 'Kreis gef.' },
-            ]},
-            { value: 'stift', label: 'Schreiben'},
-        ]
-)
+    {value: 'linien', label: 'Linien', config: {anchor: 'bottom right', self: 'bottom left'}, children: [
+        {value: 'linie', label: 'Linie'},
+        {value: 'liniesnap', label: 'Linie hor/ver'},
+        {value: 'pfeil', label: 'Pfeil'},
+        {value: 'pfeilsnap', label: 'Pfeil hor/ver'},
+    ]},
+    {value: 'rechtecke', label: 'Rechtecke', config: {anchor: 'bottom right', self: 'bottom left'}, children: [
+        {value: 'rechteck', label: 'Rechteck'},
+        {value: 'rechteckf', label: 'Rechteck gef.'},
+        {value: 'quadrat',  label: 'Quadrat'},
+        {value: 'quadratf', label: 'Quadrat gef.'},
+    ]},
+    {value: 'ellipsen', label: 'Ellipsen', config: {anchor: 'bottom right', self: 'bottom left'}, children: [
+        {value: 'ellipse', label: 'Ellipse'},
+        {value: 'ellipsef', label: 'Ellipse gef.'},
+        {value: 'kreis', label: 'Kreis'},
+        {value: 'kreisf', label: 'Kreis gef.'},
+    ]},
+    {value: 'stift', label: 'Schreiben'},
+])
 
 const styleColorButton = computed(() => {
     return {
