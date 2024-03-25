@@ -6,6 +6,8 @@
                 <q-btn dense :icon="icons['darkmode']" flat :unelevated="!config.darkmode" :glossy="config.darkmode" @click="toggleDarkmode" />
                 <q-btn dense :icon="icons['fullscreen']" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
                 <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
+                <q-btn dense :icon="icons['undo']" @click="() => tafel_comp.undo()" />
+                <q-btn dense :icon="icons['redo']" @click="() => tafel_comp.redo()" />
                 <q-btn-toggle v-model="config.modus" dense push glossy toggle-color="primary"
                     :options="[
                         {value: 'editieren', slot: 'editieren'},
@@ -129,6 +131,8 @@ const icons = ref({
     'copy': 'svguse:icons.svg#copy|0 0 16 16',
     'delete': 'svguse:icons.svg#delete|0 0 16 16',
     'fromclipboard': 'svguse:icons.svg#fromclipboard|0 0 16 16',
+    'undo': 'svguse:icons.svg#undo|0 0 16 16',
+    'redo': 'svguse:icons.svg#redo|0 0 16 16',
 })
 
 const linewidthmenu = ref([

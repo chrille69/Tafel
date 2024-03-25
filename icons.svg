@@ -215,7 +215,7 @@
         <rect x="2" y="5" width="12" height="6" />
     </symbol>
     <symbol id="redo" viewbox="0 0 16 16">
-        <path style="fill:#444444" d="M 9,2 14,5 9,8 V 6 H 6 C 4.32,6 3,7.321 3,9 3,10.679 4.32,12 6,12 H 11 V 14 H 6 C 3.25,14 1,11.753 1,9 1,6.247 3.25,4 6,4 H 9 Z"/>
+        <path d="M 9,2 14,5 9,8 V 6 H 6 C 4.32,6 3,7.321 3,9 3,10.679 4.32,12 6,12 H 11 V 14 H 6 C 3.25,14 1,11.753 1,9 1,6.247 3.25,4 6,4 H 9 Z"/>
     </symbol>
     <symbol id="save" viewbox="0 0 16 16">
         <path style="fill:#444444" d="M 6 1 L 6 7 L 3.5 7 L 8 13 L 12.5 7 L 10 7 L 10 1 L 6 1 z M 1 14 L 1 16 L 15 16 L 15 14 L 1 14 z"/>
@@ -243,7 +243,7 @@
         <path d="m5 3.5.5-2h4l.5 2m-8 0h11" style="fill:none;stroke-width:1px;stroke:#444"/>
     </symbol>
     <symbol id="undo" viewbox="0 0 16 16">
-        <path style="fill:#444444" d="M 7,2 2,5 7,8 V 6 H 10 C 11.68,6 13,7.321 13,9 13,10.679 11.68,12 10,12 H 5 V 14 H 10 C 12.75,14 15,11.753 15,9 15,6.247 12.75,4 10,4 H 7 Z"/>
+        <path d="M 7,2 2,5 7,8 V 6 H 10 C 11.68,6 13,7.321 13,9 13,10.679 11.68,12 10,12 H 5 V 14 H 10 C 12.75,14 15,11.753 15,9 15,6.247 12.75,4 10,4 H 7 Z"/>
     </symbol>
     <symbol id="unknown" viewBox="0 0 8.4667 8.4667" >
         <g transform="matrix(1.2911 0 0 1.2911 -3.0043 -.59313)" style="stroke-width:.20493" aria-label="?">
