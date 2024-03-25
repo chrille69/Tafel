@@ -4,7 +4,7 @@
         @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
         >
         <g :style="svgtransform">
-            <image id="img" width="500" height="500" href="" />
+            <bildervue :bilder="bilder" ref="bilder_comp"/>
             <pfadevue :pfade="pfade" ref="pfade_comp"/>
         </g>
         <rect v-show="zeigeRadierer" ref="radiergummi" :="radiergummiBox" width="50" height="100" style="stroke: red; stroke-width: 2px; fill: none;" />
@@ -16,14 +16,18 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import geodreieck from './geodreieck.vue'
 import pfadevue from './pfade.vue'
+import bildervue from './bilder.vue'
 
 const props = defineProps(['config'])
 
 const pfade_comp = ref(null)
 const pfade = ref([])
+const bilder_comp = ref(null)
+const bilder = ref([])
+const items = computed(() => [...pfade.value,...bilder.value])
 const svgtranslate = ref({x:0, y:0})
 const svgroot = ref(null)
 const radiergummi = ref(null)
@@ -45,6 +49,7 @@ let itemid = 0
 
 function deleteSelected() {
     pfade.value = pfade.value.filter((item) => targets.indexOf(item.el) < 0 )
+    bilder.value = bilder.value.filter((item) => targets.indexOf(item.el) < 0 )
     setTargets([])
 }
 
@@ -55,6 +60,13 @@ function copySelected() {
         newitem.el = ref(null)
         newitem.id = ++itemid
         pfade.value.unshift(newitem)
+    }
+    copyitems = bilder.value.filter((item) => targets.indexOf(item.el) >= 0 )
+    for (let item of copyitems) {
+        let newitem = {...item}
+        newitem.el = ref(null)
+        newitem.id = ++itemid
+        bilder.value.unshift(newitem)
     }
 }
 
@@ -220,7 +232,32 @@ function geosnap(pos) {
     return p
 }
 
-defineExpose({deleteSelected, copySelected})
+function neuesBild(file) {
+    const neuesBild = {
+        attr: {
+            width: 500,
+            height: 500,
+            href: null
+        },
+        transform: '',
+        el: null,
+        id: ++itemid
+    }
+    let fr = new FileReader()
+    fr.onload = function(e) {
+        let img = new Image()
+        img.onload = function(e) {
+            neuesBild.attr.width = img.width
+            neuesBild.attr.height = img.height
+            neuesBild.attr.href = fr.result
+            bilder.value.push(neuesBild)
+        }
+        img.src = fr.result
+    }
+    fr.readAsDataURL(file)
+}
+
+defineExpose({deleteSelected, copySelected, neuesBild})
 
 //////////////////////////////////////////////////////////////
 //
@@ -246,12 +283,12 @@ const moveable = new Moveable(document.body, {
     selecto.clickTarget(e.inputEvent, e.inputTarget)
 })
 .on("render", (e) => {
-    let item = pfade.value.find((it) => it.el === e.target)
+    let item = items.value.find((it) => it.el === e.target)
     item.transform = e.transform
 })
 .on("renderGroup", (e) => {
     e.events.forEach(ev => {
-        let item = pfade.value.find((it) => it.el === ev.target)
+        let item = items.value.find((it) => it.el === ev.target)
         item.transform = ev.transform
     });
 })
@@ -260,7 +297,7 @@ const selecto = new Selecto({
     container: svgroot.value,
     selectByClick: true,
     selectFromInside: false,
-    selectableTargets: [() => pfade.value.map(pfad => pfad.el)]
+    selectableTargets: [() => items.value.map(item => item.el)]
 })
 .on("dragStart",(e) => {
     const target = e.inputEvent.target

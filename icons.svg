@@ -52,10 +52,10 @@
         </g>
     </symbol>
     <symbol id="fromclipboard" viewbox="0 0 16 16">
-        <path d="m1 1h9v10h-9v-10" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m1 7 3-3 6 4" style="fill:none;stroke-width:1px;stroke:#000000"/>
-        <path d="m13 15v-4" style="fill:none;stroke-width:1px;stroke:#000000"/>
-        <path d="m11 13h4" style="fill:none;stroke-width:1px;stroke:#000000"/>
+        <path d="m1 1h9v10h-9v-10" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m1 7 3-3 6 4" style="fill:none;stroke-width:1px;stroke:currentColor"/>
+        <path d="m13 15v-4" style="fill:none;stroke-width:1px;stroke:currentColor"/>
+        <path d="m11 13h4" style="fill:none;stroke-width:1px;stroke:currentColor"/>
     </symbol>
     <symbol id="fullscreen" viewbox="0 0 16 16">
         <path d="m14 9v4h-4m-8-4v4h4m8-6v-4h-4m-8 4v-4h4" style="fill:none;stroke-width:1px;stroke:currentColor"/>

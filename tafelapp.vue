@@ -128,6 +128,7 @@ const icons = ref({
     '20': 'svguse:icons.svg#pensize-20px|0 0 16 16',
     'copy': 'svguse:icons.svg#copy|0 0 16 16',
     'delete': 'svguse:icons.svg#delete|0 0 16 16',
+    'fromclipboard': 'svguse:icons.svg#fromclipboard|0 0 16 16',
 })
 
 const linewidthmenu = ref([
@@ -192,13 +193,8 @@ function fullscreenchange(evt) {
 function einfuegen(e) {
     e.preventDefault();
     e.stopPropagation();
-    const img = document.getElementById('img')
     let file = e.clipboardData.items[0].getAsFile()
-    let fr = new FileReader()
-    fr.addEventListener('load',(e) => {
-        img.setAttribute('href',fr.result)
-    })
-    fr.readAsDataURL(file)
+    tafel_comp.value.neuesBild(file)
 }
 
 window.addEventListener('paste',einfuegen)
