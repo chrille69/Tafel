@@ -5,9 +5,7 @@
         >
         <g :style="svgtransform">
             <image id="img" width="500" height="500" href="" />
-            <template v-for="item,idx in itemlist" :key="item.id">
-                <path :ref="(el) => item.el = el" :d="item.points.toString()" :="item.svgattr" :style="'transform:'+item.transform" :data-idx="idx" class="rundeSache selectable origin"/>
-            </template>
+            <pfadevue :pfade="pfade" ref="pfade_comp"/>
         </g>
         <rect v-show="zeigeRadierer" ref="radiergummi" :="radiergummiBox" width="50" height="100" style="stroke: red; stroke-width: 2px; fill: none;" />
         <geodreieck  ref="geodreieck_el"  v-if="props.config.geodreieckaktiv">
@@ -20,10 +18,12 @@
 <script setup>
 import { ref, computed, nextTick } from 'vue'
 import geodreieck from './geodreieck.vue'
+import pfadevue from './pfade.vue'
 
 const props = defineProps(['config'])
 
-const itemlist = ref([])
+const pfade_comp = ref(null)
+const pfade = ref([])
 const svgtranslate = ref({x:0, y:0})
 const svgroot = ref(null)
 const radiergummi = ref(null)
@@ -36,95 +36,26 @@ const zeigeRadierer = ref(false)
 const svgtransform = computed(() => `transform: translate(${svgtranslate.value.x}px, ${svgtranslate.value.y}px)`)
 const radiergummiBox = ref({x: 0, y: 0, width: 50, height: 100})
 
-let newItem = null
+let neuerPfad = null
 let isPainting = false
 let dreheGD = false
 let schiebeGD = false
 let startpos = {x:0, y:0}
-let id = 0
-let drawitem = null
-
-let targets = []
-function setTargets(nextTargets) {
-    targets = nextTargets;
-    moveable.target = targets;
-}
-
-const moveable = new Moveable(document.body, {
-    container: svgroot.value,
-    target: targets,
-    draggable: true,
-    rotatable: true,
-    scalable: true,
-    keepRatio: true,
-})
-.on("clickGroup", (e) => {
-    selecto.clickTarget(e.inputEvent, e.inputTarget)
-})
-.on("render", (e) => {
-    let idx = e.target.dataset['idx']
-    itemlist.value[idx].transform = e.transform
-})
-.on("renderGroup", (e) => {
-    e.events.forEach(ev => {
-        let idx = ev.target.dataset['idx']
-        itemlist.value[idx].transform = ev.transform
-    });
-})
-
-const selecto = new Selecto({
-    container: svgroot.value,
-    selectByClick: true,
-    selectFromInside: false,
-})
-.on("dragStart",(e) => {
-    const target = e.inputEvent.target
-    if ( ! (target === svgroot.value || svgroot.value.contains(target) ) ) {
-        e.stop()
-        return
-    }
-    if (props.config.geodreieckaktiv || !statusEditieren.value) {
-        e.stop()
-        return
-    }
-
-    if (moveable.isMoveableElement(target) || targets.some(t => t === target || t.contains(target))) {
-        e.stop();
-    }
-})
-.on("select", e => {
-    if (e.isDragStartEnd) {
-        return
-    }
-    setTargets(e.selected)
-})
-.on("selectEnd", (e) => {
-    if (e.isDragStartEnd) {
-        e.inputEvent.preventDefault();
-        moveable.waitToChangeTarget().then(() => {
-            moveable.dragStart(e.inputEvent);
-        });
-    }
-    setTargets(e.selected)
-})
+let pfadid = 0
 
 function deleteSelected() {
-    itemlist.value = itemlist.value.filter((item) => targets.indexOf(item.el) < 0 )
+    pfade.value = pfade.value.filter((item) => targets.indexOf(item.el) < 0 )
     setTargets([])
 }
 
 function copySelected() {
-    let copyitems = itemlist.value.filter((item) => targets.indexOf(item.el) >= 0 )
+    let copyitems = pfade.value.filter((item) => targets.indexOf(item.el) >= 0 )
     for (let item of copyitems) {
         let newitem = {...item}
         newitem.el = ref(null)
-        newitem.id = ++id
-        itemlist.value.unshift(newitem)
+        newitem.id = ++pfadid
+        pfade.value.unshift(newitem)
     }
-    nextTick().then(() => {
-        selecto.selectableTargets = document.querySelectorAll('.selectable')
-    })
-
 }
 
 function startWork(e) {
@@ -201,9 +132,10 @@ function startDraw(e) {
 
     let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(props.config.tool) >= 0
     let ispfeil = ['pfeil','pfeilsnap'].indexOf(props.config.tool) >= 0
-    drawitem = drawarray[props.config.tool]
     const color = props.config.brushColor
-    newItem = {
+    neuerPfad = {
+        tool: props.config.tool,
+        startpos,
         points: ref(new PathPointList(new PathPointM(startpos.x, startpos.y))),
         svgattr: {
             stroke: filledItem ? 'none' : color,
@@ -213,11 +145,11 @@ function startDraw(e) {
         },
         transform: '',
         el: null,
-        id: ++id,
+        id: ++pfadid,
     }
     if (props.config.tool == 'stift') 
-        newItem.points.value.push(new PathPointL(startpos.x, startpos.y))
-    itemlist.value.push(newItem)
+        neuerPfad.points.value.push(new PathPointL(startpos.x, startpos.y))
+    pfade.value.push(neuerPfad)
 }
 
 function draw(e) {
@@ -227,12 +159,11 @@ function draw(e) {
     if (props.config.geodreieckaktiv) {
         pos=geosnap(pos)
     }
-    drawitem(pos)
+    pfade_comp.value.draw(neuerPfad, pos)
 }
 
 function endDraw(e) {
     isPainting = false;
-    selecto.selectableTargets = document.querySelectorAll('.selectable')
 }
 
 
@@ -243,7 +174,7 @@ function radiere(e) {
     radiergummiBox.value.x = pos.x - 25
     radiergummiBox.value.y = pos.y - 50
     let removelist = []
-    for (let item of itemlist.value) {
+    for (let item of pfade.value) {
         if (checkIntersection(radiergummiBox.value, item.el.getBBox())) {
             let rect = radiergummiBox.value
             item.points.removePointsInRect(rect)
@@ -252,7 +183,7 @@ function radiere(e) {
         }
     }
     for (let idx of removelist)
-        itemlist.value.splice(idx,1)
+        pfade.value.splice(idx,1)
 }
 
 
@@ -290,114 +221,78 @@ function geosnap(pos) {
     return p
 }
 
-
-function drawstift(pos) {
-    newItem.points.value.push(new PathPointL(pos.x, pos.y))
-}
-
-function drawlinie(pos) {
-    newItem.points.value = new PathPointList(new PathPointM(startpos.x, startpos.y), new PathPointL(pos.x, pos.y))
-}
-
-function drawliniesnap(pos) {
-    let dpos = {x: pos.x - startpos.x, y: pos.y - startpos.y}
-    let endpos = {x: startpos.x, y: pos.y}
-    if (Math.abs(dpos.y) <= Math.abs(dpos.x))
-        endpos = {x: pos.x, y: startpos.y}
-    drawlinie(endpos)
-}
-
-function drawpfeil(pos) {
-    let dpos = {x: pos.x - startpos.x, y: pos.y - startpos.y}
-    let lw = 5
-    let laenge = Math.sqrt(dpos.x**2 + dpos.y**2)
-    newItem.points.value = new PathPointList(
-        new PathPointM(startpos.x, startpos.y),
-        new PathPointL(pos.x, pos.y),
-        new PathPointM(pos.x, pos.y),
-        new PathPointL(pos.x - 5*lw*dpos.x/laenge - lw*dpos.y/laenge, pos.y - 5*lw*dpos.y/laenge + lw*dpos.x/laenge),
-        new PathPointL(pos.x - 5*lw*dpos.x/laenge + lw*dpos.y/laenge, pos.y - 5*lw*dpos.y/laenge - lw*dpos.x/laenge),
-        new PathPointL(pos.x, pos.y),
-    )
-    newItem.points.value.isClosed = true
-}
-
-function drawpfeilsnap(pos) {
-    let dpos = {x: pos.x - startpos.x, y: pos.y - startpos.y}
-    let endpos = {x: startpos.x, y: pos.y}
-    if (Math.abs(dpos.y) <= Math.abs(dpos.x))
-        endpos = {x: pos.x, y: startpos.y}
-    drawpfeil(endpos)
-}
-
-function drawrechteck(pos) {
-    newItem.points.value = new PathPointList(
-        new PathPointM(startpos.x, startpos.y),
-        new PathPointL(pos.x, startpos.y),
-        new PathPointL(pos.x, pos.y),
-        new PathPointL(startpos.x, pos.y)
-    )
-    newItem.points.value.isClosed = true
-}
-
-function drawquadrat(pos) {
-    let dpos = {x: pos.x - startpos.x, y: pos.y - startpos.y}
-    let d = Math.max(Math.abs(dpos.x), Math.abs(dpos.y))
-    let dx = dpos.x > 0 ? d : -d
-    let dy = dpos.y > 0 ? d : -d
-    let endpos = {x: startpos.x + dx, y: startpos.y + dy}
-    drawrechteck(endpos)
-}
-
-function drawellipse(pos) {
-    let rx = Math.abs(startpos.x - pos.x)
-    let ry = Math.abs(startpos.y - pos.y)
-    newItem.points.value = new PathPointList(new PathPointM(startpos.x + rx, startpos.y))
-    for (let winkel = 0; winkel <= 360; winkel += 15) {
-        let endx = startpos.x + rx*Math.cos(winkel*Math.PI/180.0)
-        let endy = startpos.y + ry*Math.sin(winkel*Math.PI/180.0)
-        newItem.points.value.push(new PathPointA(rx, ry, 0, 0, 1, endx, endy))
-    }
-}
-
-function drawkreis(pos) {
-    let r = Math.sqrt((startpos.x - pos.x)**2 + (startpos.y - pos.y)**2)
-    newItem.points.value = new PathPointList(new PathPointM(startpos.x+r, startpos.y))
-
-    for (let winkel = 0; winkel <= 360; winkel += 15) {
-        let endx = startpos.x + r*Math.cos(winkel*Math.PI/180.0)
-        let endy = startpos.y + r*Math.sin(winkel*Math.PI/180.0)
-        newItem.points.value.push(new PathPointA(r, r, 0, 0, 1, endx, endy))
-    }
-}
-
-const drawarray = {
-    'stift': drawstift,
-    'linie': drawlinie,
-    'liniesnap': drawliniesnap,
-    'pfeil': drawpfeil,
-    'pfeilsnap': drawpfeilsnap,
-    'rechteck': drawrechteck,
-    'rechteckf': drawrechteck,
-    'ellipse': drawellipse,
-    'ellipsef': drawellipse,
-    'kreis': drawkreis,
-    'kreisf': drawkreis,
-    'quadrat': drawquadrat,
-    'quadratf': drawquadrat,
-}
-
 defineExpose({deleteSelected, copySelected})
-</script>
 
-<style>
-.rundeSache {
-    stroke-linecap: round;
-    stroke-linejoin: round;
+//////////////////////////////////////////////////////////////
+//
+// Drag'n'Drup-Kram
+//
+//////////////////////////////////////////////////////////////
+
+let targets = []
+function setTargets(nextTargets) {
+    targets = nextTargets;
+    moveable.target = targets;
 }
-.origin {
-    pointer-events: bounding-box;
-    transform-origin: center;
-    transform-box: fill-box;
-}
-</style>
+
+const moveable = new Moveable(document.body, {
+    container: svgroot.value,
+    target: targets,
+    draggable: true,
+    rotatable: true,
+    scalable: true,
+    keepRatio: true,
+})
+.on("clickGroup", (e) => {
+    selecto.clickTarget(e.inputEvent, e.inputTarget)
+})
+.on("render", (e) => {
+    let idx = e.target.dataset['idx']
+    pfade.value[idx].transform = e.transform
+})
+.on("renderGroup", (e) => {
+    e.events.forEach(ev => {
+        let idx = ev.target.dataset['idx']
+        pfade.value[idx].transform = ev.transform
+    });
+})
+
+const selecto = new Selecto({
+    container: svgroot.value,
+    selectByClick: true,
+    selectFromInside: false,
+    selectableTargets: [() => pfade.value.map(pfad => pfad.el)]
+})
+.on("dragStart",(e) => {
+    const target = e.inputEvent.target
+    if ( ! (target === svgroot.value || svgroot.value.contains(target) ) ) {
+        e.stop()
+        return
+    }
+    if (props.config.geodreieckaktiv || !statusEditieren.value) {
+        e.stop()
+        return
+    }
+
+    if (moveable.isMoveableElement(target) || targets.some(t => t === target || t.contains(target))) {
+        e.stop();
+        return
+    }
+})
+.on("select", e => {
+    if (e.isDragStartEnd) {
+        return
+    }
+    setTargets(e.selected)
+})
+.on("selectEnd", (e) => {
+    if (e.isDragStartEnd) {
+        e.inputEvent.preventDefault();
+        moveable.waitToChangeTarget().then(() => {
+            moveable.dragStart(e.inputEvent);
+        });
+    }
+    setTargets(e.selected)
+})
+
+</script>
