@@ -1,12 +1,11 @@
 <template>
     <g>
-        <template v-for="pfad,idx in props.pfade" :key="pfad.id">
+        <template v-for="pfad in pfade" :key="pfad.id">
             <path
                 :ref="(el) => pfad.el = el"
                 :d="pfad.points.toString()"
-                :="pfad.svgattr"
                 :style="'transform:'+pfad.transform"
-                :data-idx="idx"
+                :="pfad.attr"
                 class="rundeSache selectable origin"
             />
         </template>

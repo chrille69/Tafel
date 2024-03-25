@@ -41,7 +41,7 @@ let isPainting = false
 let dreheGD = false
 let schiebeGD = false
 let startpos = {x:0, y:0}
-let pfadid = 0
+let itemid = 0
 
 function deleteSelected() {
     pfade.value = pfade.value.filter((item) => targets.indexOf(item.el) < 0 )
@@ -53,7 +53,7 @@ function copySelected() {
     for (let item of copyitems) {
         let newitem = {...item}
         newitem.el = ref(null)
-        newitem.id = ++pfadid
+        newitem.id = ++itemid
         pfade.value.unshift(newitem)
     }
 }
@@ -137,7 +137,7 @@ function startDraw(e) {
         tool: props.config.tool,
         startpos,
         points: ref(new PathPointList(new PathPointM(startpos.x, startpos.y))),
-        svgattr: {
+        attr: {
             stroke: filledItem ? 'none' : color,
             'stroke-width': props.config.brushWidth,
             fill: filledItem || ispfeil ? color : 'none',
@@ -145,7 +145,7 @@ function startDraw(e) {
         },
         transform: '',
         el: null,
-        id: ++pfadid,
+        id: ++itemid,
     }
     if (props.config.tool == 'stift') 
         neuerPfad.points.value.push(new PathPointL(startpos.x, startpos.y))
@@ -178,12 +178,11 @@ function radiere(e) {
         if (checkIntersection(radiergummiBox.value, item.el.getBBox())) {
             let rect = radiergummiBox.value
             item.points.removePointsInRect(rect)
-            if (item.points.length < 2 && item.el.dataset)
-                removelist.push(item.el.dataset['idx'])
+            if (item.points.length < 2)
+                removelist.push(item)
         }
     }
-    for (let idx of removelist)
-        pfade.value.splice(idx,1)
+    pfade.value = pfade.value.filter(pfad => !removelist.includes(pfad))
 }
 
 
@@ -247,13 +246,13 @@ const moveable = new Moveable(document.body, {
     selecto.clickTarget(e.inputEvent, e.inputTarget)
 })
 .on("render", (e) => {
-    let idx = e.target.dataset['idx']
-    pfade.value[idx].transform = e.transform
+    let item = pfade.value.find((it) => it.el === e.target)
+    item.transform = e.transform
 })
 .on("renderGroup", (e) => {
     e.events.forEach(ev => {
-        let idx = ev.target.dataset['idx']
-        pfade.value[idx].transform = ev.transform
+        let item = pfade.value.find((it) => it.el === ev.target)
+        item.transform = ev.transform
     });
 })
 
