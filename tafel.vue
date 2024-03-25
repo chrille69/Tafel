@@ -4,6 +4,7 @@
         @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
         >
         <g :style="svgtransform">
+            <image id="img" width="500" height="500" href="" />
             <template v-for="item,idx in itemlist" :key="item.id">
                 <path :ref="(el) => item.el = el" :d="item.points.toString()" :="item.svgattr" :style="'transform:'+item.transform" :data-idx="idx" class="rundeSache selectable origin"/>
             </template>

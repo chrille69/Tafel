@@ -189,4 +189,17 @@ function fullscreenchange(evt) {
     }
 }
 
+function einfuegen(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const img = document.getElementById('img')
+    let file = e.clipboardData.items[0].getAsFile()
+    let fr = new FileReader()
+    fr.addEventListener('load',(e) => {
+        img.setAttribute('href',fr.result)
+    })
+    fr.readAsDataURL(file)
+}
+
+window.addEventListener('paste',einfuegen)
 </script>
