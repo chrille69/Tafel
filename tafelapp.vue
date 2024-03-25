@@ -1,6 +1,6 @@
 <template>
     <div @fullscreenchange="fullscreenchange">
-        <tafel :config="config" style="min-width: 100vw; height: 100vh; overflow: visible"/>
+        <tafel :config="config" ref="tafel_comp" style="min-width: 100vw; height: 100vh; overflow: visible"/>
         <q-card class="q-ma-md" style="position: absolute; bottom: 10px ">
             <q-card-section class="row q-gutter-md items-center q-pa-sm">
                 <q-btn dense :icon="icons['darkmode']" flat :unelevated="!config.darkmode" :glossy="config.darkmode" @click="toggleDarkmode" />
@@ -32,6 +32,8 @@
                     </div>
                 </template>
                 <template v-else-if="config.modus == 'editieren'">
+                    <q-btn dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected"/>
+                    <q-btn dense :icon="icons['delete']" glossy @click="tafel_comp.deleteSelected"/>
                 </template>
                 <template v-else>
                     <q-btn-toggle dense v-model="config.brushColor" push glossy toggle-color="primary"
@@ -86,6 +88,7 @@ import mymenu from './mymenu.vue'
 
 Quasar.Dark.toggle()
 
+const tafel_comp = ref(null)
 const config = ref({
     tool: 'stift',
     modus: 'zeichnen',
@@ -123,6 +126,8 @@ const icons = ref({
     '3': 'svguse:icons.svg#pensize-3px|0 0 16 16',
     '5': 'svguse:icons.svg#pensize-5px|0 0 16 16',
     '20': 'svguse:icons.svg#pensize-20px|0 0 16 16',
+    'copy': 'svguse:icons.svg#copy|0 0 16 16',
+    'delete': 'svguse:icons.svg#delete|0 0 16 16',
 })
 
 const linewidthmenu = ref([

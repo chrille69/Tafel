@@ -1,11 +1,11 @@
 <template>
-    <svg ref="svgroot"
-        @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" @mouseleave=""
-        @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" @touchcancel="" @touchleave=""
+    <svg ref="svgroot" id="tafel"
+        @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" 
+        @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
         >
         <g :style="svgtransform">
             <template v-for="item,idx in itemlist" :key="item.id">
-                <path :ref="(el) => item.el = el" :d="item.points.toString()" :="item.svgattr" :data-idx="idx" style="pointer-events: bounding-box; transform-origin: center; transform-box: fill-box"/>
+                <path :ref="(el) => item.el = el" :d="item.points.toString()" :="item.svgattr" :style="'transform:'+item.transform" :data-idx="idx" class="rundeSache selectable origin"/>
             </template>
         </g>
         <rect v-show="zeigeRadierer" ref="radiergummi" :="radiergummiBox" width="50" height="100" style="stroke: red; stroke-width: 2px; fill: none;" />
@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import geodreieck from './geodreieck.vue'
 
 const props = defineProps(['config'])
@@ -54,31 +54,39 @@ const moveable = new Moveable(document.body, {
     target: targets,
     draggable: true,
     rotatable: true,
+    scalable: true,
+    keepRatio: true,
 })
 .on("clickGroup", (e) => {
     selecto.clickTarget(e.inputEvent, e.inputTarget)
 })
 .on("render", (e) => {
-    e.target.style.cssText += e.cssText
+    let idx = e.target.dataset['idx']
+    itemlist.value[idx].transform = e.transform
 })
 .on("renderGroup", (e) => {
     e.events.forEach(ev => {
-        ev.target.style.cssText += ev.cssText;
+        let idx = ev.target.dataset['idx']
+        itemlist.value[idx].transform = ev.transform
     });
 })
 
 const selecto = new Selecto({
     container: svgroot.value,
-    selectableTargest: ['.selectable'],
     selectByClick: true,
     selectFromInside: false,
 })
 .on("dragStart",(e) => {
+    const target = e.inputEvent.target
+    if ( ! (target === svgroot.value || svgroot.value.contains(target) ) ) {
+        e.stop()
+        return
+    }
     if (props.config.geodreieckaktiv || !statusEditieren.value) {
         e.stop()
         return
     }
-    const target = e.inputEvent.target
+
     if (moveable.isMoveableElement(target) || targets.some(t => t === target || t.contains(target))) {
         e.stop();
     }
@@ -99,8 +107,27 @@ const selecto = new Selecto({
     setTargets(e.selected)
 })
 
+function deleteSelected() {
+    itemlist.value = itemlist.value.filter((item) => targets.indexOf(item.el) < 0 )
+    setTargets([])
+}
+
+function copySelected() {
+    let copyitems = itemlist.value.filter((item) => targets.indexOf(item.el) >= 0 )
+    for (let item of copyitems) {
+        let newitem = {...item}
+        newitem.el = ref(null)
+        newitem.id = ++id
+        itemlist.value.unshift(newitem)
+    }
+    nextTick().then(() => {
+        selecto.selectableTargets = document.querySelectorAll('.selectable')
+    })
+
+}
 
 function startWork(e) {
+    e.preventDefault()
     startpos = getPosition(e)
 
     if(e.target.id == 'drehgriff') {
@@ -127,28 +154,11 @@ function startWork(e) {
         startpos=geosnap(startpos)
     }
 
-    let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(props.config.tool) >= 0
-    let ispfeil = ['pfeil','pfeilsnap'].indexOf(props.config.tool) >= 0
-    drawitem = drawarray[props.config.tool]
-    const color = props.config.brushColor
-    newItem = {
-        points: ref(new PathPointList(new PathPointM(startpos.x, startpos.y))),
-        svgattr: {
-            stroke: filledItem ? 'none' : color,
-            'stroke-width': props.config.brushWidth,
-            fill: filledItem || ispfeil ? color : 'none',
-            class: "rundeSache selectable origin"
-        },
-        el: null,
-        id: ++id,
-    }
-    if (props.config.tool == 'stift') 
-        newItem.points.value.push(new PathPointL(startpos.x, startpos.y))
-    itemlist.value.push(newItem)
     startDraw(e)
 }
 
 function furtherWork(e) {
+    e.preventDefault()
     if (statusRadieren.value) {
         radiere(e)
         return
@@ -167,6 +177,7 @@ function furtherWork(e) {
 }
 
 function endWork(e) {
+    e.preventDefault()
     if (statusRadieren.value) {
         zeigeRadierer.value = false
         return
@@ -186,12 +197,31 @@ function endWork(e) {
 
 function startDraw(e) {
     isPainting = true;
-    e.preventDefault();
+
+    let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(props.config.tool) >= 0
+    let ispfeil = ['pfeil','pfeilsnap'].indexOf(props.config.tool) >= 0
+    drawitem = drawarray[props.config.tool]
+    const color = props.config.brushColor
+    newItem = {
+        points: ref(new PathPointList(new PathPointM(startpos.x, startpos.y))),
+        svgattr: {
+            stroke: filledItem ? 'none' : color,
+            'stroke-width': props.config.brushWidth,
+            fill: filledItem || ispfeil ? color : 'none',
+            'vector-effect': "non-scaling-stroke"
+        },
+        transform: '',
+        el: null,
+        id: ++id,
+    }
+    if (props.config.tool == 'stift') 
+        newItem.points.value.push(new PathPointL(startpos.x, startpos.y))
+    itemlist.value.push(newItem)
 }
 
 function draw(e) {
     if (!isPainting) return
-    e.preventDefault();
+
     let pos = getPosition(e)
     if (props.config.geodreieckaktiv) {
         pos=geosnap(pos)
@@ -207,7 +237,7 @@ function endDraw(e) {
 
 function radiere(e) {
     if (! zeigeRadierer.value) return
-    e.preventDefault()
+
     let pos = getPosition(e)
     radiergummiBox.value.x = pos.x - 25
     radiergummiBox.value.y = pos.y - 50
@@ -356,6 +386,7 @@ const drawarray = {
     'quadratf': drawquadrat,
 }
 
+defineExpose({deleteSelected, copySelected})
 </script>
 
 <style>

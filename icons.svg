@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
     <symbol id="copy" viewbox="0 0 16 16">
-        <path d="m2.0762.61816v11.193h3.375v3.5703h8.4727v-11.193h-3.375v-3.5703zm1.3184 1.3184h5.8359v2.252h-3.7793v6.3047h-2.0566zm3.375 3.5703h5.8359v8.5566h-5.8359z" style="fill:#444;opacity:.992;stroke-dasharray:2.6054, 1.3027;stroke-dashoffset:.45594;stroke-linejoin:round;stroke-width:.65135"/>
+        <path d="m2.0762.61816v11.193h3.375v3.5703h8.4727v-11.193h-3.375v-3.5703zm1.3184 1.3184h5.8359v2.252h-3.7793v6.3047h-2.0566zm3.375 3.5703h5.8359v8.5566h-5.8359z" style="opacity:.992;stroke-dasharray:2.6054, 1.3027;stroke-dashoffset:.45594;stroke-linejoin:round;stroke-width:.65135"/>
     </symbol>
     <symbol id="freecolor" viewbox="0 0 16 16">
         <rect x="1.5" y="2.5" width="6" height="5"
@@ -21,7 +21,7 @@
         <path d="m14 13h-8v-6h8z" style="fill:currentColor;stroke-width:1px;stroke:currentColor"/>
     </symbol>
     <symbol id="delete" viewbox="0 0 16 16">
-        <path d="M 3.5,2 2,3.5 6.5,8 2,12.5 3.5,14 8,9.5 12.5,14 14,12.5 9.5000001,8 14,3.5 12.5,2 8,6.5 Z" style="fill:#444"/>
+        <path d="M 3.5,2 2,3.5 6.5,8 2,12.5 3.5,14 8,9.5 12.5,14 14,12.5 9.5000001,8 14,3.5 12.5,2 8,6.5 Z" />
     </symbol>
     <symbol id="double_arrow" viewbox="0 0 16 16">
         <path d="m242-200 200-280-200-280h98l200 280-200 280h-98Zm238 0 200-280-200-280h98l200 280-200 280h-98Z" />
