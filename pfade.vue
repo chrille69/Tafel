@@ -3,7 +3,7 @@
         <template v-for="pfad in pfade" :key="pfad.id">
             <path
                 :ref="(el) => pfad.el = el"
-                :d="pfad.points.toString()"
+                :d="pfadstring(pfad.points)"
                 :style="'transform:'+pfad.transform"
                 :="pfad.attr"
                 class="rundeSache selectable origin"
@@ -39,11 +39,11 @@ function draw(pfad, pos) {
 }
 
 function drawstift(pfad, pos) {
-    pfad.points.value.push(new PathPointL(pos.x, pos.y))
+    pfad.points.value.push(['L', pos.x, pos.y])
 }
 
 function drawlinie(pfad, pos) {
-    pfad.points.value = new PathPointList(new PathPointM(pfad.startpos.x, pfad.startpos.y), new PathPointL(pos.x, pos.y))
+    pfad.points.value = [['M', pfad.startpos.x, pfad.startpos.y], ['L', pos.x, pos.y]]
 }
 
 function drawliniesnap(pfad, pos) {
@@ -58,15 +58,14 @@ function drawpfeil(pfad, pos) {
     let dpos = {x: pos.x - pfad.startpos.x, y: pos.y - pfad.startpos.y}
     let lw = 5
     let laenge = Math.sqrt(dpos.x**2 + dpos.y**2)
-    pfad.points.value = new PathPointList(
-        new PathPointM(pfad.startpos.x, pfad.startpos.y),
-        new PathPointL(pos.x, pos.y),
-        new PathPointM(pos.x, pos.y),
-        new PathPointL(pos.x - 5*lw*dpos.x/laenge - lw*dpos.y/laenge, pos.y - 5*lw*dpos.y/laenge + lw*dpos.x/laenge),
-        new PathPointL(pos.x - 5*lw*dpos.x/laenge + lw*dpos.y/laenge, pos.y - 5*lw*dpos.y/laenge - lw*dpos.x/laenge),
-        new PathPointL(pos.x, pos.y),
-    )
-    pfad.points.value.isClosed = true
+    pfad.points.value = [
+        ['M', pfad.startpos.x, pfad.startpos.y],
+        ['L', pos.x, pos.y],
+        ['M', pos.x, pos.y],
+        ['L', pos.x - 5*lw*dpos.x/laenge - lw*dpos.y/laenge, pos.y - 5*lw*dpos.y/laenge + lw*dpos.x/laenge],
+        ['L', pos.x - 5*lw*dpos.x/laenge + lw*dpos.y/laenge, pos.y - 5*lw*dpos.y/laenge - lw*dpos.x/laenge],
+        ['L', pos.x, pos.y]
+    ]
 }
 
 function drawpfeilsnap(pfad, pos) {
@@ -78,13 +77,13 @@ function drawpfeilsnap(pfad, pos) {
 }
 
 function drawrechteck(pfad, pos) {
-    pfad.points.value = new PathPointList(
-        new PathPointM(pfad.startpos.x, pfad.startpos.y),
-        new PathPointL(pos.x, pfad.startpos.y),
-        new PathPointL(pos.x, pos.y),
-        new PathPointL(pfad.startpos.x, pos.y)
-    )
-    pfad.points.value.isClosed = true
+    pfad.points.value = [
+        ['M', pfad.startpos.x, pfad.startpos.y],
+        ['L', pos.x, pfad.startpos.y],
+        ['L', pos.x, pos.y],
+        ['L', pfad.startpos.x, pos.y],
+        ['L', pfad.startpos.x, pfad.startpos.y],
+    ]
 }
 
 function drawquadrat(pfad, pos) {
@@ -99,26 +98,103 @@ function drawquadrat(pfad, pos) {
 function drawellipse(pfad, pos) {
     let rx = Math.abs(pfad.startpos.x - pos.x)
     let ry = Math.abs(pfad.startpos.y - pos.y)
-    pfad.points.value = new PathPointList(new PathPointM(pfad.startpos.x + rx, pfad.startpos.y))
+    pfad.points.value = [['M', pfad.startpos.x + rx, pfad.startpos.y]]
     for (let winkel = 0; winkel <= 360; winkel += 15) {
         let endx = pfad.startpos.x + rx*Math.cos(winkel*Math.PI/180.0)
         let endy = pfad.startpos.y + ry*Math.sin(winkel*Math.PI/180.0)
-        pfad.points.value.push(new PathPointA(rx, ry, 0, 0, 1, endx, endy))
+        pfad.points.value.push(['A', rx, ry, 0, 0, 1, endx, endy])
     }
 }
 
 function drawkreis(pfad, pos) {
     let r = Math.sqrt((pfad.startpos.x - pos.x)**2 + (pfad.startpos.y - pos.y)**2)
-    pfad.points.value = new PathPointList(new PathPointM(pfad.startpos.x+r, pfad.startpos.y))
-
+    pfad.points.value = [['M', pfad.startpos.x + r, pfad.startpos.y]]
     for (let winkel = 0; winkel <= 360; winkel += 15) {
         let endx = pfad.startpos.x + r*Math.cos(winkel*Math.PI/180.0)
         let endy = pfad.startpos.y + r*Math.sin(winkel*Math.PI/180.0)
-        pfad.points.value.push(new PathPointA(r, r, 0, 0, 1, endx, endy))
+        pfad.points.value.push(['A', r, r, 0, 0, 1, endx, endy])
     }
 }
 
-defineExpose({draw})
+function pfadstring(points) {
+    let str = ''
+    for (let point of points) {
+        if (['M','m','L','l'].includes(point[0]))
+            str += `${point[0]} ${point[1]} ${point[2]} `
+        else if (['A','a'].includes(point[0]))
+            str+= `${point[0]} ${point[1]} ${point[2]} ${point[3]} ${point[4]} ${point[5]} ${point[6]} ${point[7]} `
+    }
+    return str
+}
+
+function removePointsInRect(points, rect) {
+    for (let idx in points) {
+        let i = parseInt(idx)
+        if (isNaN(i)) continue
+        let point = points[i]
+        if (isInRect(point, rect)) {
+            removePointAt(points, i)
+        }
+    }
+}
+
+function isInRect(point, rect) {
+    let pos = pointPos(point)
+
+    return (pos.x >= rect.x &&
+            pos.x <= rect.x + rect.width &&
+            pos.y >= rect.y &&
+            pos.y <= rect.y + rect.height)
+}
+
+function removePointAt(points, idx) {
+
+    if (idx < points.length-1) {
+        let nextPoint = points[idx+1]
+        let pos = pointPos(nextPoint)
+        if (pos !== null)
+            points[idx+1] = ['M', pos.x, pos.y]
+    }
+    points.splice(idx, 1)
+
+    // Falls es folgende MoveTo-Points gibt, aktuellen löschen
+    while(idx < points.length-1 && pointIsMove(points[idx+1])) {
+        points.splice(idx, 1)
+    }
+
+    // Falls es vorhergehende MoveTo-Points gibt, vorhergehende löschen
+    while(idx > 0 && pointIsMove(points[idx-1])) {
+        points.splice(--idx, 1)
+    }
+}
+
+function pointTyp(point) {
+    return point[0]
+}
+
+function pointIsArc(point) {
+    return ['A','a'].includes(pointTyp(point))
+}
+
+function pointIsMove(point) {
+    return ['M','m'].includes(pointTyp(point))
+}
+
+function pointIsLine(point) {
+    return ['L','l'].includes(pointTyp(point))
+}
+
+function pointPos(point) {
+    const typ = pointTyp(point)
+    if (['M','m','L','l'].includes(typ))
+        return {x: point[1], y: point[2]}
+    else if (['A','a'].includes(typ))
+        return {x: point[6], y: point[7]}
+    else if (typ == 'Z')
+        return null
+}
+
+defineExpose({draw, removePointsInRect})
 </script>
 
 <style>

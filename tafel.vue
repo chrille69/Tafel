@@ -37,36 +37,45 @@ const statusEditieren = computed(() => props.config.modus == 'editieren')
 const statusZeichnen = computed(() => props.config.modus == 'zeichnen')
 const zeigeRadierer = ref(false)
 
-const history = {
-    vergangen: [],
-    zukunft: []
-}
 
-function historyHatZukunft() {return history.zukunft.length > 0}
-function historyHatVergangen() {return history.vergangen.length > 0}
+const { history, undo, redo } = VueUse.useRefHistory(pfade)
 
-function addHistory() { // Muss vor Malaktion erfolgen
-    history.vergangen.push({bilder: [...bilder.value], pfade:[...pfade.value]})
-    history.zukunft = []
-}
 
-function undo() {
-    history.zukunft.push({bilder: [...bilder.value], pfade:[...pfade.value]})
-    if(history.vergangen.length > 0) {
-        let vergangen = history.vergangen.pop()
-        bilder.value = vergangen.bilder
-        pfade.value = vergangen.pfade
-    }
-}
-
-function redo() {
-    history.vergangen.push({bilder: [...bilder.value], pfade:[...pfade.value]})
-    if(history.zukunft.length > 0) {
-        let zukunft = history.zukunft.pop()
-        bilder.value = zukunft.bilder
-        pfade.value = zukunft.pfade
-    }
-}
+//const history = {
+//    vergangen: [],
+//    zukunft: []
+//}
+//
+//function historyHatZukunft() {return history.zukunft.length > 0}
+//function historyHatVergangen() {return history.vergangen.length > 0}
+//
+//function addHistory() { // Muss vor Malaktion erfolgen
+//    let bildcopy = [...bilder.value]
+//    let pfadcopy = [...pfade.value]
+//    bildcopy.forEach(item => {item.id = ++itemid; item.el = null})
+//    pfadcopy.forEach(item => {item.id = ++itemid; item.el = null})
+//    history.vergangen.push({bilder: bildcopy , pfade: pfadcopy})
+//    console.log(history)
+//    history.zukunft = []
+//}
+//
+//function undo() {
+//    if(history.vergangen.length == 0) return
+//
+//    history.zukunft.push({bilder: [...bilder.value], pfade:[...pfade.value]})
+//    let vergangen = history.vergangen.pop()
+//    bilder.value = vergangen.bilder
+//    pfade.value = vergangen.pfade
+//}
+//
+//function redo() {
+//    if(history.zukunft.length == 0)  return
+//
+//    history.vergangen.push({bilder: [...bilder.value], pfade:[...pfade.value]})
+//    let zukunft = history.zukunft.pop()
+//    bilder.value = zukunft.bilder
+//    pfade.value = zukunft.pfade
+//}
 
 const svgtransform = computed(() => `transform: translate(${svgtranslate.value.x}px, ${svgtranslate.value.y}px)`)
 const radiergummiBox = ref({x: 0, y: 0, width: 50, height: 100})
@@ -79,14 +88,12 @@ let startpos = {x:0, y:0}
 let itemid = 0
 
 function deleteSelected() {
-    addHistory()
     pfade.value = pfade.value.filter((item) => targets.indexOf(item.el) < 0 )
     bilder.value = bilder.value.filter((item) => targets.indexOf(item.el) < 0 )
     setTargets([])
 }
 
 function copySelected() {
-    addHistory()
     let copyitems = pfade.value.filter((item) => targets.indexOf(item.el) >= 0 )
     for (let item of copyitems) {
         let newitem = {...item}
@@ -120,7 +127,6 @@ function startWork(e) {
 
     if (statusRadieren.value) {
         zeigeRadierer.value = true
-        addHistory()
         radiere(e)
         return
     }
@@ -175,15 +181,15 @@ function endWork(e) {
 
 function startDraw(e) {
     isPainting = true;
-    addHistory()
-
+//    console.log(history.value)
     let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(props.config.tool) >= 0
     let ispfeil = ['pfeil','pfeilsnap'].indexOf(props.config.tool) >= 0
     const color = props.config.brushColor
     neuerPfad = {
         tool: props.config.tool,
         startpos,
-        points: ref(new PathPointList(new PathPointM(startpos.x, startpos.y))),
+//        points: ref(new PathPointList(new PathPointM(startpos.x, startpos.y))),
+        points: ref([['M', startpos.x, startpos.y]]),
         attr: {
             stroke: filledItem ? 'none' : color,
             'stroke-width': props.config.brushWidth,
@@ -195,7 +201,7 @@ function startDraw(e) {
         id: ++itemid,
     }
     if (props.config.tool == 'stift') 
-        neuerPfad.points.value.push(new PathPointL(startpos.x, startpos.y))
+        neuerPfad.points.value.push(['L', startpos.x, startpos.y])
     pfade.value.push(neuerPfad)
 }
 
@@ -224,14 +230,13 @@ function radiere(e) {
     for (let item of pfade.value) {
         if (checkIntersection(radiergummiBox.value, item.el.getBBox())) {
             let rect = radiergummiBox.value
-            item.points.removePointsInRect(rect)
+            pfade_comp.value.removePointsInRect(item.points, rect)
             if (item.points.length < 2)
                 removelist.push(item)
         }
     }
     pfade.value = pfade.value.filter(pfad => !removelist.includes(pfad))
 }
-
 
 function checkIntersection(a, b) {
     if (!a || !b) return false
@@ -292,7 +297,7 @@ function neuesBild(file) {
     fr.readAsDataURL(file)
 }
 
-defineExpose({deleteSelected, copySelected, neuesBild, historyHatVergangen, historyHatZukunft, undo, redo})
+defineExpose({deleteSelected, copySelected, neuesBild, undo, redo})
 
 //////////////////////////////////////////////////////////////
 //
@@ -317,8 +322,8 @@ const moveable = new Moveable(document.body, {
 .on("clickGroup", (e) => {
     selecto.clickTarget(e.inputEvent, e.inputTarget)
 })
-.on("renderStart", (e) => { addHistory() })
-.on("renderGroupStart", (e) => { addHistory() })
+//.on("renderStart", (e) => { counter.value += 1 })
+//.on("renderGroupStart", (e) => { counter.value += 1 })
 .on("render", (e) => {
     let item = items.value.find((it) => it.el === e.target)
     item.transform = e.transform
