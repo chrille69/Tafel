@@ -97,7 +97,7 @@ const config = ref({
     modus: 'zeichnen',
     brushColor: 'currentColor',
     brushWidth: 3,
-    rubbersize: 10,
+    rubbersize: 100,
     darkmode: true,
     fullscreen: false,
     geodreieckaktiv: false

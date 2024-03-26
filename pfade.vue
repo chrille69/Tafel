@@ -127,20 +127,23 @@ function pfadstring(points) {
     return str
 }
 
-function removePointsInRect(points, rect) {
-    for (let idx in points) {
-        let i = parseInt(idx)
+function removePointsInRect(item, rect) {
+    const mtrx = item.el.getCTM()
+    for (let idx in item.points) {
+        const i = parseInt(idx)
         if (isNaN(i)) continue
-        let point = points[i]
-        if (isInRect(point, rect)) {
-            removePointAt(points, i)
+        const pos = pointPos(item.points[i])
+        const svgpoint = item.el.ownerSVGElement.createSVGPoint()
+        svgpoint.x = pos.x
+        svgpoint.y = pos.y
+        const pointtfm = svgpoint.matrixTransform(mtrx)
+        if (isPointInRect(pointtfm, rect)) {
+            removePointAt(item.points, i)
         }
     }
 }
 
-function isInRect(point, rect) {
-    let pos = pointPos(point)
-
+function isPointInRect(pos, rect) {
     return (pos.x >= rect.x &&
             pos.x <= rect.x + rect.width &&
             pos.y >= rect.y &&
