@@ -1,9 +1,9 @@
 <template>
-    <svg ref="svgroot" id="tafel" xmlns="http://www.w3.org/2000/svg"
+    <svg ref="svgroot" id="tafel" xmlns="http://www.w3.org/2000/svg" style="touch-action: none"
         @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" 
         @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
         >
-        <g :style="svgtransform">
+        <g id='container' :style="svgtransform">
             <bildervue :bilder="bilder" ref="bilder_comp"/>
             <pfadevue :pfade="pfade" ref="pfade_comp"/>
         </g>
@@ -54,8 +54,22 @@ let schiebeGD = false
 let startpos = {x:0, y:0}
 let itemid = 0
 
+let isPanning = false
+
 function startWork(e) {
     e.preventDefault()
+    if (e.touches.length > 1) {
+        isPanning = true
+        if(isPainting) {
+            isPainting = false
+            pfade.value.pop()
+        }
+        startpos = getPosition(e,'tafel')
+        startpos.x -= svgtranslate.value.x
+        startpos.y -= svgtranslate.value.y
+        return
+    }
+
     startpos = getPosition(e)
 
     if(e.target.id == 'drehgriff') {
@@ -87,12 +101,18 @@ function startWork(e) {
 
 function furtherWork(e) {
     e.preventDefault()
+    if(isPanning) {
+        let pos = getPosition(e,'tafel')
+        svgtranslate.value.x = pos.x-startpos.x
+        svgtranslate.value.y = pos.y-startpos.y
+        return
+    }
     if (statusRadieren.value) {
         radiere(e)
         return
     }
     if (dreheGD) {
-        geodreieck_el.value.rotate(getPosition(e, geodreieck_el.value))
+        geodreieck_el.value.rotate(getPosition(e))
         return
     }
     if (schiebeGD) {
@@ -106,6 +126,10 @@ function furtherWork(e) {
 
 function endWork(e) {
     e.preventDefault()
+    if(isPanning) {
+        isPanning = false
+        return
+    }
     if (statusRadieren.value) {
         zeigeRadierer.value = false
         commit()
@@ -163,7 +187,7 @@ function draw(e) {
 function radiere(e) {
     if (! zeigeRadierer.value) return
 
-    let pos = getPosition(e)
+    let pos = getPosition(e, 'tafel')
     radiergummiPos.value.x = pos.x - props.config.rubbersize/4
     radiergummiPos.value.y = pos.y - props.config.rubbersize/2
     let removelist = []
@@ -189,8 +213,8 @@ function checkIntersection(a, b) {
           b.y <= a.y+a.height)
 }
 
-function getPosition(evt) {
-    let CTM = svgroot.value.getScreenCTM()
+function getPosition(evt, id='container') {
+    let CTM = document.getElementById(id).getScreenCTM()
     let p = svgroot.value.createSVGPoint()
     if (evt.touches) {
         p.x = evt.touches[0].clientX
