@@ -218,7 +218,7 @@
         <path d="M 9,2 14,5 9,8 V 6 H 6 C 4.32,6 3,7.321 3,9 3,10.679 4.32,12 6,12 H 11 V 14 H 6 C 3.25,14 1,11.753 1,9 1,6.247 3.25,4 6,4 H 9 Z"/>
     </symbol>
     <symbol id="save" viewbox="0 0 16 16">
-        <path style="fill:#444444" d="M 6 1 L 6 7 L 3.5 7 L 8 13 L 12.5 7 L 10 7 L 10 1 L 6 1 z M 1 14 L 1 16 L 15 16 L 15 14 L 1 14 z"/>
+        <path d="M 6 1 L 6 7 L 3.5 7 L 8 13 L 12.5 7 L 10 7 L 10 1 L 6 1 z M 1 14 L 1 16 L 15 16 L 15 14 L 1 14 z"/>
     </symbol>
     <symbol id="save-black-24dp" viewbox="0 0 18 18">
         <path d="m-3-3h24v24h-24z" fill="none"/>

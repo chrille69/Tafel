@@ -3,6 +3,7 @@
         <tafel :config="config" ref="tafel_comp" style="min-width: 100vw; height: 100vh; overflow: visible"/>
         <q-card class="q-ma-md" style="position: absolute; bottom: 10px ">
             <q-card-section class="row q-gutter-md items-center q-pa-sm">
+                <q-btn dense :icon="icons['save']" glossy @click="speichern" />
                 <q-btn dense :icon="icons['darkmode']" flat :unelevated="!config.darkmode" :glossy="config.darkmode" @click="toggleDarkmode" />
                 <q-btn dense :icon="icons['fullscreen']" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
                 <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
@@ -84,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, provide } from 'vue'
 import tafel from './tafel.vue'
 import mymenu from './mymenu.vue'
 
@@ -133,6 +134,7 @@ const icons = ref({
     'fromclipboard': 'svguse:icons.svg#fromclipboard|0 0 16 16',
     'undo': 'svguse:icons.svg#undo|0 0 16 16',
     'redo': 'svguse:icons.svg#redo|0 0 16 16',
+    'save': 'svguse:icons.svg#save|0 0 16 16',
 })
 
 const linewidthmenu = ref([
@@ -201,5 +203,24 @@ function einfuegen(e) {
     tafel_comp.value.neuesBild(file)
 }
 
+function speichern() {
+    const svgelement = document.getElementById('tafel').cloneNode(true)
+    if (config.value.darkmode) {
+        svgelement.setAttribute("style", "background-color: #1d1d1d; color: #fff;")
+    }
+    let a = document.createElement("a");
+    a.style = "display: none";
+    document.body.appendChild(a);
+    let data = new Blob([svgelement.outerHTML])
+    let url = URL.createObjectURL(data);
+    console.log(url)
+    a.href = url
+    a.download = 'tafelbild.svg';
+    a.click();
+    a.remove();
+}
+
 window.addEventListener('paste',einfuegen)
+
+provide('config', config)
 </script>
