@@ -226,10 +226,11 @@ function getPosition(evt, id='container') {
 
 function geosnap(pos) {
     let p = new DOMPoint(pos.x, pos.y)
-    let matrix = geodreieck_el.value.getCTM()
-    let geop = p.matrixTransform(matrix.inverse())
+    let geomtrx = geodreieck_el.value.getCTM()
+    let conmtrx = document.getElementById('container').getScreenCTM()
+    let geop = p.matrixTransform(conmtrx).matrixTransform(geomtrx.inverse())
     if (geop.y < 90 && geop.y > 70) geop.y = 80
-    p = geop.matrixTransform(matrix)
+    p = geop.matrixTransform(geomtrx).matrixTransform(conmtrx.inverse())
     return p
 }
 
