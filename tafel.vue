@@ -27,17 +27,20 @@ const pfade_comp = ref(null)
 const pfade = ref([])
 const bilder_comp = ref(null)
 const bilder = ref([])
+let startpos = new DOMPoint(0,0)
+let itemid = 0
+let neuerPfad = null
 const items = computed(() => [...pfade.value,...bilder.value])
 const svgtranslate = ref({x:0, y:0})
+const svgtransform = computed(() => `transform: translate(${svgtranslate.value.x}px, ${svgtranslate.value.y}px)`)
 const svgroot = ref(null)
-const radiergummi = ref(null)
-const geodreieck_el = ref(null)
-const statusRadieren = computed(() => props.config.modus == 'radieren')
 const statusEditieren = computed(() => props.config.modus == 'editieren')
 const statusZeichnen = computed(() => props.config.modus == 'zeichnen')
-const zeigeRadierer = ref(false)
 
-const svgtransform = computed(() => `transform: translate(${svgtranslate.value.x}px, ${svgtranslate.value.y}px)`)
+
+const radiergummi = ref(null)
+const statusRadieren = computed(() => props.config.modus == 'radieren')
+const zeigeRadierer = ref(false)
 const radiergummiPos = ref({x: 0, y: 0})
 const radiergummiBox = computed(() => { return {
         x: radiergummiPos.value.x,
@@ -46,14 +49,13 @@ const radiergummiBox = computed(() => { return {
         height: props.config.rubbersize
     }
 })
+let radierradius = 2
 
-let neuerPfad = null
-let isPainting = false
+const geodreieck_el = ref(null)
 let dreheGD = false
 let schiebeGD = false
-let startpos = new DOMPoint(0,0)
-let itemid = 0
 
+let isPainting = false
 let isPanning = false
 
 function startWork(e) {
@@ -70,6 +72,7 @@ function startWork(e) {
         return
     }
 
+
     startpos = getPosition(e)
 
     if(e.target.id == 'drehgriff') {
@@ -83,7 +86,7 @@ function startWork(e) {
         return
     }
 
-    if (statusRadieren.value) {
+    if (statusRadieren.value || eventradius(e) > radierradius ) {
         zeigeRadierer.value = true
         radiere(e)
         return
@@ -107,7 +110,7 @@ function furtherWork(e) {
         svgtranslate.value.y = pos.y-startpos.y
         return
     }
-    if (statusRadieren.value) {
+    if (zeigeRadierer.value) {
         radiere(e)
         return
     }
@@ -130,7 +133,7 @@ function endWork(e) {
         isPanning = false
         return
     }
-    if (statusRadieren.value) {
+    if (zeigeRadierer.value) {
         zeigeRadierer.value = false
         commit()
         return
@@ -234,7 +237,16 @@ function geosnap(pos) {
     return p
 }
 
-function json() {
+function eventradius(e) {
+    let radius = 0
+    if (! e.touches) return radius
+
+    radius = e.touches[0].radiusX**2 + e.touches[0].radiusY**2
+    console.log(radius)
+    return radius
+}
+
+function exportJson() {
     return JSON.stringify({bilder: bilder.value, pfade:pfade.value})
 }
 
@@ -389,6 +401,6 @@ const selecto = new Selecto({
     setTargets(e.selected)
 })
 
-defineExpose({deleteSelected, copySelected, neuesBild, undo, redo, json})
+defineExpose({deleteSelected, copySelected, neuesBild, undo, redo, exportJson})
 
 </script>
