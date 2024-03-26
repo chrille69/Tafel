@@ -3,6 +3,7 @@
         @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" 
         @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
         >
+        <text v-if="false" x="20" y="20" style="fill: red;">Touchradius:{{ touchradius }}</text>
         <g id='container' :style="svgtransform">
             <bildervue :bilder="bilder" ref="bilder_comp"/>
             <pfadevue :pfade="pfade" ref="pfade_comp"/>
@@ -49,7 +50,8 @@ const radiergummiBox = computed(() => { return {
         height: props.config.rubbersize
     }
 })
-let radierradius = 2
+let radierradius = 5
+const touchradius = ref(0)
 
 const geodreieck_el = ref(null)
 let dreheGD = false
@@ -242,6 +244,7 @@ function eventradius(e) {
 
     radius = e.touches[0].radiusX**2 + e.touches[0].radiusY**2
     console.log(radius)
+    touchradius.value = radius
     return radius
 }
 
@@ -405,10 +408,22 @@ function exportJson() {
 
 function importJson(jsonstr) {
     const obj = JSON.parse(jsonstr)
-    pfade.value.push(...obj.pfade)
-    bilder.value.push(...obj.bilder)
+    pfade.value = obj.pfade
+    bilder.value = obj.bilder
 }
 
-defineExpose({deleteSelected, copySelected, neuesBild, undo, redo, exportJson, importJson})
+function gobottom() {
+    svgtranslate.value.y -= 200
+}
+function gotop() {
+    svgtranslate.value.y += 200
+}
+function goleft() {
+    svgtranslate.value.x += 200
+}
+function goright() {
+    svgtranslate.value.x -= 200
+}
+defineExpose({deleteSelected, copySelected, neuesBild, undo, redo, exportJson, importJson, gobottom, gotop, goleft, goright})
 
 </script>
