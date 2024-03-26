@@ -51,14 +51,14 @@ let neuerPfad = null
 let isPainting = false
 let dreheGD = false
 let schiebeGD = false
-let startpos = {x:0, y:0}
+let startpos = new DOMPoint(0,0)
 let itemid = 0
 
 let isPanning = false
 
 function startWork(e) {
     e.preventDefault()
-    if (e.touches.length > 1) {
+    if (e.touches?.length > 1) {
         isPanning = true
         if(isPainting) {
             isPainting = false
@@ -201,10 +201,6 @@ function radiere(e) {
     pfade.value = pfade.value.filter(pfad => !removelist.includes(pfad))
 }
 
-function matrixTransformRect(rect, matrix) {
-
-}
-
 function checkIntersection(a, b) {
     if (!a || !b) return false
     return (a.x <= b.x+b.width &&
@@ -215,7 +211,7 @@ function checkIntersection(a, b) {
 
 function getPosition(evt, id='container') {
     let CTM = document.getElementById(id).getScreenCTM()
-    let p = svgroot.value.createSVGPoint()
+    let p = new DOMPoint()
     if (evt.touches) {
         p.x = evt.touches[0].clientX
         p.y = evt.touches[0].clientY
@@ -229,9 +225,7 @@ function getPosition(evt, id='container') {
 }
 
 function geosnap(pos) {
-    let p = svgroot.value.createSVGPoint()
-    p.x = pos.x
-    p.y = pos.y
+    let p = new DOMPoint(pos.x, pos.y)
     let matrix = geodreieck_el.value.getCTM()
     let geop = p.matrixTransform(matrix.inverse())
     if (geop.y < 90 && geop.y > 70) geop.y = 80

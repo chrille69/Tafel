@@ -133,11 +133,8 @@ function removePointsInRect(item, rect) {
         const i = parseInt(idx)
         if (isNaN(i)) continue
         const pos = pointPos(item.points[i])
-        const svgpoint = item.el.ownerSVGElement.createSVGPoint()
-        svgpoint.x = pos.x
-        svgpoint.y = pos.y
-        const pointtfm = svgpoint.matrixTransform(mtrx)
-        if (isPointInRect(pointtfm, rect)) {
+        const postfm = pos.matrixTransform(mtrx)
+        if (isPointInRect(postfm, rect)) {
             removePointAt(item.points, i)
         }
     }
@@ -190,9 +187,9 @@ function pointIsLine(point) {
 function pointPos(point) {
     const typ = pointTyp(point)
     if (['M','m','L','l'].includes(typ))
-        return {x: point[1], y: point[2]}
+        return new DOMPoint(point[1], point[2])
     else if (['A','a'].includes(typ))
-        return {x: point[6], y: point[7]}
+        return new DOMPoint(point[6], point[7])
     else if (typ == 'Z')
         return null
 }
