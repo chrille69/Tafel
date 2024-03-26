@@ -72,12 +72,11 @@ function startWork(e) {
         return
     }
 
-
     startpos = getPosition(e)
 
     if(e.target.id == 'drehgriff') {
         dreheGD = true
-        geodreieck_el.value.startRotate(getPosition(e))
+        geodreieck_el.value.startRotate(startpos)
         return
     }
     if(e.target.id == 'verschiebegriff') {
@@ -160,7 +159,7 @@ function startDraw(e) {
     const color = props.config.brushColor
     neuerPfad = {
         tool: props.config.tool,
-        startpos,
+        startpos: startpos,
         points: ref([['M', startpos.x, startpos.y]]),
         attr: {
             stroke: filledItem ? 'none' : color,
@@ -246,10 +245,6 @@ function eventradius(e) {
     return radius
 }
 
-function exportJson() {
-    return JSON.stringify({bilder: bilder.value, pfade:pfade.value})
-}
-
 function neuesBild(file) {
     const neuesBild = {
         attr: {
@@ -300,6 +295,7 @@ function copySelected() {
     }
     commit()
 }
+
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -401,6 +397,18 @@ const selecto = new Selecto({
     setTargets(e.selected)
 })
 
-defineExpose({deleteSelected, copySelected, neuesBild, undo, redo, exportJson})
+///////////////////////////////////////////////////////////
+
+function exportJson() {
+    return JSON.stringify({bilder: bilder.value, pfade:pfade.value})
+}
+
+function importJson(jsonstr) {
+    const obj = JSON.parse(jsonstr)
+    pfade.value.push(...obj.pfade)
+    bilder.value.push(...obj.bilder)
+}
+
+defineExpose({deleteSelected, copySelected, neuesBild, undo, redo, exportJson, importJson})
 
 </script>
