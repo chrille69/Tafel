@@ -196,15 +196,3 @@ function pointPos(point) {
 
 defineExpose({draw, removePointsInRect})
 </script>
-
-<style>
-.rundeSache {
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-.origin {
-    pointer-events: bounding-box;
-    transform-origin: center;
-    transform-box: fill-box;
-}
-</style>

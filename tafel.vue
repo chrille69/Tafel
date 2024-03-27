@@ -5,8 +5,8 @@
         >
         <text v-if="false" x="20" y="20" style="fill: red;">Touchradius:{{ touchradius }}</text>
         <g id='container' :style="svgtransform">
-            <mmlogpapier></mmlogpapier>
-            <bildervue :bilder="bilder" ref="bilder_comp"/>
+            <vorlagenvue :vorlagen="vorlagen" />
+            <bildervue :bilder="bilder" />
             <pfadevue :pfade="pfade" ref="pfade_comp"/>
         </g>
         <rect v-if="zeigeRadierer" ref="radiergummi" :="radiergummiBox" style="stroke: red; stroke-width: 2px; fill: none;" />
@@ -22,21 +22,19 @@ import { ref, computed } from 'vue'
 import geodreieck from './geodreieck.vue'
 import pfadevue from './pfade.vue'
 import bildervue from './bilder.vue'
-import linienpapier from './linienpapier.vue'
-import karopapier from './karopapier.vue'
-import mmlogpapier from './mmlogpapier.vue'
+import vorlagenvue from './vorlagen.vue'
 
 const props = defineProps(['config'])
 const emit = defineEmits(['hatgemalt'])
 
 const pfade_comp = ref(null)
 const pfade = ref([])
-const bilder_comp = ref(null)
 const bilder = ref([])
+const vorlagen = ref([])
 let startpos = new DOMPoint(0,0)
 let itemid = 0
 let neuerPfad = null
-const items = computed(() => [...pfade.value,...bilder.value])
+const items = computed(() => [...pfade.value,...bilder.value,...vorlagen.value])
 const svgtranslate = ref({x:0, y:0})
 const svgtransform = computed(() => `transform: translate(${svgtranslate.value.x}px, ${svgtranslate.value.y}px)`)
 const svgroot = ref(null)
@@ -252,6 +250,21 @@ function eventradius(e) {
     return radius
 }
 
+function neueVorlage(typ, groesse=1000, xdekaden=0, ydekaden=0) {
+    const vorlage = {
+        typ: typ,
+        groesse: groesse,
+        xdekaden: xdekaden,
+        ydekaden: ydekaden,
+        transform: '',
+        el: null,
+        id: ++itemid
+    }
+    console.log(vorlage)
+    vorlagen.value.push(vorlage)
+    commit()
+}
+
 function neuesBild(file) {
     const neuesBild = {
         attr: {
@@ -281,6 +294,7 @@ function neuesBild(file) {
 function deleteSelected() {
     pfade.value = pfade.value.filter((item) => targets.indexOf(item.el) < 0 )
     bilder.value = bilder.value.filter((item) => targets.indexOf(item.el) < 0 )
+    vorlagen.value = vorlagen.value.filter((item) => targets.indexOf(item.el) < 0 )
     commit()
     setTargets([])
 }
@@ -300,6 +314,13 @@ function copySelected() {
         newitem.id = ++itemid
         bilder.value.unshift(newitem)
     }
+    copyitems = vorlagen.value.filter((item) => targets.indexOf(item.el) >= 0 )
+    for (let item of copyitems) {
+        let newitem = {...item}
+        newitem.el = ref(null)
+        newitem.id = ++itemid
+        vorlagen.value.unshift(newitem)
+    }
     commit()
 }
 
@@ -312,22 +333,26 @@ function copySelected() {
 
 const pfadhistory = VueUse.useManualRefHistory(pfade, { clone: true })
 const bildhistory = VueUse.useManualRefHistory(bilder, { clone: true })
+const vorlagenhistory = VueUse.useManualRefHistory(vorlagen, { clone: true })
 
 function undo() {
     pfadhistory.undo()
     bildhistory.undo()
+    vorlagenhistory.undo()
     setTargets([])
 }
 
 function redo() {
     pfadhistory.redo()
     bildhistory.redo()
+    vorlagenhistory.redo()
     setTargets([])
 }
 
 function commit() {
     pfadhistory.commit()
     bildhistory.commit()
+    vorlagenhistory.commit()
     emit('hatgemalt')
 }
 
@@ -375,6 +400,7 @@ const selecto = new Selecto({
 })
 .on("dragStart",(e) => {
     const target = e.inputEvent.target
+
     if ( ! (target === svgroot.value || svgroot.value.contains(target) ) ) {
         e.stop()
         return
@@ -414,13 +440,14 @@ const selecto = new Selecto({
 ///////////////////////////////////////////////////////////
 
 function exportJson() {
-    return JSON.stringify({bilder: bilder.value, pfade:pfade.value})
+    return JSON.stringify({bilder: bilder.value, pfade:pfade.value, vorlagen: vorlagen.value})
 }
 
 function importJson(jsonstr) {
     const obj = JSON.parse(jsonstr)
     pfade.value = obj.pfade
     bilder.value = obj.bilder
+    vorlagen.value = obj.vorlagen
 }
 
 function gobottom() {
@@ -435,6 +462,18 @@ function goleft() {
 function goright() {
     svgtranslate.value.x -= 200
 }
-defineExpose({deleteSelected, copySelected, neuesBild, undo, redo, exportJson, importJson, gobottom, gotop, goleft, goright})
+defineExpose({deleteSelected, copySelected, neuesBild, undo, redo, exportJson, importJson, gobottom, gotop, goleft, goright, neueVorlage})
 
 </script>
+
+<style>
+.rundeSache {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.origin {
+    pointer-events: bounding-box;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+</style>

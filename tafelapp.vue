@@ -11,11 +11,11 @@
                     <q-btn dense label="Datei">
                         <q-menu v-model="filemenu">
                             <q-list>
-                                <q-item clickable v-close-popup>
-                                    <q-btn dense :icon="icons['save']" label="SVG" glossy @click="exportSVG" />
+                                <q-item>
+                                    <q-btn v-close-popup dense :icon="icons['save']" label="SVG" glossy @click="exportSVG" />
                                 </q-item>
-                                <q-item clickable v-close-popup>
-                                    <q-btn dense :icon="icons['save']" label="JSON" glossy @click="exportJson" />
+                                <q-item>
+                                    <q-btn v-close-popup dense :icon="icons['save']" label="JSON" glossy @click="exportJson" />
                                 </q-item>
                                 <q-item>
                                     <q-file dense clearable v-model="jsonfile" label="Öffne JSON" @update:modelValue="importJson" />
@@ -26,9 +26,21 @@
                             </q-list>
                         </q-menu>
                     </q-btn>
-                    <q-btn dense :icon="icons['linienpapier']" glossy />
-                    <q-btn dense :icon="icons['karopapier']" glossy />
-                    <q-btn dense :icon="icons['logpapier']" glossy />
+                    <q-btn dense :icon="icons['logpapier']">
+                        <q-menu>
+                            <q-list>
+                                <q-item>
+                                    <q-btn v-close-popup dense :icon="icons['logpapier']" glossy @click="mmlogDlg = true"/>
+                                </q-item>
+                                <q-item>
+                                    <q-btn v-close-popup dense :icon="icons['karopapier']" glossy @click="() => tafel_comp.neueVorlage('karopapier')"/>
+                                </q-item>
+                                <q-item>
+                                    <q-btn v-close-popup dense :icon="icons['linienpapier']" glossy @click="() => tafel_comp.neueVorlage('linienpapier')" />
+                                </q-item>
+                            </q-list>
+                        </q-menu>
+                    </q-btn>
                     <q-btn dense :icon="icons['darkmode']" glossy @click="toggleDarkmode" />
                     <q-btn dense :icon="config.fullscreen ? 'fullscreen_exit' : 'fullscreen'" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
                     <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
@@ -106,6 +118,20 @@
                     </template>
                 </q-card-section>
             </q-card>
+            <q-dialog v-model="mmlogDlg">
+                <q-card>
+                    <q-card-section class="q-gutter-md">
+                        <q-input type="number" v-model.number="groesse" label="Größe"></q-input>
+                        <q-input type="number" v-model.number="xdekaden" label="Dekaden" hint="x-Achse (0: mm-Papier)"></q-input>
+                        <q-input type="number" v-model.number="ydekaden" label="Dekaden" hint="y-Achse (0: mm-Papier)"></q-input>
+                    </q-card-section>
+                    <q-separator />
+                    <q-card-actions align="right">
+                        <q-btn v-close-popup flat color="primary" label="Abbrechen" />
+                        <q-btn v-close-popup flat color="primary" label="OK" @click="() => tafel_comp.neueVorlage('mmlogpapier', groesse, xdekaden, ydekaden)" />
+                    </q-card-actions>
+                </q-card>
+            </q-dialog>
         </div>
     </div>
 </template>
@@ -133,6 +159,10 @@ const filemenu = ref(false)
 const jsonfile = ref(null)
 const imgfile = ref(null)
 const ungespeichert = ref(false)
+const mmlogDlg = ref(false)
+const groesse = ref(1000)
+const xdekaden = ref(0)
+const ydekaden = ref(0)
 
 const icons = ref({
     'editieren': 'svguse:icons.svg#edit|0 0 16 16',
