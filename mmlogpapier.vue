@@ -3,16 +3,16 @@
         <template v-for="cx,x in xanzahl" :key="x">
             <template v-for="cy,y in yanzahl" :key="y">
                 <template v-if="xdekaden == 0">
-                    <mmlines :groesse="groesse" vertikal :style="styleTranslate(x*groesse, y*groesse)"></mmlines>
+                    <mmlines :groesse="dekadengroesse" vertikal :style="styleTranslate(x*dekadengroesse, y*dekadengroesse)"></mmlines>
                 </template>
                 <template v-else>
-                    <loglines :groesse="groesse" vertikal :style="styleTranslate(x*groesse, y*groesse)"></loglines>
+                    <loglines :groesse="dekadengroesse" vertikal :style="styleTranslate(x*dekadengroesse, y*dekadengroesse)"></loglines>
                 </template>
                 <template v-if="ydekaden == 0">
-                    <mmlines :groesse="groesse" :style="styleTranslate(x*groesse, y*groesse)"></mmlines>
+                    <mmlines :groesse="dekadengroesse" :style="styleTranslate(x*dekadengroesse, y*dekadengroesse)"></mmlines>
                 </template>
                 <template v-else>
-                    <loglines :groesse="groesse" :style="styleTranslate(x*groesse, y*groesse)"></loglines>
+                    <loglines :groesse="dekadengroesse" :style="styleTranslate(x*dekadengroesse, y*dekadengroesse)"></loglines>
                 </template>
             </template>
         </template>
@@ -39,8 +39,9 @@ const props = defineProps({
     },
 })
 
-const xanzahl = computed(() => props.xdekaden == 0 ? 1 : props.xdekaden)
-const yanzahl = computed(() => props.ydekaden == 0 ? 1 : props.ydekaden)
+const xanzahl = computed(() => props.xdekaden > 0 ? props.xdekaden : (props.ydekaden > 0 ? props.ydekaden : 1) )
+const yanzahl = computed(() => props.ydekaden > 0 ? props.ydekaden : (props.xdekaden > 0 ? props.xdekaden : 1) )
+const dekadengroesse = computed(() => props.groesse / Math.max(xanzahl.value, yanzahl.value) )
 
 function styleTranslate(x, y) {
     return `transform: translate(${x}px,${y}px)`

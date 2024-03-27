@@ -81,12 +81,12 @@ function startWork(e) {
 
     if(e.target.id == 'drehgriff') {
         dreheGD = true
-        geodreieck_el.value.startRotate(startpos)
+        geodreieck_el.value.startRotate(getPosition(e,'tafel'))
         return
     }
     if(e.target.id == 'verschiebegriff') {
         schiebeGD = true
-        geodreieck_el.value.startTranslate(startpos)
+        geodreieck_el.value.startTranslate(getPosition(e,'tafel'))
         return
     }
 
@@ -119,11 +119,11 @@ function furtherWork(e) {
         return
     }
     if (dreheGD) {
-        geodreieck_el.value.rotate(getPosition(e))
+        geodreieck_el.value.rotate(getPosition(e,'tafel'))
         return
     }
     if (schiebeGD) {
-        geodreieck_el.value.translate(getPosition(e))
+        geodreieck_el.value.translate(getPosition(e,'tafel'))
         return
     }
     if (!statusZeichnen.value)
@@ -216,6 +216,14 @@ function checkIntersection(a, b) {
           b.y <= a.y+a.height)
 }
 
+function obenlinks() {
+    const point = new DOMPoint(0,0)
+    let mtrx = document.getElementById('tafel').getScreenCTM()
+    const svgpoint = point.matrixTransform(mtrx.inverse())
+    mtrx = document.getElementById('container').getScreenCTM()
+    return svgpoint.matrixTransform(mtrx.inverse())
+}
+
 function getPosition(evt, id='container') {
     let CTM = document.getElementById(id).getScreenCTM()
     let p = new DOMPoint()
@@ -251,12 +259,13 @@ function eventradius(e) {
 }
 
 function neueVorlage(typ, groesse=1000, xdekaden=0, ydekaden=0) {
+    let ol = obenlinks()
     const vorlage = {
         typ: typ,
         groesse: groesse,
         xdekaden: xdekaden,
         ydekaden: ydekaden,
-        transform: '',
+        transform: `translate(${ol.x}px, ${ol.y}px)`,
         el: null,
         id: ++itemid
     }
@@ -266,13 +275,14 @@ function neueVorlage(typ, groesse=1000, xdekaden=0, ydekaden=0) {
 }
 
 function neuesBild(file) {
+    let ol = obenlinks()
     const neuesBild = {
         attr: {
             width: 500,
             height: 500,
             href: null
         },
-        transform: '',
+        transform: `translate(${ol.x}px, ${ol.y}px)`,
         el: null,
         id: ++itemid
     }

@@ -1,6 +1,6 @@
 <template>
     <g>
-        <template v-for="n in anzahl" :key="n">
+        <template v-for="x,n in anzahl+1" :key="n">
             <path :d="'m 0 ' + n*abstand + ' l ' + anzahl*abstand + ' 0'" style="stroke: steelblue" vector-effect="non-scaling-stroke" />
         </template>
     </g>
