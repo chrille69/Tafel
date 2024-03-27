@@ -5,6 +5,7 @@
         >
         <text v-if="false" x="20" y="20" style="fill: red;">Touchradius:{{ touchradius }}</text>
         <g id='container' :style="svgtransform">
+            <mmlogpapier></mmlogpapier>
             <bildervue :bilder="bilder" ref="bilder_comp"/>
             <pfadevue :pfade="pfade" ref="pfade_comp"/>
         </g>
@@ -21,6 +22,9 @@ import { ref, computed } from 'vue'
 import geodreieck from './geodreieck.vue'
 import pfadevue from './pfade.vue'
 import bildervue from './bilder.vue'
+import linienpapier from './linienpapier.vue'
+import karopapier from './karopapier.vue'
+import mmlogpapier from './mmlogpapier.vue'
 
 const props = defineProps(['config'])
 const emit = defineEmits(['hatgemalt'])
