@@ -98,14 +98,14 @@
         </g>
     </symbol>
     <symbol id="karopapier" viewbox="0 0 16 16">
-        <path d="m2 2h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m2 6h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m2 10h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m2 14h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m2 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m6 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m10 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m14 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 2h12"  style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m2 6h12"  style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m2 10h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m2 14h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m2 2v12"  style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m6 2v12"  style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m10 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m14 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
     </symbol>
     <symbol id="kreis" viewbox="0 0 16 16">
         <circle cx="8" cy="8" r="7" style="fill:none;stroke-width:2;stroke:currentColor"/>
@@ -122,20 +122,20 @@
         <path d="m5 8s-.44599 0-.44599.70711c0 .70711.44599.70711.44599.70711h9.4142s.44599 0 .44599-.70711-.44599-.70711-.44599-.70711z" />
     </symbol>
     <symbol id="linienpapier" viewbox="0 0 16 16">
-        <path d="m2 2h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m2 6h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m2 10h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m2 14h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 2h12"  style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentcolor"/>
+        <path d="m2 6h12"  style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentcolor"/>
+        <path d="m2 10h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentcolor"/>
+        <path d="m2 14h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentcolor"/>
     </symbol>
     <symbol id="logpapier" viewbox="0 0 16 16">
-        <path d="m2 2h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m2 4h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m2 8h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m2 14h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m14 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m12 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m8 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
-        <path d="m2 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:#000000"/>
+        <path d="m2 2h12"  style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m2 4h12"  style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m2 8h12"  style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m2 14h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m14 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m12 2v12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m8 2v12"  style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
+        <path d="m2 2v12"  style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
     </symbol>
     <symbol id="open" viewbox="0 0 16 16">
         <path style="fill:#444444" d="M 8 1 L 3.5 7 L 6 7 L 6 13 L 10 13 L 10 7 L 12.5 7 L 8 1 z M 1 14 L 1 16 L 15 16 L 15 14 L 1 14 z"/>

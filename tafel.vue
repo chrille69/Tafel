@@ -23,6 +23,7 @@ import pfadevue from './pfade.vue'
 import bildervue from './bilder.vue'
 
 const props = defineProps(['config'])
+const emit = defineEmits(['hatgemalt'])
 
 const pfade_comp = ref(null)
 const pfade = ref([])
@@ -35,12 +36,12 @@ const items = computed(() => [...pfade.value,...bilder.value])
 const svgtranslate = ref({x:0, y:0})
 const svgtransform = computed(() => `transform: translate(${svgtranslate.value.x}px, ${svgtranslate.value.y}px)`)
 const svgroot = ref(null)
-const statusEditieren = computed(() => props.config.modus == 'editieren')
-const statusZeichnen = computed(() => props.config.modus == 'zeichnen')
+const statusEditieren = computed(() => {setTargets([]); return props.config.modus == 'editieren' })
+const statusZeichnen = computed(()  => {setTargets([]); return props.config.modus == 'zeichnen' })
+const statusRadieren = computed(()  => {setTargets([]); return props.config.modus == 'radieren' })
 
 
 const radiergummi = ref(null)
-const statusRadieren = computed(() => props.config.modus == 'radieren')
 const zeigeRadierer = ref(false)
 const radiergummiPos = ref({x: 0, y: 0})
 const radiergummiBox = computed(() => { return {
@@ -243,7 +244,6 @@ function eventradius(e) {
     if (! e.touches) return radius
 
     radius = e.touches[0].radiusX**2 + e.touches[0].radiusY**2
-    console.log(radius)
     touchradius.value = radius
     return radius
 }
@@ -324,6 +324,7 @@ function redo() {
 function commit() {
     pfadhistory.commit()
     bildhistory.commit()
+    emit('hatgemalt')
 }
 
 //////////////////////////////////////////////////////////////
@@ -374,13 +375,19 @@ const selecto = new Selecto({
         e.stop()
         return
     }
-    if (props.config.geodreieckaktiv || !statusEditieren.value) {
+    if (props.config.geodreieckaktiv || !statusEditieren.value || isPanning || zeigeRadierer.value) {
         e.stop()
         return
     }
 
     if (moveable.isMoveableElement(target) || targets.some(t => t === target || t.contains(target))) {
         e.stop();
+        return
+    }
+})
+.on('drag', (e) => {
+    if (props.config.geodreieckaktiv || !statusEditieren.value || isPanning || zeigeRadierer.value) {
+        e.stop()
         return
     }
 })

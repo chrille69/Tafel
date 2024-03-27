@@ -1,17 +1,34 @@
 <template>
     <div @fullscreenchange="fullscreenchange">
-        <tafel :config="config" ref="tafel_comp" style="min-width: 100vw; height: 100vh; overflow: visible"/>
+        <tafel :config="config" ref="tafel_comp" style="min-width: 100vw; height: 100vh; overflow: visible" @hatgemalt="() => ungespeichert = true"/>
         <q-btn size="10px" class="go-left" glossy dense :icon="icons['go-left']" @click="() => tafel_comp.goleft()" style="position: absolute; left: 10px; top: 50%;" />
         <q-btn size="10px" class="go-right" glossy dense :icon="icons['go-right']" @click="() => tafel_comp.goright()" style="position: absolute; right: 10px; top: 50%;" />
         <q-btn size="10px" class="go-top" glossy dense :icon="icons['go-top']" @click="() => tafel_comp.gotop()" />
-        <div class="column items-center" style="position: absolute; bottom: 10px; width: 100%;">
+        <div class="column items-center" style="position: absolute; bottom: 0px; width: 100%;">
             <q-btn size="10px" class="go-bottom" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/>
             <q-card class="q-ma-md col">
                 <q-card-section class="row q-gutter-md items-center q-pa-sm">
-                    <q-btn dense :icon="icons['save']" label="SVG" glossy @click="speichern" />
-                    <q-btn dense :icon="icons['save']" label="JSON" glossy @click="exportJson" />
-                    <q-file dense clearable v-model="jsonfile" label="Öffne JSON" @update:modelValue="importJson" />
-                    <q-file dense clearable v-model="imgfile" label="Bild importieren" @update:modelValue="importImg" />
+                    <q-btn dense label="Datei">
+                        <q-menu v-model="filemenu">
+                            <q-list>
+                                <q-item clickable v-close-popup>
+                                    <q-btn dense :icon="icons['save']" label="SVG" glossy @click="exportSVG" />
+                                </q-item>
+                                <q-item clickable v-close-popup>
+                                    <q-btn dense :icon="icons['save']" label="JSON" glossy @click="exportJson" />
+                                </q-item>
+                                <q-item>
+                                    <q-file dense clearable v-model="jsonfile" label="Öffne JSON" @update:modelValue="importJson" />
+                                </q-item>
+                                <q-item>
+                                    <q-file dense clearable v-model="imgfile" label="Bild importieren" @update:modelValue="importImg" />
+                                </q-item>
+                            </q-list>
+                        </q-menu>
+                    </q-btn>
+                    <q-btn dense :icon="icons['linienpapier']" glossy />
+                    <q-btn dense :icon="icons['karopapier']" glossy />
+                    <q-btn dense :icon="icons['logpapier']" glossy />
                     <q-btn dense :icon="icons['darkmode']" glossy @click="toggleDarkmode" />
                     <q-btn dense :icon="config.fullscreen ? 'fullscreen_exit' : 'fullscreen'" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
                     <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
@@ -112,8 +129,10 @@ const config = ref({
     geodreieckaktiv: false
 })
 const freeColor = ref('yellow')
+const filemenu = ref(false)
 const jsonfile = ref(null)
 const imgfile = ref(null)
+const ungespeichert = ref(false)
 
 const icons = ref({
     'editieren': 'svguse:icons.svg#edit|0 0 16 16',
@@ -150,6 +169,9 @@ const icons = ref({
     'go-top': 'svguse:icons.svg#go-top|0 0 16 16',
     'go-left': 'svguse:icons.svg#go-left|0 0 16 16',
     'go-right': 'svguse:icons.svg#go-right|0 0 16 16',
+    'linienpapier': 'svguse:icons.svg#linienpapier|0 0 16 16',
+    'logpapier': 'svguse:icons.svg#logpapier|0 0 16 16',
+    'karopapier': 'svguse:icons.svg#karopapier|0 0 16 16',
 })
 
 const linewidthmenu = ref([
@@ -211,7 +233,7 @@ function fullscreenchange(evt) {
     }
 }
 
-function speichern() {
+function exportSVG() {
     const svgelement = document.getElementById('tafel').cloneNode(true)
     if (config.value.darkmode) {
         svgelement.setAttribute("style", "background-color: #1d1d1d; color: #fff;")
@@ -221,11 +243,11 @@ function speichern() {
     document.body.appendChild(a);
     let data = new Blob([svgelement.outerHTML])
     let url = URL.createObjectURL(data);
-    console.log(url)
     a.href = url
     a.download = 'tafelbild.svg';
     a.click();
     a.remove();
+    ungespeichert.value = false
 }
 
 function exportJson() {
@@ -234,11 +256,11 @@ function exportJson() {
     document.body.appendChild(a);
     let data = new Blob([tafel_comp.value.exportJson()])
     let url = URL.createObjectURL(data);
-    console.log(url)
     a.href = url
     a.download = 'tafelbild.json';
     a.click();
     a.remove();
+    ungespeichert.value = false
 }
 
 function importJson(file) {
@@ -249,11 +271,16 @@ function importJson(file) {
         tafel_comp.value.importJson(fr.result)
     }
     fr.readAsText(file)
+    filemenu.value = false
+    jsonfile.value = null
 }
 
 function importImg(file) {
     if (!file) return
     tafel_comp.value.neuesBild(file)
+    filemenu.value = false
+    imgfile.value = null
+    ungespeichert.value = false
 }
 
 function einfuegen(e) {
@@ -264,6 +291,14 @@ function einfuegen(e) {
 }
 
 window.addEventListener('paste',einfuegen)
+window.onbeforeunload = function(event) {
+    if (! ungespeichert.value) return
+
+    event.preventDefault()
+    const infostr = 'Es gibt ungespeicherte Änderungen. Wollen Sie die Seite verlassen?'
+    event.returnValue = infostr
+    return infostr
+}
 
 provide('config', config)
 
