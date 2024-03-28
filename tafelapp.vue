@@ -1,11 +1,11 @@
 <template>
     <div @fullscreenchange="fullscreenchange">
         <tafel :config="config" ref="tafel_comp" style="min-width: 100vw; height: 100vh; overflow: visible" @hatgemalt="() => ungespeichert = true"/>
-        <q-btn size="10px" glossy dense class="go-left" :icon="icons['go-left']" @click="() => tafel_comp.goleft()" />
-        <q-btn size="10px" glossy dense class="go-right" :icon="icons['go-right']" @click="() => tafel_comp.goright()" />
-        <q-btn size="10px" glossy dense class="go-top" :icon="icons['go-top']" @click="() => tafel_comp.gotop()" />
+        <q-card class="go-left"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-left']" @click="() => tafel_comp.goleft()" /></q-card>
+        <q-card class="go-right"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-right']" @click="() => tafel_comp.goright()" /></q-card>
+        <q-card class="go-top"><q-btn size="10px" glossy dense class="full-width" :icon="icons['go-top']" @click="() => tafel_comp.gotop()" /></q-card>
         <div class="column items-center" style="position: absolute; bottom: 0px; width: 100%;">
-            <q-btn size="10px" class="go-bottom" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/>
+            <q-card class="go-bottom"><q-btn size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/></q-card>
             <q-card class="q-ma-md col">
                 <q-card-section class="row q-gutter-md items-center q-pa-sm">
                     <q-btn dense label="Datei">
@@ -341,25 +341,29 @@ provide('config', config)
 </script>
 
 <style>
+:root {
+    --gobuttonwidth: 200px;
+    --gobuttongap: 10px;
+}
 .go-left {
     position: absolute;
-    top: calc(50% - 50px);
-    left: 10px;
-    height: 100px;
+    top: calc(50% - 0.5 * var(--gobuttonwidth));
+    left: var(--gobuttongap);
+    height: var(--gobuttonwidth);
 }
 .go-right {
     position: absolute;
-    top: calc(50% - 50px);
-    right: 10px;
-    height: 100px;
+    top: calc(50% - 0.5 * var(--gobuttonwidth));
+    right: var(--gobuttongap);
+    height: var(--gobuttonwidth);
 }
 .go-top {
     position: absolute;
-    left: calc(50% - 50px);
-    top: 10px;
-    width: 100px;
+    left: calc(50% - 0.5 * var(--gobuttonwidth));
+    top: var(--gobuttongap);
+    width: var(--gobuttonwidth);
 }
 .go-bottom {
-    width: 100px;
+    width: var(--gobuttonwidth);
 }
 </style>
