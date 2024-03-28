@@ -40,6 +40,7 @@ const transform = ref({x:0, y:0, scale: 1})
 const transformstyle = computed(() => {
     return {
         transform: `scale(${transform.value.scale}) translate(${transform.value.x}px, ${transform.value.y}px)`,
+        transformOrigin: `${window.innerWidth/2}px ${window.innerHeight/2}px`
     }
 })
 
