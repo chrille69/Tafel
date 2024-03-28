@@ -37,12 +37,17 @@ let itemid = 0
 let neuerPfad = null
 const items = computed(() => [...pfade.value,...bilder.value,...vorlagen.value])
 const transform = ref({x:0, y:0, scale: 1})
+const transformOrigin = ref({x:window.innerWidth/2, y:window.innerHeight/2})
 const transformstyle = computed(() => {
     return {
         transform: `scale(${transform.value.scale}) translate(${transform.value.x}px, ${transform.value.y}px)`,
-        transformOrigin: `${window.innerWidth/2}px ${window.innerHeight/2}px`
+        transformOrigin: `${transformOrigin.value.x}px ${transformOrigin.value.y}px`
     }
 })
+onresize = () => {
+    transformOrigin.value.x = window.innerWidth/2
+    transformOrigin.value.y = window.innerHeight/2
+}
 
 const svgroot = ref(null)
 const statusEditieren = computed(() => {setTargets([]); return props.config.modus == 'editieren' })
