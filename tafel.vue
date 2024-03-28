@@ -4,13 +4,13 @@
         @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
         >
         <text v-if="false" x="20" y="20" style="fill: red;">Touchradius:{{ touchradius }}</text>
-        <g id='container' :style="svgtransform">
+        <g ref="group_comp" id='container' :style="transformstyle">
             <vorlagenvue :vorlagen="vorlagen" />
             <bildervue :bilder="bilder" />
             <pfadevue :pfade="pfade" ref="pfade_comp"/>
         </g>
         <rect v-if="zeigeRadierer" ref="radiergummi" :="radiergummiBox" style="stroke: red; stroke-width: 2px; fill: none;" />
-        <geodreieck  ref="geodreieck_el"  v-if="props.config.geodreieckaktiv">
+        <geodreieck  ref="geodreieck_el"  v-show="props.config.geodreieckaktiv">
             <path id="verschiebegriff" style="pointer-events: bounding-box; fill: #0000ff; stroke-width:.26458" d="m80 40-3 3h2v4h-4v-2l-3 3 3 3v-2h4v4h-2l3 3 3-3h-2v-4h4v2l3-3-3-3v2h-4v-4h2z"/>
             <path id="drehgriff" style="pointer-events: bounding-box; fill: #ff0000; stroke-width:.026458" d="m79.368 11 c-.21279.0071-.3996.02137-.53513.04429-1.6929.26686-3.1357.95898-4.3198 2.0598-1.2426 1.1759-2.0097 2.5607-2.385 4.3203-.05013.22512-.06674.22488-.75887.25004l-.70905.02491 1.3175 1.9768c.71729 1.0924 1.3262 1.9763 1.3512 1.9763.02497 0 .63391-.88387 1.3512-1.9763l1.3175-1.9768-.91756-.02491-.9171-.02492.04982-.22512c.317-1.3261 1.4682-2.844 2.719-3.5863.98397-.58367 2.4351-.91716 3.4857-.8087 1.2926.14182 2.5934.65881 3.2606 1.2926l.35891.34184.67537-.67538.66707-.67583-.33353-.29156c-1.0091-.89228-2.4937-1.6431-3.7279-1.9016-.43775-.09378-1.3116-.14056-1.95-.11948zm7.3045 5.3315c-.02517 0-.63438.88433-1.3517 1.9768l-1.3175 1.9763 1.8347.04983-.04982.22513c-.317 1.3259-1.4675 2.8438-2.7186 3.5858-.98397.58386-2.4351.91762-3.4857.80916-1.2926-.14183-2.5939-.65882-3.2611-1.2926l-.35844-.34184-.67583.67583-.66707.67537.33353.29202c.58386.51714 1.7016 1.2089 2.4021 1.4924 2.7188 1.1008 5.9207.48388 8.0976-1.551 1.2676-1.1841 2.035-2.5688 2.4187-4.3452.04994-.22512.06674-.22488.75887-.25004l.70859-.02492-1.3175-1.9768c-.71729-1.0924-1.3256-1.9763-1.3507-1.9763z"/>
         </geodreieck>
@@ -27,6 +27,7 @@ import vorlagenvue from './vorlagen.vue'
 const props = defineProps(['config'])
 const emit = defineEmits(['hatgemalt'])
 
+const group_comp = ref(null)
 const pfade_comp = ref(null)
 const pfade = ref([])
 const bilder = ref([])
@@ -35,8 +36,13 @@ let startpos = new DOMPoint(0,0)
 let itemid = 0
 let neuerPfad = null
 const items = computed(() => [...pfade.value,...bilder.value,...vorlagen.value])
-const svgtranslate = ref({x:0, y:0})
-const svgtransform = computed(() => `transform: translate(${svgtranslate.value.x}px, ${svgtranslate.value.y}px)`)
+const transform = ref({x:0, y:0, scale: 1})
+const transformstyle = computed(() => {
+    return {
+        transform: `scale(${transform.value.scale}) translate(${transform.value.x}px, ${transform.value.y}px)`,
+    }
+})
+
 const svgroot = ref(null)
 const statusEditieren = computed(() => {setTargets([]); return props.config.modus == 'editieren' })
 const statusZeichnen = computed(()  => {setTargets([]); return props.config.modus == 'zeichnen' })
@@ -53,8 +59,8 @@ const radiergummiBox = computed(() => { return {
         height: props.config.rubbersize
     }
 })
-let radierradius = 5
 const touchradius = ref(0)
+let touchcount = 0
 
 const geodreieck_el = ref(null)
 let dreheGD = false
@@ -72,8 +78,8 @@ function startWork(e) {
             pfade.value.pop()
         }
         startpos = getPosition(e,'tafel')
-        startpos.x -= svgtranslate.value.x
-        startpos.y -= svgtranslate.value.y
+        startpos.x -= transform.value.x
+        startpos.y -= transform.value.y
         return
     }
 
@@ -90,7 +96,7 @@ function startWork(e) {
         return
     }
 
-    if (statusRadieren.value || eventradius(e) > radierradius ) {
+    if (statusRadieren.value || eventradius(e) > 2*touchradius.value ) {
         zeigeRadierer.value = true
         radiere(e)
         return
@@ -108,10 +114,11 @@ function startWork(e) {
 
 function furtherWork(e) {
     e.preventDefault()
+    eventradius(e) // Zum Messen des durchschnittlichen Radius
     if(isPanning) {
         let pos = getPosition(e,'tafel')
-        svgtranslate.value.x = pos.x-startpos.x
-        svgtranslate.value.y = pos.y-startpos.y
+        transform.value.x = pos.x-startpos.x
+        transform.value.y = pos.y-startpos.y
         return
     }
     if (zeigeRadierer.value) {
@@ -254,9 +261,138 @@ function eventradius(e) {
     if (! e.touches) return radius
 
     radius = e.touches[0].radiusX**2 + e.touches[0].radiusY**2
-    touchradius.value = radius
+    if (touchcount < 50) {
+        touchcount ++
+        touchradius.value = (touchradius.value*(touchcount-1)+radius)/touchcount
+    }
     return radius
 }
+
+////////////////////////////////////////////////////////////////////////
+//
+// Undo/Redo von VueUse - sehr komfortabel
+//
+////////////////////////////////////////////////////////////////////////
+
+const pfadhistory = VueUse.useManualRefHistory(pfade, { clone: true })
+const bildhistory = VueUse.useManualRefHistory(bilder, { clone: true })
+const vorlagenhistory = VueUse.useManualRefHistory(vorlagen, { clone: true })
+
+function undo() {
+    pfadhistory.undo()
+    bildhistory.undo()
+    vorlagenhistory.undo()
+    setTargets([])
+}
+
+function redo() {
+    pfadhistory.redo()
+    bildhistory.redo()
+    vorlagenhistory.redo()
+    setTargets([])
+}
+
+function commit() {
+    pfadhistory.commit()
+    bildhistory.commit()
+    vorlagenhistory.commit()
+    emit('hatgemalt')
+}
+
+//////////////////////////////////////////////////////////////
+//
+// Drag'n'Drop-Kram
+//
+//////////////////////////////////////////////////////////////
+
+let targets = []
+function setTargets(nextTargets) {
+    targets = nextTargets;
+    moveable.target = targets;
+}
+
+const moveable = new Moveable(document.body, {
+    container: svgroot.value,
+    target: targets,
+    draggable: true,
+    rotatable: true,
+    scalable: true,
+    keepRatio: true,
+})
+.on("clickGroup", (e) => {
+    selecto.clickTarget(e.inputEvent, e.inputTarget)
+})
+.on("renderEnd", (e) => { commit() })
+.on("renderGroupEnd", (e) => { commit() })
+.on("render", (e) => {
+    if(e.target.id == 'geodreieck') {
+        geodreieck_el.value.setTransform(e.transformObject)
+        return
+    }
+    let item = items.value.find((it) => it.el === e.target)
+    item.transform = e.transform
+})
+.on("renderGroup", (ev) => {
+    ev.events.forEach(e => {
+        if(e.target.id == 'geodreieck') {
+            geodreieck_el.value.setTransform(e.transformObject)
+            return
+        }
+        let item = items.value.find((it) => it.el === e.target)
+        item.transform = e.transform
+    });
+})
+
+const selecto = new Selecto({
+    container: svgroot.value,
+    selectByClick: true,
+    selectFromInside: false,
+    selectableTargets: [() => items.value.map(item => item.el), '#geodreieck']
+})
+.on("dragStart",(e) => {
+    const target = e.inputEvent.target
+
+    if ( ! (target === svgroot.value || svgroot.value.contains(target) ) ) {
+        e.stop()
+        return
+    }
+    if ( !statusEditieren.value || isPanning || zeigeRadierer.value) {
+        e.stop()
+        return
+    }
+
+    if (moveable.isMoveableElement(target) || targets.some(t => t === target || t.contains(target))) {
+        e.stop();
+        return
+    }
+})
+.on('drag', (e) => {
+    if (!statusEditieren.value || isPanning || zeigeRadierer.value) {
+        e.stop()
+        return
+    }
+})
+.on("select", e => {
+    if (e.isDragStartEnd) {
+        return
+    }
+    setTargets(e.selected)
+})
+.on("selectEnd", (e) => {
+    if (e.isDragStartEnd) {
+        e.inputEvent.preventDefault();
+        moveable.waitToChangeTarget().then(() => {
+            moveable.dragStart(e.inputEvent);
+        });
+    }
+    setTargets(e.selected)
+})
+
+///////////////////////////////////////////////////////////
+//
+// Funktionen, die von außen erreichbar sein sollen
+//
+///////////////////////////////////////////////////////////
 
 function neueVorlage(typ, groesse=1000, xdekaden=0, ydekaden=0) {
     let ol = obenlinks()
@@ -334,121 +470,6 @@ function copySelected() {
     commit()
 }
 
-
-////////////////////////////////////////////////////////////////////////
-//
-// Undo/Redo von VueUse - sehr komfortabel
-//
-////////////////////////////////////////////////////////////////////////
-
-const pfadhistory = VueUse.useManualRefHistory(pfade, { clone: true })
-const bildhistory = VueUse.useManualRefHistory(bilder, { clone: true })
-const vorlagenhistory = VueUse.useManualRefHistory(vorlagen, { clone: true })
-
-function undo() {
-    pfadhistory.undo()
-    bildhistory.undo()
-    vorlagenhistory.undo()
-    setTargets([])
-}
-
-function redo() {
-    pfadhistory.redo()
-    bildhistory.redo()
-    vorlagenhistory.redo()
-    setTargets([])
-}
-
-function commit() {
-    pfadhistory.commit()
-    bildhistory.commit()
-    vorlagenhistory.commit()
-    emit('hatgemalt')
-}
-
-//////////////////////////////////////////////////////////////
-//
-// Drag'n'Drop-Kram
-//
-//////////////////////////////////////////////////////////////
-
-let targets = []
-function setTargets(nextTargets) {
-    targets = nextTargets;
-    moveable.target = targets;
-}
-
-const moveable = new Moveable(document.body, {
-    container: svgroot.value,
-    target: targets,
-    draggable: true,
-    rotatable: true,
-    scalable: true,
-    keepRatio: true,
-})
-.on("clickGroup", (e) => {
-    selecto.clickTarget(e.inputEvent, e.inputTarget)
-})
-.on("renderEnd", (e) => { commit() })
-.on("renderGroupEnd", (e) => { commit() })
-.on("render", (e) => {
-    let item = items.value.find((it) => it.el === e.target)
-    item.transform = e.transform
-})
-.on("renderGroup", (ev) => {
-    ev.events.forEach(e => {
-        let item = items.value.find((it) => it.el === e.target)
-        item.transform = e.transform
-    });
-})
-
-const selecto = new Selecto({
-    container: svgroot.value,
-    selectByClick: true,
-    selectFromInside: false,
-    selectableTargets: [() => items.value.map(item => item.el)]
-})
-.on("dragStart",(e) => {
-    const target = e.inputEvent.target
-
-    if ( ! (target === svgroot.value || svgroot.value.contains(target) ) ) {
-        e.stop()
-        return
-    }
-    if (props.config.geodreieckaktiv || !statusEditieren.value || isPanning || zeigeRadierer.value) {
-        e.stop()
-        return
-    }
-
-    if (moveable.isMoveableElement(target) || targets.some(t => t === target || t.contains(target))) {
-        e.stop();
-        return
-    }
-})
-.on('drag', (e) => {
-    if (props.config.geodreieckaktiv || !statusEditieren.value || isPanning || zeigeRadierer.value) {
-        e.stop()
-        return
-    }
-})
-.on("select", e => {
-    if (e.isDragStartEnd) {
-        return
-    }
-    setTargets(e.selected)
-})
-.on("selectEnd", (e) => {
-    if (e.isDragStartEnd) {
-        e.inputEvent.preventDefault();
-        moveable.waitToChangeTarget().then(() => {
-            moveable.dragStart(e.inputEvent);
-        });
-    }
-    setTargets(e.selected)
-})
-
-///////////////////////////////////////////////////////////
-
 function exportJson() {
     return JSON.stringify({bilder: bilder.value, pfade:pfade.value, vorlagen: vorlagen.value})
 }
@@ -460,19 +481,31 @@ function importJson(jsonstr) {
     vorlagen.value = obj.vorlagen
 }
 
-function gobottom() {
-    svgtranslate.value.y -= 200
-}
-function gotop() {
-    svgtranslate.value.y += 200
-}
-function goleft() {
-    svgtranslate.value.x += 200
-}
-function goright() {
-    svgtranslate.value.x -= 200
-}
-defineExpose({deleteSelected, copySelected, neuesBild, undo, redo, exportJson, importJson, gobottom, gotop, goleft, goright, neueVorlage})
+function gobottom() { transform.value.y -= 200 }
+function gotop() { transform.value.y += 200 }
+function goleft() { transform.value.x += 200 }
+function goright() { transform.value.x -= 200 }
+function zoomout() { transform.value.scale *= .9 }
+function zoomin() { transform.value.scale *= 1.1 }
+function zoomreset() { transform.value.scale = 1 }
+
+defineExpose({
+    deleteSelected,
+    copySelected,
+    neuesBild,
+    neueVorlage,
+    exportJson,
+    importJson,
+    undo,
+    redo,
+    gobottom,
+    gotop,
+    goleft,
+    goright,
+    zoomin,
+    zoomout,
+    zoomreset
+})
 
 </script>
 

@@ -1,9 +1,9 @@
 <template>
     <div @fullscreenchange="fullscreenchange">
         <tafel :config="config" ref="tafel_comp" style="min-width: 100vw; height: 100vh; overflow: visible" @hatgemalt="() => ungespeichert = true"/>
-        <q-btn size="10px" class="go-left" glossy dense :icon="icons['go-left']" @click="() => tafel_comp.goleft()" style="position: absolute; left: 10px; top: 50%;" />
-        <q-btn size="10px" class="go-right" glossy dense :icon="icons['go-right']" @click="() => tafel_comp.goright()" style="position: absolute; right: 10px; top: 50%;" />
-        <q-btn size="10px" class="go-top" glossy dense :icon="icons['go-top']" @click="() => tafel_comp.gotop()" />
+        <q-btn size="10px" glossy dense class="go-left" :icon="icons['go-left']" @click="() => tafel_comp.goleft()" />
+        <q-btn size="10px" glossy dense class="go-right" :icon="icons['go-right']" @click="() => tafel_comp.goright()" />
+        <q-btn size="10px" glossy dense class="go-top" :icon="icons['go-top']" @click="() => tafel_comp.gotop()" />
         <div class="column items-center" style="position: absolute; bottom: 0px; width: 100%;">
             <q-btn size="10px" class="go-bottom" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/>
             <q-card class="q-ma-md col">
@@ -26,6 +26,8 @@
                             </q-list>
                         </q-menu>
                     </q-btn>
+                    <q-btn dense :icon="icons['darkmode']" glossy @click="toggleDarkmode" />
+                    <q-btn dense :icon="config.fullscreen ? 'fullscreen_exit' : 'fullscreen'" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
                     <q-btn dense :icon="icons['logpapier']">
                         <q-menu>
                             <q-list>
@@ -41,8 +43,6 @@
                             </q-list>
                         </q-menu>
                     </q-btn>
-                    <q-btn dense :icon="icons['darkmode']" glossy @click="toggleDarkmode" />
-                    <q-btn dense :icon="config.fullscreen ? 'fullscreen_exit' : 'fullscreen'" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
                     <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
                     <q-btn dense :icon="icons['undo']" @click="() => tafel_comp.undo()" />
                     <q-btn dense :icon="icons['redo']" @click="() => tafel_comp.redo()" />
@@ -66,6 +66,9 @@
                                 </q-btn>
                         </template>
                     </q-btn-toggle>
+                    <q-btn dense :icon="icons['zoom-out']" @click="() => tafel_comp.zoomout()" />
+                    <q-btn dense :icon="icons['zoom-reset']" @click="() => tafel_comp.zoomreset()" />
+                    <q-btn dense :icon="icons['zoom-in']" @click="() => tafel_comp.zoomin()" />
                     <template v-if="config.modus == 'radieren'">
                         <div>
                             <q-input dense type="number" v-model="config.rubbersize" label="Radierergröße"  />
@@ -182,7 +185,7 @@ const icons = ref({
     'radieren': 'svguse:icons.svg#radiergummi',
     'darkmode': 'svguse:icons.svg#dark|0 0 16 16',
     'fullscreen': 'svguse:icons.svg#fullscreen|0 0 16 16',
-    'geodreieck': 'svguse:icons.svg#geodreieck-icon|0 0 16 16',
+    'geodreieck': 'svguse:icons.svg#geodreieck|0 0 16 16',
     'defaultcolor': 'svguse:icons.svg#defaultcolor|0 0 16 16',
     'freecolor': 'svguse:icons.svg#freecolor|0 0 16 16',
     '1': 'svguse:icons.svg#pensize-1px|0 0 16 16',
@@ -202,6 +205,9 @@ const icons = ref({
     'linienpapier': 'svguse:icons.svg#linienpapier|0 0 16 16',
     'logpapier': 'svguse:icons.svg#logpapier|0 0 16 16',
     'karopapier': 'svguse:icons.svg#karopapier|0 0 16 16',
+    'zoom-in': 'svguse:icons.svg#zoom-in|0 0 16 16',
+    'zoom-out': 'svguse:icons.svg#zoom-out|0 0 16 16',
+    'zoom-reset': 'svguse:icons.svg#zoom-reset|0 0 16 16',
 })
 
 const linewidthmenu = ref([
@@ -230,7 +236,7 @@ const toolmenu = ref([
         {value: 'kreis', label: 'Kreis'},
         {value: 'kreisf', label: 'Kreis gef.'},
     ]},
-    {value: 'stift', label: 'Schreiben'},
+    {value: 'stift', label: 'Freihand'},
 ])
 
 const styleColorButton = computed(() => {
