@@ -1,7 +1,7 @@
 # Endlostafel für das digitale Klassenzimmer
 Eine einfache Schreibfläche für digitale Tafeln mit nützlichen Extras für den Unterricht.
 
-Diese Open-Source Softwarelösung unterliegt der GPL.
+Diese Open-Source Softwarelösung unterliegt der MIT-Lizenz.
 
 ## Hintergrund
 Eine digitale Tafel besteht aus zwei Hardware-Komponenten:
@@ -9,14 +9,20 @@ Eine digitale Tafel besteht aus zwei Hardware-Komponenten:
 * einem PC.
 
 Das Display fungiert einerseits als Anzeigegerät und andererseits als Eingabegerät (Maus) für den PC.
-Daher ist das Display mit HDMI oder DP und mit USB verbunden.
+Daher ist das Display mit USB  und mit HDMI oder DP verbunden.
 Alternativ gibt es auch Lösungen, bei dem die Displays mit dem Rechner über das Netzwerk (LAN) kommunizieren. 
 
 ## Funktionsumfang
 Dieses Programm stellt eine möglichst große Schreibfläche für den Unterricht zur Verfügung.
-Es wurde so konzipiert, dass alle Funktionen mit Klicks ausgeführt werden können.
-Die Menge an implementierten Funktionen sind auf ein Nötigstes reduziert.
-Es ist kein Zeichenprogramm.
+Es wurde so konzipiert, dass alle Funktionen mit Klicks ausgeführt werden können, weil man
+als Lehrer an der Tafel steht und währenddessen keine gleichzeitigen Tastatureingaben tätigen kann
+(Shift- oder Strg-Tasten).
+Die Menge an implementierten Funktionen sind auf ein Nötigstes reduziert. Man bedenke immer, dass die
+Schüler ein Heft und einen Stift in der Hand haben. Ein Verschieben der Objekte (o.ä.)
+sollte daher vermieden werden.
+
+Es ist kein Zeichenprogramm! Wer mehr Funktionen möchte, erstelle sich z.B. mit Inkscape wunderschöne
+Grafiken.
 
 Folgende Funktionen stehen zur Verfügung:
 
@@ -31,31 +37,16 @@ Folgende Funktionen stehen zur Verfügung:
 * Einblenden eines Geodreiecks mit Snap-Funktion
 * Verschieben und Löschen einzelner Elemente
 * Speichern der Inhalte als SVG-Dateien
+* Speichern der Inhalte als JSON-Datei, damit die Elemente wieder geladen werden können
 * Laden von SVGs und Bitmaps
 * Einfügen der Zwischenablage als Grafik
-* Speichern einiger weniger Voreinstellungen
 * Zoomen einzelner Elemente oder der gesamten Zeichenfläche
-
-Einmal gespeicherte Tafelbilder können im nachhinein **nicht** mehr bearbeitet werden.
 
 ## Technische Details
 
-Das Programm ist in Python 3 geschrieben (https://www.python.org/) und benötigt
-die Bibliotheken **pyside6**, **psutil** und zum Erzeugen einer statischen, ausführbaren
-Datei **pyinstaller**, die mit Hilfe von **pip** installiert werden können.
-
-### Pyside6
-Pyside6 ist eine von Qt zur Verfügung gestellte Python-Anbindung an die Bibliotheken von Qt (https://www.qt.io/).
-SVG Grafiken werden über Qt verarbeitet und sind daher im Rahmen von XSVG  implementiert (https://doc.qt.io/qt-5/qtsvg-attribution-xsvg.html).
-
-### Pyinstaller
-Um unter Windows eine ausführbare Datei zu erzeugen, verwendet man den Befehl:
-
-    pyinstaller.exe -F -i oszli-icon.ico -w endlostafel.py
-
-## Bekannte Bugs
-* Die Undo-Funktion funktioniert nicht beim Radieren oder Löschen von Objekten.
-* Beim Umschalten in den Edit-Modus funktioniert das Rubberband erst beim zweiten Versuch (nur bei Touchscreens).
+Das Programm nutzt das Framework Vue (https://vuejs.org/), VueUse (https://vueuse.org/), das grafische
+Benutzerzwischengesicht (GUI) Quasar (https://quasar.dev/) und die beiden Tools movable (https://daybrush.com/moveable/)
+sowie selecto (https://daybrush.com/selecto).
 
 ## Über den Autor
 Ich bin Physik- und Mathematiklehrer an der Lise-Meitner-Schule in Berlin.
