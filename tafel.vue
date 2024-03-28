@@ -1,5 +1,5 @@
 <template>
-    <svg ref="svgroot" id="tafel" xmlns="http://www.w3.org/2000/svg" style="touch-action: none"
+    <svg ref="svg_comp" id="tafel" xmlns="http://www.w3.org/2000/svg" style="touch-action: none"
         @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" 
         @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
         >
@@ -7,7 +7,7 @@
         <g ref="group_comp" id='container' :style="transformstyle">
             <vorlagenvue :vorlagen="vorlagen" />
             <bildervue :bilder="bilder" />
-            <pfadevue :pfade="pfade" ref="pfade_comp"/>
+            <pfadevue :pfade="pfade" />
         </g>
         <rect v-if="zeigeRadierer" ref="radiergummi" :="radiergummiBox" style="stroke: red; stroke-width: 2px; fill: none;" />
         <geodreieck  ref="geodreieck_el"  v-show="props.config.geodreieckaktiv">
@@ -27,8 +27,8 @@ import vorlagenvue from './vorlagen.vue'
 const props = defineProps(['config'])
 const emit = defineEmits(['hatgemalt'])
 
+const svg_comp = ref(null)
 const group_comp = ref(null)
-const pfade_comp = ref(null)
 const pfade = ref([])
 const bilder = ref([])
 const vorlagen = ref([])
@@ -36,8 +36,8 @@ let startpos = new DOMPoint(0,0)
 let itemid = 0
 let neuerPfad = null
 const items = computed(() => [...pfade.value,...bilder.value,...vorlagen.value])
-const transform = ref({x:0, y:0, scale: 1})
-const transformOrigin = ref({x:window.innerWidth/2, y:window.innerHeight/2})
+const transform = ref({x: 0, y: 0, scale: 1})
+const transformOrigin = ref({x: window.innerWidth/2, y: window.innerHeight/2})
 const transformstyle = computed(() => {
     return {
         transform: `scale(${transform.value.scale}) translate(${transform.value.x}px, ${transform.value.y}px)`,
@@ -49,7 +49,6 @@ onresize = () => {
     transformOrigin.value.y = window.innerHeight/2
 }
 
-const svgroot = ref(null)
 const statusEditieren = computed(() => {setTargets([]); return props.config.modus == 'editieren' })
 const statusZeichnen = computed(()  => {setTargets([]); return props.config.modus == 'zeichnen' })
 const statusRadieren = computed(()  => {setTargets([]); return props.config.modus == 'radieren' })
@@ -201,7 +200,7 @@ function draw(e) {
     if (props.config.geodreieckaktiv) {
         pos=geosnap(pos)
     }
-    pfade_comp.value.draw(neuerPfad, pos)
+    neuerPfad.draw(pos)
 }
 
 function radiere(e) {
@@ -213,7 +212,7 @@ function radiere(e) {
     let removelist = []
     for (let item of pfade.value) {
         if (checkIntersection(radiergummiBox.value, item.el.getBoundingClientRect())) {
-            pfade_comp.value.removePointsInRect(item, radiergummiBox.value)
+            item.removePoints(radiergummiBox.value)
             if (item.points.length < 2)
                 removelist.push(item)
         }
@@ -318,7 +317,7 @@ function setTargets(nextTargets) {
 }
 
 const moveable = new Moveable(document.body, {
-    container: svgroot.value,
+    container: svg_comp.value,
     target: targets,
     draggable: true,
     rotatable: true,
@@ -350,7 +349,7 @@ const moveable = new Moveable(document.body, {
 })
 
 const selecto = new Selecto({
-    container: svgroot.value,
+    container: svg_comp.value,
     selectByClick: true,
     selectFromInside: false,
     selectableTargets: [() => items.value.map(item => item.el), '#geodreieck']
@@ -358,7 +357,7 @@ const selecto = new Selecto({
 .on("dragStart",(e) => {
     const target = e.inputEvent.target
 
-    if ( ! (target === svgroot.value || svgroot.value.contains(target) ) ) {
+    if ( ! (target === svg_comp.value || svg_comp.value.contains(target) ) ) {
         e.stop()
         return
     }

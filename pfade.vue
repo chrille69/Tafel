@@ -2,7 +2,7 @@
     <g>
         <template v-for="pfad in pfade" :key="pfad.id">
             <path
-                :ref="(el) => pfad.el = el"
+                :ref="(el) => init(pfad, el)"
                 :d="pfadstring(pfad.points)"
                 :style="'transform:'+pfad.transform"
                 :="pfad.attr"
@@ -31,35 +31,34 @@ const drawarray = {
     'quadratf': drawquadrat,
 }
 
-function draw(pfad, pos) {
-    if (pfad.tool in drawarray)
-        drawarray[pfad.tool](pfad, pos)
-    else
-        drawstift(pfad, pos)
+function init(pfad, el) {
+    pfad.el = el
+    pfad.draw = drawarray[pfad.tool].bind(pfad)
+    pfad.removePoints = removePointsInRect.bind(pfad)
 }
 
-function drawstift(pfad, pos) {
-    pfad.points.value.push(['L', pos.x, pos.y])
+function drawstift(pos) {
+    this.points.push(['L', pos.x, pos.y])
 }
 
-function drawlinie(pfad, pos) {
-    pfad.points.value = [['M', pfad.startpos.x, pfad.startpos.y], ['L', pos.x, pos.y]]
+function drawlinie(pos) {
+    this.points = [['M', this.startpos.x, this.startpos.y], ['L', pos.x, pos.y]]
 }
 
-function drawliniesnap(pfad, pos) {
-    let dpos = {x: pos.x - pfad.startpos.x, y: pos.y - pfad.startpos.y}
-    let endpos = {x: pfad.startpos.x, y: pos.y}
+function drawliniesnap(pos) {
+    let dpos = {x: pos.x - this.startpos.x, y: pos.y - this.startpos.y}
+    let endpos = {x: this.startpos.x, y: pos.y}
     if (Math.abs(dpos.y) <= Math.abs(dpos.x))
-        endpos = {x: pos.x, y: pfad.startpos.y}
-    drawlinie(pfad, endpos)
+        endpos = {x: pos.x, y: this.startpos.y}
+    drawlinie.call(this, endpos)
 }
 
-function drawpfeil(pfad, pos) {
-    let dpos = {x: pos.x - pfad.startpos.x, y: pos.y - pfad.startpos.y}
+function drawpfeil(pos) {
+    let dpos = {x: pos.x - this.startpos.x, y: pos.y - this.startpos.y}
     let lw = 5
     let laenge = Math.sqrt(dpos.x**2 + dpos.y**2)
-    pfad.points.value = [
-        ['M', pfad.startpos.x, pfad.startpos.y],
+    this.points = [
+        ['M', this.startpos.x, this.startpos.y],
         ['L', pos.x, pos.y],
         ['M', pos.x, pos.y],
         ['L', pos.x - 5*lw*dpos.x/laenge - lw*dpos.y/laenge, pos.y - 5*lw*dpos.y/laenge + lw*dpos.x/laenge],
@@ -68,51 +67,51 @@ function drawpfeil(pfad, pos) {
     ]
 }
 
-function drawpfeilsnap(pfad, pos) {
-    let dpos = {x: pos.x - pfad.startpos.x, y: pos.y - pfad.startpos.y}
-    let endpos = {x: pfad.startpos.x, y: pos.y}
+function drawpfeilsnap(pos) {
+    let dpos = {x: pos.x - this.startpos.x, y: pos.y - this.startpos.y}
+    let endpos = {x: this.startpos.x, y: pos.y}
     if (Math.abs(dpos.y) <= Math.abs(dpos.x))
-        endpos = {x: pos.x, y: pfad.startpos.y}
-    drawpfeil(pfad, endpos)
+        endpos = {x: pos.x, y: this.startpos.y}
+    drawpfeil.call(this, endpos)
 }
 
-function drawrechteck(pfad, pos) {
-    pfad.points.value = [
-        ['M', pfad.startpos.x, pfad.startpos.y],
-        ['L', pos.x, pfad.startpos.y],
+function drawrechteck(pos) {
+    this.points = [
+        ['M', this.startpos.x, this.startpos.y],
+        ['L', pos.x, this.startpos.y],
         ['L', pos.x, pos.y],
-        ['L', pfad.startpos.x, pos.y],
-        ['L', pfad.startpos.x, pfad.startpos.y],
+        ['L', this.startpos.x, pos.y],
+        ['L', this.startpos.x, this.startpos.y],
     ]
 }
 
-function drawquadrat(pfad, pos) {
-    let dpos = {x: pos.x - pfad.startpos.x, y: pos.y - pfad.startpos.y}
+function drawquadrat(pos) {
+    let dpos = {x: pos.x - this.startpos.x, y: pos.y - this.startpos.y}
     let d = Math.max(Math.abs(dpos.x), Math.abs(dpos.y))
     let dx = dpos.x > 0 ? d : -d
     let dy = dpos.y > 0 ? d : -d
-    let endpos = {x: pfad.startpos.x + dx, y: pfad.startpos.y + dy}
-    drawrechteck(pfad, endpos)
+    let endpos = {x: this.startpos.x + dx, y: this.startpos.y + dy}
+    drawrechteck.call(this, endpos)
 }
 
-function drawellipse(pfad, pos) {
-    let rx = Math.abs(pfad.startpos.x - pos.x)
-    let ry = Math.abs(pfad.startpos.y - pos.y)
-    pfad.points.value = [['M', pfad.startpos.x + rx, pfad.startpos.y]]
+function drawellipse(pos) {
+    let rx = Math.abs(this.startpos.x - pos.x)
+    let ry = Math.abs(this.startpos.y - pos.y)
+    this.points = [['M', this.startpos.x + rx, this.startpos.y]]
     for (let winkel = 0; winkel <= 360; winkel += 15) {
-        let endx = pfad.startpos.x + rx*Math.cos(winkel*Math.PI/180.0)
-        let endy = pfad.startpos.y + ry*Math.sin(winkel*Math.PI/180.0)
-        pfad.points.value.push(['A', rx, ry, 0, 0, 1, endx, endy])
+        let endx = this.startpos.x + rx*Math.cos(winkel*Math.PI/180.0)
+        let endy = this.startpos.y + ry*Math.sin(winkel*Math.PI/180.0)
+        this.points.push(['A', rx, ry, 0, 0, 1, endx, endy])
     }
 }
 
-function drawkreis(pfad, pos) {
-    let r = Math.sqrt((pfad.startpos.x - pos.x)**2 + (pfad.startpos.y - pos.y)**2)
-    pfad.points.value = [['M', pfad.startpos.x + r, pfad.startpos.y]]
+function drawkreis(pos) {
+    let r = Math.sqrt((this.startpos.x - pos.x)**2 + (this.startpos.y - pos.y)**2)
+    this.points = [['M', this.startpos.x + r, this.startpos.y]]
     for (let winkel = 0; winkel <= 360; winkel += 15) {
-        let endx = pfad.startpos.x + r*Math.cos(winkel*Math.PI/180.0)
-        let endy = pfad.startpos.y + r*Math.sin(winkel*Math.PI/180.0)
-        pfad.points.value.push(['A', r, r, 0, 0, 1, endx, endy])
+        let endx = this.startpos.x + r*Math.cos(winkel*Math.PI/180.0)
+        let endy = this.startpos.y + r*Math.sin(winkel*Math.PI/180.0)
+        this.points.push(['A', r, r, 0, 0, 1, endx, endy])
     }
 }
 
@@ -127,15 +126,15 @@ function pfadstring(points) {
     return str
 }
 
-function removePointsInRect(item, rect) {
-    const mtrx = item.el.getCTM()
-    for (let idx in item.points) {
+function removePointsInRect(rect) {
+    const mtrx = this.el.getCTM()
+    for (let idx in this.points) {
         const i = parseInt(idx)
         if (isNaN(i)) continue
-        const pos = pointPos(item.points[i])
+        const pos = pointPos(this.points[i])
         const postfm = pos.matrixTransform(mtrx)
         if (isPointInRect(postfm, rect)) {
-            removePointAt(item.points, i)
+            removePointAt(this.points, i)
         }
     }
 }
@@ -194,5 +193,4 @@ function pointPos(point) {
         return null
 }
 
-defineExpose({draw, removePointsInRect})
 </script>
