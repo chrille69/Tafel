@@ -49,7 +49,7 @@ const vorlagen = ref([])
 let startpos = new DOMPoint(0,0)
 let itemid = 0
 let neuerPfad = null
-const items = computed(() => [...pfade.value,...bilder.value,...vorlagen.value])
+const items = computed(() => [...pfade.value,...bilder.value,...(props.config.hilfslinienFixiert ? [] : vorlagen.value)])
 const transform = ref({x: 0, y: 0, scale: 1})
 const transformOrigin = ref({x: window.innerWidth/2, y: window.innerHeight/2})
 const groupstyle = computed(() => {
@@ -260,12 +260,14 @@ function obenlinks() {
     const point = new DOMPoint(0,0)
     let mtrx = document.getElementById('tafel').getScreenCTM()
     const svgpoint = point.matrixTransform(mtrx.inverse())
-    mtrx = document.getElementById('container').getScreenCTM()
+    mtrx = group_comp.value.getScreenCTM()
     return svgpoint.matrixTransform(mtrx.inverse())
 }
 
-function getPosition(evt, id='container') {
-    let CTM = document.getElementById(id).getScreenCTM()
+function getPosition(evt, tafel=false) {
+    let CTM = group_comp.value.getScreenCTM()
+    if (tafel)
+        CTM = document.getElementById('tafel').getScreenCTM()
     let p = new DOMPoint()
     if (evt.touches) {
         p.x = evt.touches[0].clientX
@@ -282,10 +284,10 @@ function getPosition(evt, id='container') {
 function geosnap(pos) {
     let p = new DOMPoint(pos.x, pos.y)
     let geomtrx = geodreieck_comp.value.getCTM()
-    let conmtrx = document.getElementById('container').getScreenCTM()
-    let geop = p.matrixTransform(conmtrx).matrixTransform(geomtrx.inverse())
+    let groupmtrx = group_comp.value.getScreenCTM()
+    let geop = p.matrixTransform(groupmtrx).matrixTransform(geomtrx.inverse())
     if (geop.y < 90 && geop.y > 70) geop.y = 80
-    p = geop.matrixTransform(geomtrx).matrixTransform(conmtrx.inverse())
+    p = geop.matrixTransform(geomtrx).matrixTransform(groupmtrx.inverse())
     return p
 }
 

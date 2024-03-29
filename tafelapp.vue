@@ -77,6 +77,7 @@
                     <template v-else-if="config.modus == 'editieren'">
                         <q-btn dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected"/>
                         <q-btn dense :icon="icons['delete']" glossy @click="tafel_comp.deleteSelected"/>
+                        <q-checkbox label="Hilfslinien fixieren" v-model="config.hilfslinienFixiert" />
                     </template>
                     <template v-else>
                         <q-btn-toggle dense v-model="config.brushColor" push glossy toggle-color="primary"
@@ -155,7 +156,8 @@ const config = ref({
     rubbersize: 100,
     darkmode: true,
     fullscreen: false,
-    geodreieckaktiv: false
+    geodreieckaktiv: false,
+    hilfslinienFixiert: false
 })
 const freeColor = ref('yellow')
 const filemenu = ref(false)
