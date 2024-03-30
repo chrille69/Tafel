@@ -11,9 +11,10 @@
             @change="commit"
             @updateTargets="setTargets">
         </moveablevue>
-        <svg id="tafel" xmlns="http://www.w3.org/2000/svg" :style="svgstyle"
+        <svg id="tafel" xmlns="http://www.w3.org/2000/svg"
             @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" 
             @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
+            style="touch-action: none; height: 100%; width: 100%"
             >
             <text v-if="false" x="20" y="20" style="fill: red;">Touchradius:{{ touchradius }}</text>
             <g ref="group_comp" :style="groupstyle">
@@ -43,6 +44,10 @@ import moveablevue from './moveable.vue'
 const props = defineProps(['config'])
 const emit = defineEmits(['hatgemalt'])
 
+const statusEditieren = computed(() => {emptyTargets(); return props.config.modus == 'editieren' })
+const statusZeichnen = computed(()  => {emptyTargets(); return props.config.modus == 'zeichnen' })
+const statusRadieren = computed(()  => {emptyTargets(); return props.config.modus == 'radieren' })
+
 const group_comp = ref(null)
 const pfade = ref([])
 const bilder = ref([])
@@ -50,6 +55,14 @@ const vorlagen = ref([])
 let startpos = new DOMPoint(0,0)
 let itemid = 0
 let neuerPfad = null
+
+const geodreieck_comp = ref(null)
+let dreheGD = false
+let schiebeGD = false
+
+let isPainting = false
+let isPanning = false
+
 const transform = ref({x: 0, y: 0, scale: 1})
 const transformOrigin = ref({x: window.innerWidth/2, y: window.innerHeight/2})
 const groupstyle = computed(() => {
@@ -65,19 +78,6 @@ const moveablestyle = computed(() => {
         transform: `translate(${x}px, ${y}px)`
     }
 })
-const svgstyle = computed(() => {
-    return {
-        touchAction: 'none',
-        height: '100%',
-        width: '100%',
-    }
-})
-onresize =  () => {
-    transformOrigin.value.x = window.innerWidth/2
-    transformOrigin.value.y = window.innerHeight/2
-    //await nextTick()
-    moveable_comp.value.updateRect()
-}
 
 const moveable_comp = ref(null)
 const items = computed(() => [...pfade.value,...bilder.value,...(props.config.hilfslinienFixiert ? [] : vorlagen.value)])
@@ -88,11 +88,7 @@ function setTargets(targets) {
 function emptyTargets() {
     setTargets([])
 }
-
 const moveableDisabled = computed(() => !statusEditieren.value || isPanning || zeigeRadierer.value)
-const statusEditieren = computed(() => {return props.config.modus == 'editieren' })
-const statusZeichnen = computed(()  => {return props.config.modus == 'zeichnen' })
-const statusRadieren = computed(()  => {return props.config.modus == 'radieren' })
 
 
 const zeigeRadierer = ref(false)
@@ -107,12 +103,19 @@ const radiergummiBox = computed(() => { return {
 const touchradius = ref(0)
 let touchcount = 0
 
-const geodreieck_comp = ref(null)
-let dreheGD = false
-let schiebeGD = false
 
-let isPainting = false
-let isPanning = false
+onresize =  () => {
+    transformOrigin.value.x = window.innerWidth/2
+    transformOrigin.value.y = window.innerHeight/2
+    //await nextTick()
+    moveable_comp.value.updateRect()
+}
+
+//////////////////////////////////////////////////////
+//
+// Pointer-Event-Handler
+//
+/////////////////////////////////////////////////////
 
 function startWork(e) {
     e.preventDefault()

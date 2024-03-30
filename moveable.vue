@@ -27,8 +27,8 @@ onMounted(() => {
     .on("clickGroup", (e) => {
         selecto.clickTarget(e.inputEvent, e.inputTarget)
     })
-    .on("renderEnd", (e) => { emit('change') })
-    .on("renderGroupEnd", (e) => { emit('change') })
+    .on("renderEnd", (e) => { if(e.isDrag) emit('change') })
+    .on("renderGroupEnd", (e) => { if(e.isDrag) emit('change') })
     .on("render", (e) => {
         if (e.target == props.geodreieck.$el) {
             props.geodreieck.setTransform(e.transformObject)
