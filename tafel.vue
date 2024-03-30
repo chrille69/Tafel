@@ -8,7 +8,6 @@
             :selectedItemIds="selectedItemIds"
             @update:selectedItemIds="setSelectedItemIds"
             @change="commit"
-            @transformGeodreieck="transformGeodreieck"
             @transformItem="transformItem">
         </moveablevue>
         <svg id="tafel" xmlns="http://www.w3.org/2000/svg"
@@ -65,6 +64,7 @@ const moveableDisabled = computed(() => !statusEditieren.value || isPanning.valu
 const items = computed(() => [...pfade.value,...bilder.value,...(props.config.hilfslinienFixiert ? [] : vorlagen.value)])
 const itemIds = computed(() => {
     const list = items.value.map(item => item.id)
+    list.push('geodreieck')
     setSelectedItemIds(selectedItemIds.value.filter(id => list.includes(id)))
     return list
 })
@@ -103,12 +103,11 @@ function neueId() {
     return `item${++itemid}`
 }
 
-function transformItem(id, transform) {
-    itemsdict.value[id].transform = transform
-}
-
-function transformGeodreieck(transformObject) {
-    geodreieck_comp.value.setTransform(transformObject)
+function transformItem(id, transform, transformObject) {
+    if (id == 'geodreieck')
+        geodreieck_comp.value.setTransform(transformObject)
+    else
+        itemsdict.value[id].transform = transform
 }
 
 function setSelectedItemIds(targets) {

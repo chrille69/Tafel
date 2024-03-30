@@ -6,7 +6,7 @@
 import { onMounted, ref, watch } from 'vue'
 
 const props = defineProps(['disabled','selectableItemIds','selectedItemIds'])
-const emit = defineEmits(['change','update:selectedItemIds','transformGeodreieck','transformItem'])
+const emit = defineEmits(['change','update:selectedItemIds','transformItem'])
 
 const moveable_comp = ref(null)
 
@@ -19,7 +19,6 @@ watch(() => props.selectedItemIds, (neu, alt) => {
 
 watch(() => props.selectableItemIds, (neu, alt) => {
     selectable.selectableTargets = neu.map((id) => '#'+id)
-    selectable.selectableTargets.push('#geodreieck')
 })
 
 onMounted(() => {
@@ -35,19 +34,11 @@ onMounted(() => {
     .on("renderEnd", (e) => { if(e.isDrag) emit('change') })
     .on("renderGroupEnd", (e) => { if(e.isDrag) emit('change') })
     .on("render", (e) => {
-        if (e.target.id == 'geodreieck') {
-            emit('transformGeodreieck', e.transformObject)
-            return
-        }
-        emit('transformItem', e.target.id, e.transform)
+        emit('transformItem', e.target.id, e.transform, e.transformObject)
     })
     .on("renderGroup", (ev) => {
         ev.events.forEach(e => {
-            if (e.target.id == 'geodreieck') {
-                emit('transformGeodreieck', e.transformObject)
-                return
-            }
-            emit('transformItem', e.target.id, e.transform)
+            emit('transformItem', e.target.id, e.transform, e.transformObject)
         });
     })
 
