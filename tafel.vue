@@ -5,11 +5,11 @@
             :style="moveablestyle"
             :items="items"
             :geodreieck="geodreieck_comp"
-            :container="group_comp"
             :disabled="moveableDisabled"
-            :selectedElements="selectedElements"
+            :selectedItems="selectedItems"
             @change="commit"
-            @updateTargets="setTargets">
+            @updateTargets="setTargets"
+            @transformGeodreieck="transformGeodreieck">
         </moveablevue>
         <svg id="tafel" xmlns="http://www.w3.org/2000/svg"
             @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" 
@@ -21,7 +21,7 @@
                 <vorlagenvue :vorlagen="vorlagen" />
                 <bildervue :bilder="bilder" />
                 <pfadevue :pfade="pfade" />
-                <geodreieck  id="geodreieck" ref="geodreieck_comp"  v-show="props.config.geodreieckaktiv">
+                <geodreieck  id="geodreieck" ref="geodreieck_comp" class="selectable" v-show="props.config.geodreieckaktiv">
                     <template v-if="!statusEditieren">
                         <path id="verschiebegriff" style="pointer-events: bounding-box; fill: #0000ff; stroke-width:.26458" d="m80 40-3 3h2v4h-4v-2l-3 3 3 3v-2h4v4h-2l3 3 3-3h-2v-4h4v2l3-3-3-3v2h-4v-4h2z"/>
                         <path id="drehgriff" style="pointer-events: bounding-box; fill: #ff0000; stroke-width:.026458" d="m79.368 11 c-.21279.0071-.3996.02137-.53513.04429-1.6929.26686-3.1357.95898-4.3198 2.0598-1.2426 1.1759-2.0097 2.5607-2.385 4.3203-.05013.22512-.06674.22488-.75887.25004l-.70905.02491 1.3175 1.9768c.71729 1.0924 1.3262 1.9763 1.3512 1.9763.02497 0 .63391-.88387 1.3512-1.9763l1.3175-1.9768-.91756-.02491-.9171-.02492.04982-.22512c.317-1.3261 1.4682-2.844 2.719-3.5863.98397-.58367 2.4351-.91716 3.4857-.8087 1.2926.14182 2.5934.65881 3.2606 1.2926l.35891.34184.67537-.67538.66707-.67583-.33353-.29156c-1.0091-.89228-2.4937-1.6431-3.7279-1.9016-.43775-.09378-1.3116-.14056-1.95-.11948zm7.3045 5.3315c-.02517 0-.63438.88433-1.3517 1.9768l-1.3175 1.9763 1.8347.04983-.04982.22513c-.317 1.3259-1.4675 2.8438-2.7186 3.5858-.98397.58386-2.4351.91762-3.4857.80916-1.2926-.14183-2.5939-.65882-3.2611-1.2926l-.35844-.34184-.67583.67583-.66707.67537.33353.29202c.58386.51714 1.7016 1.2089 2.4021 1.4924 2.7188 1.1008 5.9207.48388 8.0976-1.551 1.2676-1.1841 2.035-2.5688 2.4187-4.3452.04994-.22512.06674-.22488.75887-.25004l.70859-.02492-1.3175-1.9768c-.71729-1.0924-1.3256-1.9763-1.3507-1.9763z"/>
@@ -52,6 +52,7 @@ const group_comp = ref(null)
 const pfade = ref([])
 const bilder = ref([])
 const vorlagen = ref([])
+//const itemsdict = computed(() => Object.fromEntries(items.value.map((item) => [item.id, item])))
 let startpos = new DOMPoint(0,0)
 let itemid = 0
 let neuerPfad = null
@@ -59,6 +60,9 @@ let neuerPfad = null
 const geodreieck_comp = ref(null)
 let dreheGD = false
 let schiebeGD = false
+function transformGeodreieck(transformObject) {
+    geodreieck_comp.value.setTransform(transformObject)
+}
 
 let isPainting = false
 let isPanning = false
@@ -81,9 +85,9 @@ const moveablestyle = computed(() => {
 
 const moveable_comp = ref(null)
 const items = computed(() => [...pfade.value,...bilder.value,...(props.config.hilfslinienFixiert ? [] : vorlagen.value)])
-const selectedElements = ref([])
+const selectedItems = ref([])
 function setTargets(targets) {
-    selectedElements.value = targets
+    selectedItems.value = targets
 }
 function emptyTargets() {
     setTargets([])
@@ -401,28 +405,28 @@ function neuesBild(file) {
 
 
 function deleteSelected() {
-    pfade.value = pfade.value.filter((item) => selectedElements.value.indexOf(item.el) < 0 )
-    bilder.value = bilder.value.filter((item) => selectedElements.value.indexOf(item.el) < 0 )
-    vorlagen.value = vorlagen.value.filter((item) => selectedElements.value.indexOf(item.el) < 0 )
+    pfade.value = pfade.value.filter((item) => selectedItems.value.indexOf(item.el) < 0 )
+    bilder.value = bilder.value.filter((item) => selectedItems.value.indexOf(item.el) < 0 )
+    vorlagen.value = vorlagen.value.filter((item) => selectedItems.value.indexOf(item.el) < 0 )
     commit()
     emptyTargets()
 }
 
 function copySelected() {
-    let copyitems = pfade.value.filter((item) => selectedElements.value.indexOf(item.el) >= 0 )
+    let copyitems = pfade.value.filter((item) => selectedItems.value.indexOf(item.el) >= 0 )
     for (let item of copyitems) {
         let newitem = {...item}
         newitem.points = [...item.points]
         newitem.id = ++itemid
         pfade.value.unshift(newitem)
     }
-    copyitems = bilder.value.filter((item) => selectedElements.value.indexOf(item.el) >= 0 )
+    copyitems = bilder.value.filter((item) => selectedItems.value.indexOf(item.el) >= 0 )
     for (let item of copyitems) {
         let newitem = {...item}
         newitem.id = ++itemid
         bilder.value.unshift(newitem)
     }
-    copyitems = vorlagen.value.filter((item) => selectedElements.value.indexOf(item.el) >= 0 )
+    copyitems = vorlagen.value.filter((item) => selectedItems.value.indexOf(item.el) >= 0 )
     for (let item of copyitems) {
         let newitem = {...item}
         newitem.id = ++itemid

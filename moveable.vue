@@ -5,15 +5,15 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 
-const props = defineProps(['items','container','disabled','geodreieck','selectedElements'])
-const emit = defineEmits(['change','updateTargets'])
+const props = defineProps(['items','disabled','geodreieck','selectedItems'])
+const emit = defineEmits(['change','updateTargets','transformGeodreieck'])
 
 const moveable_comp = ref(null)
 
 let moveable = null
 let selecto = null
 
-watch(() => props.selectedElements, (neu,alt) => {
+watch(() => props.selectedItems, (neu,alt) => {
     moveable.target = neu
 })
 
@@ -31,7 +31,7 @@ onMounted(() => {
     .on("renderGroupEnd", (e) => { if(e.isDrag) emit('change') })
     .on("render", (e) => {
         if (e.target == props.geodreieck.$el) {
-            props.geodreieck.setTransform(e.transformObject)
+            emit('transformGeodreieck', e.transformObject)
             return
         }
         let item = props.items.find((it) => it.el === e.target)
@@ -40,7 +40,7 @@ onMounted(() => {
     .on("renderGroup", (ev) => {
         ev.events.forEach(e => {
             if (e.target == props.geodreieck.$el) {
-                props.geodreieck.setTransform(e.transformObject)
+                emit('transformGeodreieck', e.transformObject)
                 return
             }
             let item = props.items.find((it) => it.el === e.target)
@@ -52,12 +52,12 @@ onMounted(() => {
     selecto = new Selecto({
         selectByClick: true,
         selectFromInside: false,
-        selectableTargets: [() => props.items.map(item => item.el), '#geodreieck']
+        selectableTargets: ['.selectable']
     })
     .on("dragStart",(e) => {
         const target = e.inputEvent.target
 
-        if ( ! ( target == props.container.ownerSVGElement || props.container.contains(target) ) ) {
+        if ( ! ( target.id == 'tafel' || target.ownerSVGElement?.id == 'tafel' ) ) {
            e.stop()
             return
         }
@@ -67,7 +67,7 @@ onMounted(() => {
             return
         }
 
-        if (moveable.isMoveableElement(target) || props.selectedElements.some(t => t === target || t.contains(target))) {
+        if (moveable.isMoveableElement(target) || props.selectedItems.some(t => t === target || t.contains(target))) {
             e.stop();
             return
         }
@@ -82,7 +82,7 @@ onMounted(() => {
         if (e.isDragStartEnd) {
             return
         }
-        emit('updateTargets',e.selected)
+        emit('updateTargets', e.selected)
     })
     .on("selectEnd", (e) => {
         if (e.isDragStartEnd) {
@@ -91,7 +91,7 @@ onMounted(() => {
                 moveable.dragStart(e.inputEvent);
             });
         }
-        emit('updateTargets',e.selected)
+        emit('updateTargets', e.selected)
     })
 })
 
