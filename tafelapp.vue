@@ -263,7 +263,6 @@ function toggleFullscreen() {
 }
 
 function fullscreenchange(evt) {
-    console.log(evt)
     if (document.fullscreenElement) {
         config.value.fullscreen = false
     } else {
@@ -276,6 +275,8 @@ function exportSVG() {
     if (config.value.darkmode) {
         svgelement.setAttribute("style", "background-color: #1d1d1d; color: #fff;")
     }
+    svgelement.getElementById('geodreieck').remove()
+
     let a = document.createElement("a");
     a.style = "display: none";
     document.body.appendChild(a);

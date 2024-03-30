@@ -1,14 +1,14 @@
 <template>
     <g>
         <template v-for="vorlage in vorlagen" :key="vorlage.id">
-            <g :ref="(el) => vorlage.el = el" :style="'transform:'+vorlage.transform" class="origin">
-                <component
-                    :is="comp[vorlage.typ]"
-                    :groesse="vorlage.groesse"
-                    :xdekaden="vorlage.xdekaden"
-                    :ydekaden="vorlage.ydekaden"
-                />
-            </g>
+            <component
+                :ref="(el) => vorlage.el = el.$el"
+                :style="stylefn.call(vorlage)"
+                :is="comp[vorlage.typ]"
+                :groesse="vorlage.groesse"
+                :xdekaden="vorlage.typ == 'mmlogpapier' ? vorlage.xdekaden : null"
+                :ydekaden="vorlage.typ == 'mmlogpapier' ? vorlage.ydekaden : null"
+            />
         </template>
     </g>
 </template>
@@ -26,4 +26,14 @@ const comp = ref({
     'karopapier': markRaw(karopapier),
     'mmlogpapier': markRaw(mmlogpapier)
 })
+
+function stylefn() {
+    return {
+        transform: this.transform,
+        pointerEvents: 'bounding-box',
+        transformOrigin: 'center',
+        transformBox: 'fill-box',
+    }
+}
+
 </script>

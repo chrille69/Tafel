@@ -4,9 +4,8 @@
             <path
                 :ref="(el) => init(pfad, el)"
                 :d="pfadstring(pfad.points)"
-                :style="'transform:'+pfad.transform"
+                :style="stylefn.call(pfad)"
                 :="pfad.attr"
-                class="rundeSache selectable origin"
             />
         </template>
     </g>
@@ -35,6 +34,17 @@ function init(pfad, el) {
     pfad.el = el
     pfad.draw = drawarray[pfad.tool].bind(pfad)
     pfad.removePoints = removePointsInRect.bind(pfad)
+}
+
+function stylefn() {
+    return {
+        strokeLinecap: 'round',
+        strokeLinejoin: 'round',
+        transform: this.transform,
+        pointerEvents: 'bounding-box',
+        transformOrigin: 'center',
+        transformBox: 'fill-box',
+    }
 }
 
 function drawstift(pos) {

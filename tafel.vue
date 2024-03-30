@@ -7,7 +7,9 @@
             :geodreieck="geodreieck_comp"
             :container="group_comp"
             :disabled="moveableDisabled"
-            @change="commit">
+            :selectedElements="selectedElements"
+            @change="commit"
+            @updateTargets="setTargets">
         </moveablevue>
         <svg id="tafel" xmlns="http://www.w3.org/2000/svg" :style="svgstyle"
             @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" 
@@ -25,7 +27,7 @@
                     </template>
                 </geodreieck>
             </g>
-            <rect v-if="zeigeRadierer" ref="radiergummi" :="radiergummiBox" style="stroke: red; stroke-width: 2px; fill: none;" />
+            <rect v-if="zeigeRadierer" :="radiergummiBox" style="stroke: red; stroke-width: 2px; fill: none;" />
         </svg>
     </div>
 </template>
@@ -41,7 +43,6 @@ import moveablevue from './moveable.vue'
 const props = defineProps(['config'])
 const emit = defineEmits(['hatgemalt'])
 
-const moveable_comp = ref(null)
 const group_comp = ref(null)
 const pfade = ref([])
 const bilder = ref([])
@@ -49,7 +50,6 @@ const vorlagen = ref([])
 let startpos = new DOMPoint(0,0)
 let itemid = 0
 let neuerPfad = null
-const items = computed(() => [...pfade.value,...bilder.value,...(props.config.hilfslinienFixiert ? [] : vorlagen.value)])
 const transform = ref({x: 0, y: 0, scale: 1})
 const transformOrigin = ref({x: window.innerWidth/2, y: window.innerHeight/2})
 const groupstyle = computed(() => {
@@ -72,18 +72,29 @@ const svgstyle = computed(() => {
         width: '100%',
     }
 })
-onresize = () => {
+onresize =  () => {
     transformOrigin.value.x = window.innerWidth/2
     transformOrigin.value.y = window.innerHeight/2
+    //await nextTick()
+    moveable_comp.value.updateRect()
+}
+
+const moveable_comp = ref(null)
+const items = computed(() => [...pfade.value,...bilder.value,...(props.config.hilfslinienFixiert ? [] : vorlagen.value)])
+const selectedElements = ref([])
+function setTargets(targets) {
+    selectedElements.value = targets
+}
+function emptyTargets() {
+    setTargets([])
 }
 
 const moveableDisabled = computed(() => !statusEditieren.value || isPanning || zeigeRadierer.value)
-const statusEditieren = computed(() => {empty(); return props.config.modus == 'editieren' })
-const statusZeichnen = computed(()  => {empty(); return props.config.modus == 'zeichnen' })
-const statusRadieren = computed(()  => {empty(); return props.config.modus == 'radieren' })
+const statusEditieren = computed(() => {return props.config.modus == 'editieren' })
+const statusZeichnen = computed(()  => {return props.config.modus == 'zeichnen' })
+const statusRadieren = computed(()  => {return props.config.modus == 'radieren' })
 
 
-const radiergummi = ref(null)
 const zeigeRadierer = ref(false)
 const radiergummiPos = ref({x: 0, y: 0})
 const radiergummiBox = computed(() => { return {
@@ -206,6 +217,7 @@ function startDraw(e) {
     neuerPfad = {
         tool: props.config.tool,
         startpos: startpos,
+        selected: false,
         points: ref([['M', startpos.x, startpos.y]]),
         attr: {
             stroke: filledItem ? 'none' : color,
@@ -283,7 +295,7 @@ function getPosition(evt, tafel=false) {
 
 function geosnap(pos) {
     let p = new DOMPoint(pos.x, pos.y)
-    let geomtrx = geodreieck_comp.value.getCTM()
+    let geomtrx = geodreieck_comp.value.$el.getCTM()
     let groupmtrx = group_comp.value.getScreenCTM()
     let geop = p.matrixTransform(groupmtrx).matrixTransform(geomtrx.inverse())
     if (geop.y < 90 && geop.y > 70) geop.y = 80
@@ -317,14 +329,14 @@ function undo() {
     pfadhistory.undo()
     bildhistory.undo()
     vorlagenhistory.undo()
-    moveable_comp.value.empty()
+    emptyTargets()
 }
 
 function redo() {
     pfadhistory.redo()
     bildhistory.redo()
     vorlagenhistory.redo()
-    moveable_comp.value.empty()
+    emptyTargets()
 }
 
 function commit() {
@@ -334,9 +346,6 @@ function commit() {
     emit('hatgemalt')
 }
 
-function empty() {
-    if (moveable_comp.value) moveable_comp.value.empty()
-}
 ///////////////////////////////////////////////////////////
 //
 // Funktionen, die von außen erreichbar sein sollen
@@ -347,6 +356,7 @@ function neueVorlage(typ, groesse=1000, xdekaden=0, ydekaden=0) {
     let ol = obenlinks()
     const vorlage = {
         typ: typ,
+        selected: false,
         groesse: groesse,
         xdekaden: xdekaden,
         ydekaden: ydekaden,
@@ -354,7 +364,6 @@ function neueVorlage(typ, groesse=1000, xdekaden=0, ydekaden=0) {
         el: null,
         id: ++itemid
     }
-    console.log(vorlage)
     vorlagen.value.push(vorlage)
     commit()
 }
@@ -367,6 +376,7 @@ function neuesBild(file) {
             height: 500,
             href: null
         },
+        selected: false,
         transform: `translate(${ol.x}px, ${ol.y}px)`,
         el: null,
         id: ++itemid
@@ -386,35 +396,41 @@ function neuesBild(file) {
     fr.readAsDataURL(file)
 }
 
+
 function deleteSelected() {
-    pfade.value = pfade.value.filter((item) => targets.indexOf(item.el) < 0 )
-    bilder.value = bilder.value.filter((item) => targets.indexOf(item.el) < 0 )
-    vorlagen.value = vorlagen.value.filter((item) => targets.indexOf(item.el) < 0 )
+    pfade.value = pfade.value.filter((item) => selectedElements.value.indexOf(item.el) < 0 )
+    bilder.value = bilder.value.filter((item) => selectedElements.value.indexOf(item.el) < 0 )
+    vorlagen.value = vorlagen.value.filter((item) => selectedElements.value.indexOf(item.el) < 0 )
     commit()
-    moveable_comp.value.empty()
+    emptyTargets()
 }
 
 function copySelected() {
-    let copyitems = pfade.value.filter((item) => targets.indexOf(item.el) >= 0 )
+    let copyitems = pfade.value.filter((item) => selectedElements.value.indexOf(item.el) >= 0 )
     for (let item of copyitems) {
         let newitem = {...item}
         newitem.points = [...item.points]
         newitem.id = ++itemid
         pfade.value.unshift(newitem)
     }
-    copyitems = bilder.value.filter((item) => targets.indexOf(item.el) >= 0 )
+    copyitems = bilder.value.filter((item) => selectedElements.value.indexOf(item.el) >= 0 )
     for (let item of copyitems) {
         let newitem = {...item}
         newitem.id = ++itemid
         bilder.value.unshift(newitem)
     }
-    copyitems = vorlagen.value.filter((item) => targets.indexOf(item.el) >= 0 )
+    copyitems = vorlagen.value.filter((item) => selectedElements.value.indexOf(item.el) >= 0 )
     for (let item of copyitems) {
         let newitem = {...item}
         newitem.id = ++itemid
         vorlagen.value.unshift(newitem)
     }
     commit()
+    Quasar.Notify.create({
+        message: 'Die Elemente wurde kopiert. Markierung jetzt verschieben.',
+        color: 'positive',
+        position: 'top'
+    })
 }
 
 function exportJson() {
@@ -432,13 +448,13 @@ function importJson(jsonstr) {
     vorlagen.value = obj.vorlagen
 }
 
-async function gobottom() { transform.value.y -= 200;   }//await nextTick(); moveable.updateRect() }
-async function gotop()    { transform.value.y += 200;   }//await nextTick(); moveable.updateRect() }
-async function goleft()   { transform.value.x += 200;   }//await nextTick(); moveable.updateRect() }
-async function goright()  { transform.value.x -= 200;   }//await nextTick(); moveable.updateRect() }
-async function zoomout() { transform.value.scale *= .9; }//await nextTick(); moveable.updateRect(); }
-async function zoomin() { transform.value.scale *= 1.1; }//await nextTick(); moveable.updateRect(); }
-async function zoomreset() { transform.value.scale = 1; }//await nextTick(); moveable.updateRect(); }
+async function gobottom() { transform.value.y -= 200;   await nextTick(); moveable_comp.value.updateRect()}
+async function gotop()    { transform.value.y += 200;   await nextTick(); moveable_comp.value.updateRect()}
+async function goleft()   { transform.value.x += 200;   await nextTick(); moveable_comp.value.updateRect()}
+async function goright()  { transform.value.x -= 200;   await nextTick(); moveable_comp.value.updateRect()}
+async function zoomout() { transform.value.scale *= .9; await nextTick(); moveable_comp.value.updateRect()}
+async function zoomin() { transform.value.scale *= 1.1; await nextTick(); moveable_comp.value.updateRect()}
+async function zoomreset() { transform.value.scale = 1; await nextTick(); moveable_comp.value.updateRect()}
 
 defineExpose({
     neuesBild,
@@ -459,15 +475,3 @@ defineExpose({
 })
 
 </script>
-
-<style>
-.rundeSache {
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-.origin {
-    pointer-events: bounding-box;
-    transform-origin: center;
-    transform-box: fill-box;
-}
-</style>

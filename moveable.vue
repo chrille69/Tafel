@@ -3,24 +3,22 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
-const props = defineProps(['items','container','disabled','geodreieck'])
-const emit = defineEmits(['change'])
+const props = defineProps(['items','container','disabled','geodreieck','selectedElements'])
+const emit = defineEmits(['change','updateTargets'])
 
 const moveable_comp = ref(null)
 
 let moveable = null
 let selecto = null
-let targets = []
-function setTargets(nextTargets) {
-    targets = nextTargets;
-    if(moveable) moveable.target = targets;
-}
+
+watch(() => props.selectedElements, (neu,alt) => {
+    moveable.target = neu
+})
 
 onMounted(() => {
     moveable = new Moveable(moveable_comp.value, {
-        target: props.targets,
         draggable: true,
         rotatable: true,
         scalable: true,
@@ -52,7 +50,6 @@ onMounted(() => {
 
 
     selecto = new Selecto({
-        container: props.container,
         selectByClick: true,
         selectFromInside: false,
         selectableTargets: [() => props.items.map(item => item.el), '#geodreieck']
@@ -60,12 +57,17 @@ onMounted(() => {
     .on("dragStart",(e) => {
         const target = e.inputEvent.target
 
+        if ( ! ( target == props.container.ownerSVGElement || props.container.contains(target) ) ) {
+           e.stop()
+            return
+        }
+
         if (props.disabled) {
             e.stop()
             return
         }
 
-        if (moveable.isMoveableElement(target) || targets.some(t => t === target || t.contains(target))) {
+        if (moveable.isMoveableElement(target) || props.selectedElements.some(t => t === target || t.contains(target))) {
             e.stop();
             return
         }
@@ -80,7 +82,7 @@ onMounted(() => {
         if (e.isDragStartEnd) {
             return
         }
-        setTargets(e.selected)
+        emit('updateTargets',e.selected)
     })
     .on("selectEnd", (e) => {
         if (e.isDragStartEnd) {
@@ -89,13 +91,13 @@ onMounted(() => {
                 moveable.dragStart(e.inputEvent);
             });
         }
-        setTargets(e.selected)
+        emit('updateTargets',e.selected)
     })
 })
 
-function empty() {
-    setTargets([])
+function updateRect() {
+    moveable.updateRect()
 }
 
-defineExpose({empty})
+defineExpose({updateRect})
 </script>

@@ -125,7 +125,7 @@ function setTransform(transformObject) {
     transform.value.scale = transformObject.scale[0]
 }
 
-defineExpose({startRotate, rotate, startTranslate, translate, getCTM, setTransform})
+defineExpose({startRotate, rotate, startTranslate, translate, setTransform})
 </script>
 
 <style>
