@@ -5,16 +5,21 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 
-const props = defineProps(['items','disabled','geodreieck','selectedItems'])
-const emit = defineEmits(['change','updateTargets','transformGeodreieck'])
+const props = defineProps(['disabled','selectableItemIds','selectedItemIds'])
+const emit = defineEmits(['change','update:selectedItemIds','transformGeodreieck','transformItem'])
 
 const moveable_comp = ref(null)
 
 let moveable = null
-let selecto = null
+let selectable = null
 
-watch(() => props.selectedItems, (neu,alt) => {
-    moveable.target = neu
+watch(() => props.selectedItemIds, (neu, alt) => {
+    moveable.target = neu.map((id) => '#'+id)
+})
+
+watch(() => props.selectableItemIds, (neu, alt) => {
+    selectable.selectableTargets = neu.map((id) => '#'+id)
+    selectable.selectableTargets.push('#geodreieck')
 })
 
 onMounted(() => {
@@ -25,34 +30,32 @@ onMounted(() => {
         keepRatio: true,
     })
     .on("clickGroup", (e) => {
-        selecto.clickTarget(e.inputEvent, e.inputTarget)
+        selectable.clickTarget(e.inputEvent, e.inputTarget)
     })
     .on("renderEnd", (e) => { if(e.isDrag) emit('change') })
     .on("renderGroupEnd", (e) => { if(e.isDrag) emit('change') })
     .on("render", (e) => {
-        if (e.target == props.geodreieck.$el) {
+        if (e.target.id == 'geodreieck') {
             emit('transformGeodreieck', e.transformObject)
             return
         }
-        let item = props.items.find((it) => it.el === e.target)
-        item.transform = e.transform
+        emit('transformItem', e.target.id, e.transform)
     })
     .on("renderGroup", (ev) => {
         ev.events.forEach(e => {
-            if (e.target == props.geodreieck.$el) {
+            if (e.target.id == 'geodreieck') {
                 emit('transformGeodreieck', e.transformObject)
                 return
             }
-            let item = props.items.find((it) => it.el === e.target)
-            item.transform = e.transform
+            emit('transformItem', e.target.id, e.transform)
         });
     })
 
 
-    selecto = new Selecto({
+    selectable = new Selecto({
         selectByClick: true,
         selectFromInside: false,
-        selectableTargets: ['.selectable']
+        selectableTargets: ['#geodreieck']
     })
     .on("dragStart",(e) => {
         const target = e.inputEvent.target
@@ -67,7 +70,7 @@ onMounted(() => {
             return
         }
 
-        if (moveable.isMoveableElement(target) || props.selectedItems.some(t => t === target || t.contains(target))) {
+        if (moveable.isMoveableElement(target) ) {
             e.stop();
             return
         }
@@ -82,7 +85,7 @@ onMounted(() => {
         if (e.isDragStartEnd) {
             return
         }
-        emit('updateTargets', e.selected)
+        emit('update:selectedItemIds', e.selected.map((el) => el.id))
     })
     .on("selectEnd", (e) => {
         if (e.isDragStartEnd) {
@@ -91,7 +94,7 @@ onMounted(() => {
                 moveable.dragStart(e.inputEvent);
             });
         }
-        emit('updateTargets', e.selected)
+        emit('update:selectedItemIds', e.selected.map((el) => el.id))
     })
 })
 

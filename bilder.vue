@@ -5,7 +5,7 @@
                 :ref="(el) => bild.el = el"
                 :=bild.attr
                 :style="'transform:'+bild.transform"
-                class="selectable"
+                :id="bild.id"
             />
         </template>
     </g>

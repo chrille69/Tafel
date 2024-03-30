@@ -6,7 +6,7 @@
                 :d="pfadstring(pfad.points)"
                 :style="stylefn.call(pfad)"
                 :="pfad.attr"
-                class="selectable"
+                :id="pfad.id"
             />
         </template>
     </g>

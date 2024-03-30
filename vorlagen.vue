@@ -8,7 +8,7 @@
                 :groesse="vorlage.groesse"
                 :xdekaden="vorlage.typ == 'mmlogpapier' ? vorlage.xdekaden : null"
                 :ydekaden="vorlage.typ == 'mmlogpapier' ? vorlage.ydekaden : null"
-                class="selectable"
+                :id="vorlage.id"
             />
         </template>
     </g>
