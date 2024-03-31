@@ -2,7 +2,7 @@
     <g>
         <template v-for="vorlage in vorlagen" :key="vorlage.id">
             <component
-                :ref="(el) => vorlage.el = el.$el"
+                :ref="(el) => vorlage.el = el"
                 :style="stylefn.call(vorlage)"
                 :is="comp[vorlage.typ]"
                 :groesse="vorlage.groesse"
