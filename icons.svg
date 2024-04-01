@@ -190,19 +190,19 @@
         <path d="M 18.289368,19.64706 H 24 V 22 H 15.884892 Z M 3.2613903,22 0.70663397,19.5 C 0.24578613,19.04904 0.01032777,18.4902 3.1913041e-4,17.82352 -0.0096895,17.15686 0.21572115,16.58823 0.67657804,16.11765 L 13.901199,2.70588 C 14.362047,2.23531 14.928121,2 15.59936,2 c 0.67124,0 1.237314,0.22549 1.698162,0.67647 l 5.981135,5.85294 c 0.460848,0.45097 0.691287,1.0098 0.691287,1.67647 0,0.66667 -0.23043,1.2255 -0.691287,1.67646 L 13.179856,22 Z M 12.157953,19.64706 19.003197,12.71325 13.052118,6.8897 2.3597116,17.76471 4.2832929,19.64706 Z" />
     </symbol>
     <symbol id="radiergummi-kalibrieren" viewbox="0 0 22.494 21.081">
-        <g transform="matrix(1.5451 0 0 1.5451 -12.361 -12.659)" style="stroke-width:.71191;stroke:#000000">
+        <g transform="matrix(1.5451 0 0 1.5451 -12.361 -12.659)" style="stroke-width:.71191;stroke:currentColor">
             <path
                 d="m13.979 11.935a2.2371 2.2371 0 01-2.2371 2.2371 2.2371 2.2371 0 01-2.2371-2.2371 2.2371 2.2371 0 012.2371-2.2371 2.2371 2.2371 0 012.2371 2.2371z"
-                style="fill:none;opacity:.992;stroke-width:.71191;stroke:#000000" />
-            <g style="stroke-width:.71191;stroke:#000000">
-                <path d="M 9.5049,11.935 H 8" style="fill:none;stroke-width:.71191;stroke:#000000" />
-                <path d="m15.484 11.935h-1.5049" style="fill:none;stroke-width:.71191;stroke:#000000" />
-                <path d="m11.742 9.6979v-1.5049" style="fill:none;stroke-width:.71191;stroke:#000000" />
-                <path d="m11.742 15.677v-1.5049" style="fill:none;stroke-width:.71191;stroke:#000000" />
+                style="fill:none;opacity:.992;stroke-width:.71191;stroke:currentColor" />
+            <g style="stroke-width:.71191;stroke:currentColor">
+                <path d="M 9.5049,11.935 H 8" style="fill:none;stroke-width:.71191;stroke:currentColor" />
+                <path d="m15.484 11.935h-1.5049" style="fill:none;stroke-width:.71191;stroke:currentColor" />
+                <path d="m11.742 9.6979v-1.5049" style="fill:none;stroke-width:.71191;stroke:currentColor" />
+                <path d="m11.742 15.677v-1.5049" style="fill:none;stroke-width:.71191;stroke:currentColor" />
             </g>
             <path
                 d="m12.932 11.935a1.19 1.19 0 01-1.19 1.19 1.19 1.19 0 01-1.19-1.19 1.19 1.19 0 011.19-1.19 1.19 1.19 0 011.19 1.19z"
-                style="fill:#000000;opacity:.992;stroke:none" />
+                style="fill:currentColor;opacity:.992;stroke:none" />
         </g>
         <path
             d="m17.744 19.081h4.75v2h-6.75zm-12.5 2-2.125-2.125c-.38332-.38332-.57918-.85832-.5875-1.425-.0083-.56668.17917-1.05.5625-1.45l11-11.4c.38332-.4.85418-.6 1.4125-.6s1.0292.19167 1.4125.575l4.975 4.975c.38332.38332.575.85832.575 1.425s-.19167 1.0417-.575 1.425l-8.4 8.6zm7.4-2 5.6938-5.8938-4.95-4.95-8.8938 9.2438 1.6 1.6z"

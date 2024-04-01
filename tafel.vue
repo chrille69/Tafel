@@ -15,7 +15,7 @@
             @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
             style="touch-action: none; height: 100%; width: 100%"
             >
-            <text v-if="false" x="20" y="20" style="fill: red;">Touchradius:{{ touchradius }}</text>
+            <text v-if="true" x="20" y="20" style="fill: red;">Touchradius: {{ touchradius }}</text>
             <g ref="group_comp" :style="groupstyle">
                 <vorlagenvue :vorlagen="vorlagen" />
                 <bildervue :bilder="bilder" />
@@ -471,6 +471,11 @@ async function zoomout() { transform.value.scale *= .9; await nextTick(); moveab
 async function zoomin() { transform.value.scale *= 1.1; await nextTick(); moveable_comp.value.updateRect()}
 async function zoomreset() { transform.value.scale = 1; await nextTick(); moveable_comp.value.updateRect()}
 
+function radiergummiKalibrieren() {
+    touchradius.value = 0
+    touchcount = 0
+}
+
 defineExpose({
     neuesBild,
     neueVorlage,
@@ -486,7 +491,8 @@ defineExpose({
     goright,
     zoomin,
     zoomout,
-    zoomreset
+    zoomreset,
+    radiergummiKalibrieren
 })
 
 </script>

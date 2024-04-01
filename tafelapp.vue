@@ -4,10 +4,11 @@
         <q-card class="go-left"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-left']" @click="() => tafel_comp.goleft()" /></q-card>
         <q-card class="go-right"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-right']" @click="() => tafel_comp.goright()" /></q-card>
         <q-card class="go-top"><q-btn size="10px" glossy dense class="full-width" :icon="icons['go-top']" @click="() => tafel_comp.gotop()" /></q-card>
-        <q-card class="go-bottom q-ma-md" ><q-btn  size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/></q-card>
-        <q-card class="control q-ma-md column items-center">
-            <q-toolbar class="col row q-gutter-md q-pa-sm">
-                <q-btn dense label="Datei">
+        <div class="control q-ma-md column items-center">
+            <q-card class="go-bottom q-ma-md" ><q-btn  size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/></q-card>
+            <q-card class="full-width">
+            <div class="row full-width q-gutter-md q-pa-xs">
+                <q-btn dense label="Datei" class="q-ml-none">
                     <q-menu v-model="filemenu">
                         <q-list>
                             <q-item>
@@ -121,11 +122,14 @@
                         </template>
                     </q-input>
                 </template>
-            </q-toolbar>
-            <q-card-section class="q-pa-sm col" style="font-family: 'Share Tech Mono'; font-size: x-large; text-align: center">
+            </div>
+            <div class="q-pa-xs full-width row" style="font-family: 'Share Tech Mono'; font-size: large; text-align: center">
+                <q-btn dense size="10px" :icon="icons['radiergummi-kalibrieren']" @click="radiergummiKalibrieren" />
+                <q-space />
                 {{ datetime }}
-            </q-card-section>
-        </q-card>
+            </div>
+            </q-card>
+        </div>
         <q-dialog v-model="mmlogDlg">
             <q-card>
                 <q-card-section class="q-gutter-md">
@@ -212,6 +216,7 @@ const icons = ref({
     'zoom-in': 'svguse:icons.svg#zoom-in|0 0 16 16',
     'zoom-out': 'svguse:icons.svg#zoom-out|0 0 16 16',
     'zoom-reset': 'svguse:icons.svg#zoom-reset|0 0 16 16',
+    'radiergummi-kalibrieren': 'svguse:icons.svg#radiergummi-kalibrieren|0 0 22.494 21.081',
 })
 
 const linewidthmenu = ref([
@@ -347,6 +352,10 @@ function einfuegen(e) {
     importImg(file)
 }
 
+function radiergummiKalibrieren() {
+    tafel_comp.value.radiergummiKalibrieren()
+}
+
 window.addEventListener('paste',einfuegen)
 window.onbeforeunload = function(event) {
     if (! ungespeichert.value) return
@@ -386,16 +395,16 @@ provide('config', config)
     width: var(--gobuttonwidth);
 }
 .go-bottom {
-    position: absolute;
-    left: calc(50% - 0.5 * var(--gobuttonwidth));
     width: var(--gobuttonwidth);
-    bottom: calc(var(--controlheight) + 2 * var(--gobuttongap));
 }
 .control {
     position: absolute;
-    min-height: var(--controlheight);
     bottom: 0px;
     left: 0%;
     right: 0%;
+    pointer-events: none;
+}
+.control > * {
+    pointer-events: auto;
 }
 </style>
