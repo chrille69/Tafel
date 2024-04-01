@@ -4,139 +4,140 @@
         <q-card class="go-left"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-left']" @click="() => tafel_comp.goleft()" /></q-card>
         <q-card class="go-right"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-right']" @click="() => tafel_comp.goright()" /></q-card>
         <q-card class="go-top"><q-btn size="10px" glossy dense class="full-width" :icon="icons['go-top']" @click="() => tafel_comp.gotop()" /></q-card>
-        <div class="column items-center" style="position: absolute; bottom: 0px; width: 100%;">
-            <q-card class="go-bottom"><q-btn size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/></q-card>
-            <q-card class="q-ma-md col">
-                <q-card-section class="row q-gutter-md items-center q-pa-sm">
-                    <q-btn dense label="Datei">
-                        <q-menu v-model="filemenu">
-                            <q-list>
-                                <q-item>
-                                    <q-btn v-close-popup dense :icon="icons['save']" label="SVG" glossy @click="exportSVG" />
-                                </q-item>
-                                <q-item>
-                                    <q-btn v-close-popup dense :icon="icons['save']" label="JSON" glossy @click="exportJson" />
-                                </q-item>
-                                <q-item>
-                                    <q-file dense clearable v-model="jsonfile" label="Öffne JSON" @update:modelValue="importJson" />
-                                </q-item>
-                                <q-item>
-                                    <q-file dense clearable v-model="imgfile" label="Bild importieren" @update:modelValue="importImg" />
-                                </q-item>
-                            </q-list>
-                        </q-menu>
-                    </q-btn>
-                    <q-btn dense :icon="icons['darkmode']" glossy @click="toggleDarkmode" />
-                    <q-btn dense :icon="config.fullscreen ? 'fullscreen_exit' : 'fullscreen'" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
-                    <q-btn dense :icon="icons['logpapier']">
-                        <q-menu>
-                            <q-list>
-                                <q-item>
-                                    <q-btn v-close-popup dense :icon="icons['logpapier']" glossy @click="mmlogDlg = true"/>
-                                </q-item>
-                                <q-item>
-                                    <q-btn v-close-popup dense :icon="icons['karopapier']" glossy @click="() => tafel_comp.neueVorlage('karopapier')"/>
-                                </q-item>
-                                <q-item>
-                                    <q-btn v-close-popup dense :icon="icons['linienpapier']" glossy @click="() => tafel_comp.neueVorlage('linienpapier')" />
-                                </q-item>
-                            </q-list>
-                        </q-menu>
-                    </q-btn>
-                    <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
-                    <q-btn dense :icon="icons['undo']" @click="() => tafel_comp.undo()" />
-                    <q-btn dense :icon="icons['redo']" @click="() => tafel_comp.redo()" />
-                    <q-btn-toggle v-model="config.modus" dense push glossy toggle-color="primary"
+        <q-card class="go-bottom q-ma-md" ><q-btn  size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/></q-card>
+        <q-card class="control q-ma-sm">
+            <q-card-section class="col row q-gutter-md items-center q-pa-sm">
+                <q-btn dense label="Datei">
+                    <q-menu v-model="filemenu">
+                        <q-list>
+                            <q-item>
+                                <q-btn v-close-popup dense :icon="icons['save']" label="SVG" glossy @click="exportSVG" />
+                            </q-item>
+                            <q-item>
+                                <q-btn v-close-popup dense :icon="icons['save']" label="JSON" glossy @click="exportJson" />
+                            </q-item>
+                            <q-item>
+                                <q-file dense clearable v-model="jsonfile" label="Öffne JSON" @update:modelValue="importJson" />
+                            </q-item>
+                            <q-item>
+                                <q-file dense clearable v-model="imgfile" label="Bild importieren" @update:modelValue="importImg" />
+                            </q-item>
+                        </q-list>
+                    </q-menu>
+                </q-btn>
+                <q-btn dense :icon="icons['darkmode']" glossy @click="toggleDarkmode" />
+                <q-btn dense :icon="config.fullscreen ? 'fullscreen_exit' : 'fullscreen'" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
+                <q-btn dense :icon="icons['logpapier']">
+                    <q-menu>
+                        <q-list>
+                            <q-item>
+                                <q-btn v-close-popup dense :icon="icons['logpapier']" glossy @click="mmlogDlg = true"/>
+                            </q-item>
+                            <q-item>
+                                <q-btn v-close-popup dense :icon="icons['karopapier']" glossy @click="() => tafel_comp.neueVorlage('karopapier')"/>
+                            </q-item>
+                            <q-item>
+                                <q-btn v-close-popup dense :icon="icons['linienpapier']" glossy @click="() => tafel_comp.neueVorlage('linienpapier')" />
+                            </q-item>
+                        </q-list>
+                    </q-menu>
+                </q-btn>
+                <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
+                <q-btn dense :icon="icons['undo']" @click="() => tafel_comp.undo()" />
+                <q-btn dense :icon="icons['redo']" @click="() => tafel_comp.redo()" />
+                <q-btn-toggle v-model="config.modus" dense push glossy toggle-color="primary"
+                    :options="[
+                        {value: 'editieren', slot: 'editieren'},
+                        {value: 'radieren', slot: 'radieren'},
+                        {value: 'zeichnen', slot: 'zeichnen'},
+                    ]"
+                >
+                    <template v-slot:editieren>
+                        <q-icon :name="icons['editieren']" />
+                    </template>
+                    <template v-slot:radieren>
+                        <q-icon :name="icons['radieren']" />
+                    </template>
+                    <template v-slot:zeichnen>
+                            <q-icon :name="icons[config.tool]" />
+                            <q-btn dense flat icon="arrow_drop_up" size="sm">
+                                <mymenu v-model="config.tool" :icons="icons" :items="toolmenu" />
+                            </q-btn>
+                    </template>
+                </q-btn-toggle>
+                <q-btn dense :icon="icons['zoom-out']" @click="() => tafel_comp.zoomout()" />
+                <q-btn dense :icon="icons['zoom-reset']" @click="() => tafel_comp.zoomreset()" />
+                <q-btn dense :icon="icons['zoom-in']" @click="() => tafel_comp.zoomin()" />
+                <template v-if="config.modus == 'radieren'">
+                    <div>
+                        <q-input dense type="number" v-model="config.rubbersize" label="Radierergröße"  />
+                    </div>
+                </template>
+                <template v-else-if="config.modus == 'editieren'">
+                    <q-btn dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected"/>
+                    <q-btn dense :icon="icons['delete']" glossy @click="tafel_comp.deleteSelected"/>
+                    <q-checkbox label="Hilfslinien fixieren" v-model="config.hilfslinienFixiert" />
+                </template>
+                <template v-else>
+                    <q-btn-toggle dense v-model="config.brushColor" push glossy toggle-color="primary"
                         :options="[
-                            {value: 'editieren', slot: 'editieren'},
-                            {value: 'radieren', slot: 'radieren'},
-                            {value: 'zeichnen', slot: 'zeichnen'},
+                            {value: 'currentColor', slot: 'standard'},
+                            {value: '#ff0000', slot: 'rot'},
+                            {value: '#00ff00', slot: 'gruen'},
+                            {value: '#4169e1', slot: 'blau'},
+                            {value: freeColor, slot: 'free'},
                         ]"
                     >
-                        <template v-slot:editieren>
-                            <q-icon :name="icons['editieren']" />
+                        <template v-slot:standard>
+                            <q-icon :name="icons['defaultcolor']" />
                         </template>
-                        <template v-slot:radieren>
-                            <q-icon :name="icons['radieren']" />
+                        <template v-slot:rot>
+                            <q-icon color="red" :name="icons['defaultcolor']" />
                         </template>
-                        <template v-slot:zeichnen>
-                                <q-icon :name="icons[config.tool]" />
-                                <q-btn dense flat icon="arrow_drop_up" size="sm">
-                                    <mymenu v-model="config.tool" :icons="icons" :items="toolmenu" />
-                                </q-btn>
+                        <template v-slot:gruen>
+                            <q-icon color="green" :name="icons['defaultcolor']" />
+                        </template>
+                        <template v-slot:blau>
+                            <q-icon color="blue" :name="icons['defaultcolor']" />
+                        </template>
+                        <template v-slot:free>
+                            <q-btn dense flat
+                                :icon="icons['freecolor']"
+                                :style="styleColorButton"
+                            >
+                                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                                    <q-color v-model="freeColor" format-model="hex" no-header no-footer v-close-popup default-view="palette" @update:modelValue="config.brushColor = freeColor"/>
+                                </q-popup-proxy>
+                            </q-btn>
                         </template>
                     </q-btn-toggle>
-                    <q-btn dense :icon="icons['zoom-out']" @click="() => tafel_comp.zoomout()" />
-                    <q-btn dense :icon="icons['zoom-reset']" @click="() => tafel_comp.zoomreset()" />
-                    <q-btn dense :icon="icons['zoom-in']" @click="() => tafel_comp.zoomin()" />
-                    <template v-if="config.modus == 'radieren'">
-                        <div>
-                            <q-input dense type="number" v-model="config.rubbersize" label="Radierergröße"  />
-                        </div>
-                    </template>
-                    <template v-else-if="config.modus == 'editieren'">
-                        <q-btn dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected"/>
-                        <q-btn dense :icon="icons['delete']" glossy @click="tafel_comp.deleteSelected"/>
-                        <q-checkbox label="Hilfslinien fixieren" v-model="config.hilfslinienFixiert" />
-                    </template>
-                    <template v-else>
-                        <q-btn-toggle dense v-model="config.brushColor" push glossy toggle-color="primary"
-                            :options="[
-                                {value: 'currentColor', slot: 'standard'},
-                                {value: '#ff0000', slot: 'rot'},
-                                {value: '#00ff00', slot: 'gruen'},
-                                {value: '#4169e1', slot: 'blau'},
-                                {value: freeColor, slot: 'free'},
-                            ]"
-                        >
-                            <template v-slot:standard>
-                                <q-icon :name="icons['defaultcolor']" />
-                            </template>
-                            <template v-slot:rot>
-                                <q-icon color="red" :name="icons['defaultcolor']" />
-                            </template>
-                            <template v-slot:gruen>
-                                <q-icon color="green" :name="icons['defaultcolor']" />
-                            </template>
-                            <template v-slot:blau>
-                                <q-icon color="blue" :name="icons['defaultcolor']" />
-                            </template>
-                            <template v-slot:free>
-                                <q-btn dense flat
-                                    :icon="icons['freecolor']"
-                                    :style="styleColorButton"
-                                >
-                                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                                        <q-color v-model="freeColor" format-model="hex" no-header no-footer v-close-popup default-view="palette" @update:modelValue="config.brushColor = freeColor"/>
-                                    </q-popup-proxy>
-                                </q-btn>
-                            </template>
-                        </q-btn-toggle>
-                        <q-input type="number" dense shadow-text="px" v-model="config.brushWidth" label="Linienstärke" input-style="width: 5.5em">
-                            <template v-slot:before>
-                                <q-btn dense flat :icon="icons[config.brushWidth] ? icons[config.brushWidth] : icons['3']">
-                                    <mymenu v-model="config.brushWidth" :icons="icons" :items="linewidthmenu" />
-                                </q-btn>
-                            </template>
-                        </q-input>
-                    </template>
+                    <q-input type="number" dense shadow-text="px" v-model="config.brushWidth" label="Linienstärke" input-style="width: 5.5em">
+                        <template v-slot:before>
+                            <q-btn dense flat :icon="icons[config.brushWidth] ? icons[config.brushWidth] : icons['3']">
+                                <mymenu v-model="config.brushWidth" :icons="icons" :items="linewidthmenu" />
+                            </q-btn>
+                        </template>
+                    </q-input>
+                </template>
+            </q-card-section>
+            <q-card-section class="q-pa-sm col" style="font-family: 'Share Tech Mono'; font-size: x-large; text-align: center">
+                {{ datetime }}
+            </q-card-section>
+        </q-card>
+        <q-dialog v-model="mmlogDlg">
+            <q-card>
+                <q-card-section class="q-gutter-md">
+                    <q-input type="number" v-model.number="groesse" label="Größe"></q-input>
+                    <q-input type="number" v-model.number="xdekaden" label="Dekaden" hint="x-Achse (0: mm-Papier)"></q-input>
+                    <q-input type="number" v-model.number="ydekaden" label="Dekaden" hint="y-Achse (0: mm-Papier)"></q-input>
                 </q-card-section>
+                <q-separator />
+                <q-card-actions align="right">
+                    <q-btn v-close-popup flat color="primary" label="Abbrechen" />
+                    <q-btn v-close-popup flat color="primary" label="OK" @click="() => tafel_comp.neueVorlage('mmlogpapier', groesse, xdekaden, ydekaden)" />
+                </q-card-actions>
             </q-card>
-            <q-dialog v-model="mmlogDlg">
-                <q-card>
-                    <q-card-section class="q-gutter-md">
-                        <q-input type="number" v-model.number="groesse" label="Größe"></q-input>
-                        <q-input type="number" v-model.number="xdekaden" label="Dekaden" hint="x-Achse (0: mm-Papier)"></q-input>
-                        <q-input type="number" v-model.number="ydekaden" label="Dekaden" hint="y-Achse (0: mm-Papier)"></q-input>
-                    </q-card-section>
-                    <q-separator />
-                    <q-card-actions align="right">
-                        <q-btn v-close-popup flat color="primary" label="Abbrechen" />
-                        <q-btn v-close-popup flat color="primary" label="OK" @click="() => tafel_comp.neueVorlage('mmlogpapier', groesse, xdekaden, ydekaden)" />
-                    </q-card-actions>
-                </q-card>
-            </q-dialog>
-        </div>
+        </q-dialog>
     </div>
 </template>
 
@@ -145,9 +146,8 @@ import { ref, computed, provide } from 'vue'
 import tafel from './tafel.vue'
 import mymenu from './mymenu.vue'
 
-Quasar.Dark.toggle()
-
 const tafel_comp = ref(null)
+const scale = ref(0.8)
 const config = ref({
     tool: 'stift',
     modus: 'zeichnen',
@@ -246,6 +246,22 @@ const styleColorButton = computed(() => {
         'backgroundColor': config.value.brushColor,
     }
 })
+
+const datetimeformat = {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+}
+const datetime = ref(Intl.DateTimeFormat(navigator.language, datetimeformat).format())
+const timerID = setInterval(updateTime, 1000);
+
+function updateTime() {
+    datetime.value = Intl.DateTimeFormat(navigator.language, datetimeformat).format()
+}
 
 function toggleDarkmode() {
     config.value.darkmode = ! config.value.darkmode
@@ -347,6 +363,7 @@ provide('config', config)
 :root {
     --gobuttonwidth: 200px;
     --gobuttongap: 10px;
+    --controlheight: 100px;
 }
 .go-left {
     position: absolute;
@@ -367,6 +384,16 @@ provide('config', config)
     width: var(--gobuttonwidth);
 }
 .go-bottom {
+    position: absolute;
+    left: calc(50% - 0.5 * var(--gobuttonwidth));
     width: var(--gobuttonwidth);
+    bottom: calc(var(--controlheight) + var(--gobuttongap));
+}
+.control {
+    position: absolute;
+    min-height: var(--controlheight);
+    bottom: 0px;
+    left: 20%;
+    right: 20%;
 }
 </style>
