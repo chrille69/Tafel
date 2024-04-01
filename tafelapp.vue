@@ -5,8 +5,8 @@
         <q-card class="go-right"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-right']" @click="() => tafel_comp.goright()" /></q-card>
         <q-card class="go-top"><q-btn size="10px" glossy dense class="full-width" :icon="icons['go-top']" @click="() => tafel_comp.gotop()" /></q-card>
         <q-card class="go-bottom q-ma-md" ><q-btn  size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/></q-card>
-        <q-card class="control q-ma-sm">
-            <q-card-section class="col row q-gutter-md items-center q-pa-sm">
+        <q-card class="control q-ma-md column items-center">
+            <q-toolbar class="col row q-gutter-md q-pa-sm">
                 <q-btn dense label="Datei">
                     <q-menu v-model="filemenu">
                         <q-list>
@@ -43,6 +43,7 @@
                     </q-menu>
                 </q-btn>
                 <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
+                <q-space />
                 <q-btn dense :icon="icons['undo']" @click="() => tafel_comp.undo()" />
                 <q-btn dense :icon="icons['redo']" @click="() => tafel_comp.redo()" />
                 <q-btn-toggle v-model="config.modus" dense push glossy toggle-color="primary"
@@ -68,6 +69,7 @@
                 <q-btn dense :icon="icons['zoom-out']" @click="() => tafel_comp.zoomout()" />
                 <q-btn dense :icon="icons['zoom-reset']" @click="() => tafel_comp.zoomreset()" />
                 <q-btn dense :icon="icons['zoom-in']" @click="() => tafel_comp.zoomin()" />
+                <q-space />
                 <template v-if="config.modus == 'radieren'">
                     <div>
                         <q-input dense type="number" v-model="config.rubbersize" label="Radierergröße"  />
@@ -119,7 +121,7 @@
                         </template>
                     </q-input>
                 </template>
-            </q-card-section>
+            </q-toolbar>
             <q-card-section class="q-pa-sm col" style="font-family: 'Share Tech Mono'; font-size: x-large; text-align: center">
                 {{ datetime }}
             </q-card-section>
@@ -387,13 +389,13 @@ provide('config', config)
     position: absolute;
     left: calc(50% - 0.5 * var(--gobuttonwidth));
     width: var(--gobuttonwidth);
-    bottom: calc(var(--controlheight) + var(--gobuttongap));
+    bottom: calc(var(--controlheight) + 2 * var(--gobuttongap));
 }
 .control {
     position: absolute;
     min-height: var(--controlheight);
     bottom: 0px;
-    left: 20%;
-    right: 20%;
+    left: 0%;
+    right: 0%;
 }
 </style>
