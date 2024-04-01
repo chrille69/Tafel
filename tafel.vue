@@ -368,7 +368,7 @@ function commit() {
 //
 ///////////////////////////////////////////////////////////
 
-function neueVorlage(typ, groesse=1000, xdekaden=0, ydekaden=0) {
+function neueVorlage(typ, groesse=2500, xdekaden=0, ydekaden=0) {
     let ol = obenlinks()
     const vorlage = {
         typ: typ,

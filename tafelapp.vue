@@ -8,44 +8,7 @@
             <q-card class="go-bottom q-ma-md" ><q-btn  size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/></q-card>
             <q-card class="full-width">
             <div class="row full-width q-gutter-md q-pa-xs">
-                <q-btn dense label="Datei" class="q-ml-none">
-                    <q-menu v-model="filemenu">
-                        <q-list>
-                            <q-item>
-                                <q-btn v-close-popup dense :icon="icons['save']" label="SVG" glossy @click="exportSVG" />
-                            </q-item>
-                            <q-item>
-                                <q-btn v-close-popup dense :icon="icons['save']" label="JSON" glossy @click="exportJson" />
-                            </q-item>
-                            <q-item>
-                                <q-file dense clearable v-model="jsonfile" label="Öffne JSON" @update:modelValue="importJson" />
-                            </q-item>
-                            <q-item>
-                                <q-file dense clearable v-model="imgfile" label="Bild importieren" @update:modelValue="importImg" />
-                            </q-item>
-                        </q-list>
-                    </q-menu>
-                </q-btn>
-                <q-btn dense :icon="icons['darkmode']" glossy @click="toggleDarkmode" />
-                <q-btn dense :icon="config.fullscreen ? 'fullscreen_exit' : 'fullscreen'" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
-                <q-btn dense :icon="icons['logpapier']">
-                    <q-menu>
-                        <q-list>
-                            <q-item>
-                                <q-btn v-close-popup dense :icon="icons['logpapier']" glossy @click="mmlogDlg = true"/>
-                            </q-item>
-                            <q-item>
-                                <q-btn v-close-popup dense :icon="icons['karopapier']" glossy @click="() => tafel_comp.neueVorlage('karopapier')"/>
-                            </q-item>
-                            <q-item>
-                                <q-btn v-close-popup dense :icon="icons['linienpapier']" glossy @click="() => tafel_comp.neueVorlage('linienpapier')" />
-                            </q-item>
-                        </q-list>
-                    </q-menu>
-                </q-btn>
-                <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
-                <q-space />
-                <q-btn dense :icon="icons['undo']" @click="() => tafel_comp.undo()" />
+                <q-btn dense :icon="icons['undo']" @click="() => tafel_comp.undo()" class="q-ml-none" />
                 <q-btn dense :icon="icons['redo']" @click="() => tafel_comp.redo()" />
                 <q-btn-toggle v-model="config.modus" dense push glossy toggle-color="primary"
                     :options="[
@@ -122,6 +85,43 @@
                         </template>
                     </q-input>
                 </template>
+                <q-space />
+                <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
+                <q-btn dense :icon="icons['logpapier']">
+                    <q-menu>
+                        <q-list>
+                            <q-item>
+                                <q-btn v-close-popup dense :icon="icons['logpapier']" glossy @click="mmlogDlg = true"/>
+                            </q-item>
+                            <q-item>
+                                <q-btn v-close-popup dense :icon="icons['karopapier']" glossy @click="() => tafel_comp.neueVorlage('karopapier')"/>
+                            </q-item>
+                            <q-item>
+                                <q-btn v-close-popup dense :icon="icons['linienpapier']" glossy @click="() => tafel_comp.neueVorlage('linienpapier')" />
+                            </q-item>
+                        </q-list>
+                    </q-menu>
+                </q-btn>
+                <q-btn dense :icon="icons['darkmode']" glossy @click="toggleDarkmode" />
+                <q-btn dense :icon="config.fullscreen ? 'fullscreen_exit' : 'fullscreen'" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
+                <q-btn dense label="Datei">
+                    <q-menu v-model="filemenu">
+                        <q-list>
+                            <q-item>
+                                <q-btn v-close-popup dense :icon="icons['save']" label="SVG" glossy @click="exportSVG" />
+                            </q-item>
+                            <q-item>
+                                <q-btn v-close-popup dense :icon="icons['save']" label="JSON" glossy @click="exportJson" />
+                            </q-item>
+                            <q-item>
+                                <q-file dense clearable v-model="jsonfile" label="Öffne JSON" @update:modelValue="importJson" />
+                            </q-item>
+                            <q-item>
+                                <q-file dense clearable v-model="imgfile" label="Bild importieren" @update:modelValue="importImg" />
+                            </q-item>
+                        </q-list>
+                    </q-menu>
+                </q-btn>
             </div>
             <div class="q-pa-xs full-width row" style="font-family: 'Share Tech Mono'; font-size: large; text-align: center">
                 <q-btn dense size="10px" :icon="icons['radiergummi-kalibrieren']" @click="radiergummiKalibrieren" />
