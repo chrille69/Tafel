@@ -1,6 +1,6 @@
 <template>
     <div @fullscreenchange="fullscreenchange">
-        <tafel :config="config" ref="tafel_comp" style="min-width: 100vw; height: 100vh; overflow: visible" @hatgemalt="() => ungespeichert = true"/>
+        <tafel :config="config" ref="tafel_comp" style="min-width: 100vw; height: 100vh; overflow: visible" @wheel="mausrad" @hatgemalt="() => ungespeichert = true"/>
         <q-card class="go-left"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-left']" @click="() => tafel_comp.goleft()" /></q-card>
         <q-card class="go-right"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-right']" @click="() => tafel_comp.goright()" /></q-card>
         <q-card class="go-top"><q-btn size="10px" glossy dense class="full-width" :icon="icons['go-top']" @click="() => tafel_comp.gotop()" /></q-card>
@@ -354,6 +354,14 @@ function einfuegen(e) {
 
 function radiergummiKalibrieren() {
     tafel_comp.value.radiergummiKalibrieren()
+}
+
+function mausrad(e) {
+    if (e.deltaY > 0)
+        tafel_comp.value.gobottom()
+    else
+        tafel_comp.value.gotop()
+
 }
 
 window.addEventListener('paste',einfuegen)
