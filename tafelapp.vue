@@ -7,9 +7,15 @@
         <div class="control q-ma-md column items-center">
             <q-card class="go-bottom q-ma-md" ><q-btn  size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/></q-card>
             <q-card class="full-width">
-            <div class="row full-width q-gutter-md q-pa-xs">
-                <q-btn dense :icon="icons['undo']" @click="() => tafel_comp.undo()" class="q-ml-none" />
-                <q-btn dense :icon="icons['redo']" @click="() => tafel_comp.redo()" />
+            <div class="row full-width q-gutter-sm q-pa-xs">
+                <q-btn dense no-caps class="lt-md q-ml-none" flat icon="menu">
+                    <mymenu v-model="dummyAction" :icons="icons" :items="tool1menu" />
+                </q-btn>
+                <q-btn dense class="gt-sm" :icon="icons['undo']" @click="() => tafel_comp.undo()" class="q-ml-none" />
+                <q-btn dense class="gt-sm" :icon="icons['redo']" @click="() => tafel_comp.redo()" />
+                <q-btn dense class="gt-sm" :icon="icons['zoom-out']" @click="() => tafel_comp.zoomout()" />
+                <q-btn dense class="gt-sm" :icon="icons['zoom-reset']" @click="() => tafel_comp.zoomreset()" />
+                <q-btn dense class="gt-sm" :icon="icons['zoom-in']" @click="() => tafel_comp.zoomin()" />
                 <q-btn-toggle v-model="config.modus" dense push glossy toggle-color="primary"
                     :options="[
                         {value: 'editieren', slot: 'editieren'},
@@ -30,14 +36,12 @@
                             </q-btn>
                     </template>
                 </q-btn-toggle>
-                <q-btn dense :icon="icons['zoom-out']" @click="() => tafel_comp.zoomout()" />
-                <q-btn dense :icon="icons['zoom-reset']" @click="() => tafel_comp.zoomreset()" />
-                <q-btn dense :icon="icons['zoom-in']" @click="() => tafel_comp.zoomin()" />
                 <q-space />
                 <template v-if="config.modus == 'radieren'">
-                    <div>
-                        <q-input dense type="number" v-model="config.rubbersize" label="Radierergröße"  />
-                    </div>
+                    <q-btn dense no-caps flat label="Größe">
+                        <mymenu v-model="config.rubbersize" :icons="icons" :items="radiergummisizemenu" />
+                    </q-btn>
+                    <q-input class="gt-sm" dense type="number" v-model="config.rubbersize" label="Radierergröße"  />
                 </template>
                 <template v-else-if="config.modus == 'editieren'">
                     <q-btn dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected"/>
@@ -77,33 +81,22 @@
                             </q-btn>
                         </template>
                     </q-btn-toggle>
-                    <q-input type="number" dense shadow-text="px" v-model="config.brushWidth" label="Linienstärke" input-style="width: 5.5em">
-                        <template v-slot:before>
-                            <q-btn dense flat :icon="icons[config.brushWidth] ? icons[config.brushWidth] : icons['3']">
-                                <mymenu v-model="config.brushWidth" :icons="icons" :items="linewidthmenu" />
-                            </q-btn>
-                        </template>
+                    <q-btn dense flat :icon="icons[config.brushWidth] ? icons[config.brushWidth] : icons['3']">
+                        <mymenu v-model="config.brushWidth" :icons="icons" :items="linewidthmenu" />
+                    </q-btn>
+                    <q-input class="gt-sm" type="number" dense shadow-text="px" v-model="config.brushWidth" label="Linienstärke" input-style="width: 5.5em">
                     </q-input>
                 </template>
                 <q-space />
-                <q-btn dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
-                <q-btn dense :icon="icons['logpapier']">
-                    <q-menu>
-                        <q-list>
-                            <q-item>
-                                <q-btn v-close-popup dense :icon="icons['logpapier']" glossy @click="mmlogDlg = true"/>
-                            </q-item>
-                            <q-item>
-                                <q-btn v-close-popup dense :icon="icons['karopapier']" glossy @click="() => tafel_comp.neueVorlage('karopapier')"/>
-                            </q-item>
-                            <q-item>
-                                <q-btn v-close-popup dense :icon="icons['linienpapier']" glossy @click="() => tafel_comp.neueVorlage('linienpapier')" />
-                            </q-item>
-                        </q-list>
-                    </q-menu>
+                <q-btn dense class="lt-md q-ml-none" flat icon="menu">
+                    <mymenu v-model="dummyAction" :icons="icons" :items="tool2menu" />
                 </q-btn>
-                <q-btn dense :icon="icons['darkmode']" glossy @click="toggleDarkmode" />
-                <q-btn dense :icon="config.fullscreen ? 'fullscreen_exit' : 'fullscreen'" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
+                <q-btn class="gt-sm" dense :icon="icons['geodreieck']" :unelevated="!config.geodreieckaktiv" :glossy="config.darkmode && config.geodreieckaktiv" @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
+                <q-btn class="gt-sm" dense :icon="icons['logpapier']">
+                    <mymenu v-model="dummyAction" :icons="icons" :items="vorlagenmenu"></mymenu>
+                </q-btn>
+                <q-btn class="gt-sm" dense :icon="icons['darkmode']" glossy @click="toggleDarkmode" />
+                <q-btn class="gt-sm" dense :icon="config.fullscreen ? 'fullscreen_exit' : 'fullscreen'" :unelevated="!config.fullscreen" :glossy="config.darkmode && config.fullscreen" @click="toggleFullscreen" />
                 <q-btn dense label="Datei">
                     <q-menu v-model="filemenu">
                         <q-list>
@@ -123,10 +116,15 @@
                     </q-menu>
                 </q-btn>
             </div>
-            <div class="q-pa-xs full-width row" style="font-family: 'Share Tech Mono'; font-size: large; text-align: center">
+            <div class="q-pa-xs full-width row" style="font-family: 'Courier New', Courier, monospace; font-size: large; text-align: center">
                 <q-btn dense size="10px" :icon="icons['radiergummi-kalibrieren']" @click="radiergummiKalibrieren" />
                 <q-space />
-                {{ datetime }}
+                <div class="lt-sm">
+                    {{ datetimesm }}
+                </div>
+                <div class="gt-xs">
+                    {{ datetimelg }}
+                </div>
             </div>
             </q-card>
         </div>
@@ -153,7 +151,6 @@ import tafel from './tafel.vue'
 import mymenu from './mymenu.vue'
 
 const tafel_comp = ref(null)
-const scale = ref(0.8)
 const config = ref({
     tool: 'stift',
     modus: 'zeichnen',
@@ -174,6 +171,7 @@ const mmlogDlg = ref(false)
 const groesse = ref(1000)
 const xdekaden = ref(0)
 const ydekaden = ref(0)
+const dummyAction = ref('')
 
 const icons = ref({
     'editieren': 'svguse:icons.svg#edit|0 0 16 16',
@@ -219,11 +217,38 @@ const icons = ref({
     'radiergummi-kalibrieren': 'svguse:icons.svg#radiergummi-kalibrieren|0 0 22.494 21.081',
 })
 
+const tool1menu = ref([
+    { noclose: true, value: 'undo', label: 'Undo', click: () => tafel_comp.value.undo() },
+    { noclose: true, value: 'redo', label: 'Redo', click: () => tafel_comp.value.redo()},
+    { noclose: true, value: 'zoom-out', label: 'Zoom out', click: () => tafel_comp.value.zoomout()},
+    { noclose: true, value: 'zoom-reset', label: 'Zoom reset', click: () => tafel_comp.value.zoomreset()},
+    { noclose: true, value: 'zoom-in', label: 'Zoom in', click: () => tafel_comp.value.zoomin()},
+])
+
+const vorlagenmenu = ref([
+    { value: 'logpapier', label: 'LOG-Papier', click: () => mmlogDlg.value = true },
+    { value: 'karopapier', label: 'Karopaier', click: () => tafel_comp.value.neueVorlage('karopapier')},
+    { value: 'linienpapier', label: 'Linienpapier', click: () => tafel_comp.value.neueVorlage('linienpapier')},
+])
+
+const tool2menu = ref([
+    { value: 'geodreieck', label: 'Geodreieck', click: () => config.value.geodreieckaktiv = ! config.value.geodreieckaktiv},
+    { value: 'logpapier', label: 'Vorlagen', config: {anchor: 'bottom right', self: 'bottom left'}, children: vorlagenmenu.value },
+    { value: 'darkmode', label: 'Darkmode', click: toggleDarkmode},
+    { value: 'fullscreen', label: 'Fullscreen', click: toggleFullscreen},
+])
+
 const linewidthmenu = ref([
     { value: '1', label: '1px'},
     { value: '3', label: '3px'},
     { value: '5', label: '5px'},
     { value: '20', label: '20px'},
+])
+
+const radiergummisizemenu = ref([
+    { value: '100', label: '100px'},
+    { value: '300', label: '300px'},
+    { value: '500', label: '500px'},
 ])
 
 const toolmenu = ref([
@@ -254,7 +279,7 @@ const styleColorButton = computed(() => {
     }
 })
 
-const datetimeformat = {
+const datetimelongformat = {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -263,11 +288,20 @@ const datetimeformat = {
     minute: 'numeric',
     second: 'numeric',
 }
-const datetime = ref(Intl.DateTimeFormat(navigator.language, datetimeformat).format())
+const datetimesmallformat = {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+    hour: 'numeric',
+    minute: 'numeric',
+}
+const datetimelg = ref(Intl.DateTimeFormat(navigator.language, datetimelongformat).format())
+const datetimesm = ref(Intl.DateTimeFormat(navigator.language, datetimesmallformat).format())
 const timerID = setInterval(updateTime, 1000);
 
 function updateTime() {
-    datetime.value = Intl.DateTimeFormat(navigator.language, datetimeformat).format()
+    datetimelg.value = Intl.DateTimeFormat(navigator.language, datetimelongformat).format()
+    datetimesm.value = Intl.DateTimeFormat(navigator.language, datetimesmallformat).format()
 }
 
 function toggleDarkmode() {
