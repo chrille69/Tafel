@@ -11,7 +11,7 @@
                 <q-btn dense no-caps class="lt-md q-ml-none" flat icon="menu">
                     <mymenu v-model="dummyAction" :icons="icons" :items="tool1menu" />
                 </q-btn>
-                <q-btn dense class="gt-sm" :icon="icons['undo']" @click="() => tafel_comp.undo()" class="q-ml-none" />
+                <q-btn dense class="gt-sm q-ml-none" :icon="icons['undo']" @click="() => tafel_comp.undo()" />
                 <q-btn dense class="gt-sm" :icon="icons['redo']" @click="() => tafel_comp.redo()" />
                 <q-btn dense class="gt-sm" :icon="icons['zoom-out']" @click="() => tafel_comp.zoomout()" />
                 <q-btn dense class="gt-sm" :icon="icons['zoom-reset']" @click="() => tafel_comp.zoomreset()" />
