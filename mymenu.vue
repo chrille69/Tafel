@@ -14,7 +14,7 @@
                     </q-item>
                 </template>
                 <template v-else>
-                    <q-item clickable v-close-popup @click="() => emit('update:modelValue', item.value)">
+                    <q-item clickable v-close-popup="item.noclose ? false : true" @click="() => clickAction(item)">
                         <q-item-section>
                             {{ item.label }}
                         </q-item-section>
@@ -31,4 +31,12 @@
 <script setup>
 const props = defineProps(['modelValue','items','icons'])
 const emit = defineEmits(['update:modelValue'])
+
+function clickAction(item) {
+    if (item.click) {
+        item.click()
+        return
+    }
+    emit('update:modelValue', item.value)
+}
 </script>./mymenu.vue
