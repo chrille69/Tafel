@@ -1,6 +1,6 @@
 <template>
     <div @fullscreenchange="fullscreenchange">
-        <tafel :config="config" ref="tafel_comp" style="min-width: 100vw; height: 100vh; overflow: visible" @wheel="mausrad" @hatgemalt="() => ungespeichert = true"/>
+        <tafel :config="config" ref="tafel_comp" style="min-width: 100vw; height: 100vh;" @wheel="mausrad" @hatgemalt="() => ungespeichert = true"/>
         <q-card class="go-left"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-left']" @click="() => tafel_comp.goleft()" /></q-card>
         <q-card class="go-right"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-right']" @click="() => tafel_comp.goright()" /></q-card>
         <q-card class="go-top"><q-btn size="10px" glossy dense class="full-width" :icon="icons['go-top']" @click="() => tafel_comp.gotop()" /></q-card>
@@ -8,15 +8,7 @@
             <q-card class="go-bottom q-ma-md" ><q-btn  size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/></q-card>
             <q-card class="full-width">
                 <div class="row full-width q-gutter-sm q-pa-xs">
-                    <q-btn dense no-caps class="lt-md q-ml-none" flat icon="menu">
-                        <mymenu v-model="dummyAction" :icons="icons" :items="tool1menu" />
-                    </q-btn>
-                    <q-btn dense class="gt-sm q-ml-none" :icon="icons['undo']" @click="() => tafel_comp.undo()" />
-                    <q-btn dense class="gt-sm" :icon="icons['redo']" @click="() => tafel_comp.redo()" />
-                    <q-btn dense class="gt-sm" :icon="icons['zoom-out']" @click="() => tafel_comp.zoomout()" />
-                    <q-btn dense class="gt-sm" :icon="icons['zoom-reset']" @click="() => tafel_comp.zoomreset()" />
-                    <q-btn dense class="gt-sm" :icon="icons['zoom-in']" @click="() => tafel_comp.zoomin()" />
-                    <q-btn-toggle v-model="config.modus" dense push glossy toggle-color="primary"
+                    <q-btn-toggle v-model="config.modus" dense push glossy toggle-color="primary" class="q-ml-none"
                         :options="[
                             {value: 'editieren', slot: 'editieren'},
                             {value: 'radieren', slot: 'radieren'},
@@ -36,6 +28,14 @@
                                 </q-btn>
                         </template>
                     </q-btn-toggle>
+                    <q-btn dense no-caps class="lt-md" flat icon="menu">
+                        <mymenu v-model="dummyAction" :icons="icons" :items="tool1menu" />
+                    </q-btn>
+                    <q-btn dense class="gt-sm" :icon="icons['undo']" @click="() => tafel_comp.undo()" />
+                    <q-btn dense class="gt-sm" :icon="icons['redo']" @click="() => tafel_comp.redo()" />
+                    <q-btn dense class="gt-sm" :icon="icons['zoom-out']" @click="() => tafel_comp.zoomout()" />
+                    <q-btn dense class="gt-sm" :icon="icons['zoom-reset']" @click="() => tafel_comp.zoomreset()" />
+                    <q-btn dense class="gt-sm" :icon="icons['zoom-in']" @click="() => tafel_comp.zoomin()" />
                     <q-space />
                     <template v-if="config.modus == 'radieren'">
                         <q-btn dense no-caps flat label="Größe">
