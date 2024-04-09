@@ -1,19 +1,14 @@
 <template>
-    <g>
-        <template v-for="pfad in pfade" :key="pfad.id">
-            <path
-                :ref="(el) => init(pfad, el)"
-                :d="pfadstring(pfad.points)"
-                :style="stylefn.call(pfad)"
-                :="pfad.attr"
-                :id="pfad.id"
-            />
-        </template>
-    </g>
+    <path :ref="(el) => init(pfad, el)"
+          :d="pfadstring(pfad.points)"
+          :style="stylefn.call(pfad)"
+          :="pfad.attr"
+          :id="pfad.id"
+ ></path>
 </template>
 
 <script setup>
-const props = defineProps(['pfade'])
+const props = defineProps(['pfad'])
 
 const drawarray = {
     'stift': drawstift,
@@ -143,7 +138,7 @@ function removePointsInRect(rect) {
         const i = parseInt(idx)
         if (isNaN(i)) continue
         const pos = pointPos(this.points[i])
-        const postfm = pos.matrixTransform(mtrx)
+        const postfm = pos?.matrixTransform(mtrx)
         if (isPointInRect(postfm, rect)) {
             removePointAt(this.points, i)
         }
@@ -160,10 +155,10 @@ function isPointInRect(pos, rect) {
 function removePointAt(points, idx) {
 
     if (idx < points.length-1) {
-        let nextPoint = points[idx+1]
-        let pos = pointPos(nextPoint)
+        const nextPoint = points[idx+1]
+        const pos = pointPos(nextPoint)
         if (pos !== null)
-            points[idx+1] = ['M', pos.x, pos.y]
+            points[idx+1] = ['M', pos?.x, pos?.y]
     }
     points.splice(idx, 1)
 
@@ -203,5 +198,4 @@ function pointPos(point) {
     else if (typ == 'Z')
         return null
 }
-
 </script>

@@ -19,7 +19,12 @@
             <g ref="group_comp" :style="groupstyle">
                 <vorlagenvue :vorlagen="vorlagen" />
                 <bildervue :bilder="bilder" />
-                <pfadevue :pfade="pfade" />
+                <g>
+                    <template v-for="pfad in pfade" :key="pfad.id" >
+                        <pfadvue :pfad="pfad" />
+                    </template>
+                </g>
+
                 <geodreieck  id="geodreieck" ref="geodreieck_comp" v-show="props.config.geodreieckaktiv">
                     <template v-if="!statusEditieren">
                         <path id="verschiebegriff" style="pointer-events: bounding-box; fill: #0000ff; stroke-width:.26458" d="m80 40-3 3h2v4h-4v-2l-3 3 3 3v-2h4v4h-2l3 3 3-3h-2v-4h4v2l3-3-3-3v2h-4v-4h2z"/>
@@ -35,7 +40,7 @@
 <script setup>
 import { ref, computed, nextTick } from 'vue'
 import geodreieck from './geodreieck.vue'
-import pfadevue from './pfade.vue'
+import pfadvue from './pfad.vue'
 import bildervue from './bilder.vue'
 import vorlagenvue from './vorlagen.vue'
 import moveablevue from './moveable.vue'
