@@ -4,9 +4,9 @@
         <q-card class="go-left"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-left']" @click="() => tafel_comp.goleft()" /></q-card>
         <q-card class="go-right"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-right']" @click="() => tafel_comp.goright()" /></q-card>
         <q-card class="go-top"><q-btn size="10px" glossy dense class="full-width" :icon="icons['go-top']" @click="() => tafel_comp.gotop()" /></q-card>
-        <div class="control q-ma-md column items-center">
+        <div class="control column items-center">
             <q-card class="go-bottom q-ma-md" ><q-btn  size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/></q-card>
-            <q-card class="full-width">
+            <q-card square flat bordered class="full-width">
                 <div class="row full-width q-gutter-sm q-pa-xs">
                     <q-btn-toggle v-model="config.modus" dense push glossy toggle-color="primary" class="q-ml-none"
                         :options="[
