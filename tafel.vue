@@ -144,10 +144,11 @@ onresize = () => {
 /////////////////////////////////////////////////////
 
 async function startWork(e) {
-    if (e.buttons && e.button != 0) return
+    if (e.buttons && e.button > 1) return
     //console.log(e)
     e.preventDefault()
-    if (e.touches?.length > 1) {
+    if (e.touches?.length > 1 || e.button == 1) {
+        emptyTargets()
         isPanning.value = true
         if(isPainting) {
             isPainting = false
