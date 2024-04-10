@@ -1,14 +1,15 @@
 <template>
-    <path :ref="(el) => init(pfad, el)"
-          :d="pfadstring(pfad.points)"
-          :style="stylefn.call(pfad)"
-          :="pfad.attr"
-          :id="pfad.id"
- ></path>
+    <path
+        :ref="(el) => init(pfad, el)"
+        :d="pfadstring(pfad.points)"
+        :style="stylefn.call(pfad)"
+        :="pfad.attr"
+        :id="pfad.id"
+    />
 </template>
 
 <script setup>
-const props = defineProps(['pfad'])
+defineProps(['pfad'])
 
 const drawarray = {
     'stift': drawstift,
@@ -124,10 +125,10 @@ function drawkreis(pos) {
 function pfadstring(points) {
     let str = ''
     for (let point of points) {
-        if (['M','m','L','l'].includes(point[0]))
-            str += `${point[0]} ${point[1]} ${point[2]} `
-        else if (['A','a'].includes(point[0]))
+        if (pointIsArc(point))
             str+= `${point[0]} ${point[1]} ${point[2]} ${point[3]} ${point[4]} ${point[5]} ${point[6]} ${point[7]} `
+        else
+            str += `${point[0]} ${point[1]} ${point[2]} `
     }
     return str
 }
@@ -190,12 +191,11 @@ function pointIsLine(point) {
 }
 
 function pointPos(point) {
-    const typ = pointTyp(point)
-    if (['M','m','L','l'].includes(typ))
+    if (pointIsMove(point) || pointIsLine(point))
         return new DOMPoint(point[1], point[2])
-    else if (['A','a'].includes(typ))
+    else if (pointIsArc(point))
         return new DOMPoint(point[6], point[7])
-    else if (typ == 'Z')
+    else if (pointTyp(point) == 'Z')
         return null
 }
 </script>

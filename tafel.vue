@@ -17,8 +17,16 @@
             >
             <text v-if="true" x="20" y="20" style="fill: red;">Touchradius: {{ touchradius }}</text>
             <g ref="group_comp" :style="groupstyle">
-                <vorlagenvue :vorlagen="vorlagen" />
-                <bildervue :bilder="bilder" />
+                <g>
+                    <template v-for="vorlage in vorlagen" :key="vorlage.id">
+                        <vorlagevue :vorlage="vorlage"/>
+                    </template>
+                </g>
+                <g>
+                    <template v-for="bild in bilder" :key="bild.id">
+                        <bildvue :bild="bild" />
+                    </template>
+                </g>
                 <g>
                     <template v-for="pfad in pfade" :key="pfad.id" >
                         <pfadvue :pfad="pfad" />
@@ -41,8 +49,8 @@
 import { ref, computed, nextTick } from 'vue'
 import geodreieck from './geodreieck.vue'
 import pfadvue from './pfad.vue'
-import bildervue from './bilder.vue'
-import vorlagenvue from './vorlagen.vue'
+import bildvue from './bild.vue'
+import vorlagevue from './vorlage.vue'
 import moveablevue from './moveable.vue'
 
 const props = defineProps(['config'])
@@ -135,7 +143,8 @@ onresize = () => {
 //
 /////////////////////////////////////////////////////
 
-function startWork(e) {
+async function startWork(e) {
+    if (e.button != 0) return
     e.preventDefault()
     if (e.touches?.length > 1) {
         isPanning.value = true
@@ -178,7 +187,7 @@ function startWork(e) {
     startDraw(e)
 }
 
-function furtherWork(e) {
+async function furtherWork(e) {
     e.preventDefault()
     eventradius(e) // Zum Messen des durchschnittlichen Radius
     if(isPanning.value) {
@@ -199,12 +208,13 @@ function furtherWork(e) {
         geodreieck_comp.value.translate(getPosition(e))
         return
     }
-    if (!statusZeichnen.value)
+    if (!statusZeichnen.value || !isPainting)
         return
+
     draw(e)
 }
 
-function endWork(e) {
+async function endWork(e) {
     e.preventDefault()
     if(isPanning.value) {
         isPanning.value = false

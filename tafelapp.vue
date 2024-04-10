@@ -252,24 +252,18 @@ const radiergummisizemenu = ref([
 ])
 
 const toolmenu = ref([
-    {value: 'linien', label: 'Linien', config: {anchor: 'bottom right', self: 'bottom left'}, children: [
-        {value: 'linie', label: 'Linie'},
-        {value: 'liniesnap', label: 'Linie hor/ver'},
-        {value: 'pfeil', label: 'Pfeil'},
-        {value: 'pfeilsnap', label: 'Pfeil hor/ver'},
-    ]},
-    {value: 'rechtecke', label: 'Rechtecke', config: {anchor: 'bottom right', self: 'bottom left'}, children: [
-        {value: 'rechteck', label: 'Rechteck'},
-        {value: 'rechteckf', label: 'Rechteck gef.'},
-        {value: 'quadrat',  label: 'Quadrat'},
-        {value: 'quadratf', label: 'Quadrat gef.'},
-    ]},
-    {value: 'ellipsen', label: 'Ellipsen', config: {anchor: 'bottom right', self: 'bottom left'}, children: [
-        {value: 'ellipse', label: 'Ellipse'},
-        {value: 'ellipsef', label: 'Ellipse gef.'},
-        {value: 'kreis', label: 'Kreis'},
-        {value: 'kreisf', label: 'Kreis gef.'},
-    ]},
+    {value: 'ellipse', label: 'Ellipse'},
+    {value: 'ellipsef', label: 'Ellipse gef.'},
+    {value: 'kreis', label: 'Kreis'},
+    {value: 'kreisf', label: 'Kreis gef.'},
+    {value: 'rechteck', label: 'Rechteck'},
+    {value: 'rechteckf', label: 'Rechteck gef.'},
+    {value: 'quadrat',  label: 'Quadrat'},
+    {value: 'quadratf', label: 'Quadrat gef.'},
+    {value: 'linie', label: 'Linie'},
+    {value: 'liniesnap', label: 'Linie hor/ver'},
+    {value: 'pfeil', label: 'Pfeil'},
+    {value: 'pfeilsnap', label: 'Pfeil hor/ver'},
     {value: 'stift', label: 'Freihand'},
 ])
 
