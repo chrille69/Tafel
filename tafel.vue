@@ -144,7 +144,8 @@ onresize = () => {
 /////////////////////////////////////////////////////
 
 async function startWork(e) {
-    if (e.button != 0) return
+    if (e.buttons && e.button != 0) return
+    //console.log(e)
     e.preventDefault()
     if (e.touches?.length > 1) {
         isPanning.value = true
@@ -329,7 +330,7 @@ function geosnap(pos) {
     let geomtrx = geodreieck_comp.value.$el.getCTM()
     let groupmtrx = group_comp.value.getScreenCTM()
     let geop = p.matrixTransform(groupmtrx).matrixTransform(geomtrx.inverse())
-    if (geop.y < 90 && geop.y > 70) geop.y = 80
+    if (geop.y < 90 && geop.y > 70 && Math.abs(geop.x-80) < 80) geop.y = 80
     p = geop.matrixTransform(geomtrx).matrixTransform(groupmtrx.inverse())
     return p
 }
