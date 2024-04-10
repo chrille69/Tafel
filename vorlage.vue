@@ -13,6 +13,8 @@
 <script setup>
 import { ref, markRaw } from 'vue'
 
+defineProps(['vorlage'])
+
 import linienpapier from './linienpapier.vue'
 import karopapier from './karopapier.vue'
 import mmlogpapier from './mmlogpapier.vue'
