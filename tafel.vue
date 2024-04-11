@@ -155,8 +155,8 @@ async function startWork(e) {
             pfade.value.pop()
         }
         startpos = getPosition(e,'tafel')
-        startpos.x -= transform.value.x
-        startpos.y -= transform.value.y
+        startpos.x -= transform.value.x * transform.value.scale
+        startpos.y -= transform.value.y * transform.value.scale
         return
     }
 
@@ -194,8 +194,8 @@ async function furtherWork(e) {
     eventradius(e) // Zum Messen des durchschnittlichen Radius
     if(isPanning.value) {
         let pos = getPosition(e,'tafel')
-        transform.value.x = pos.x-startpos.x
-        transform.value.y = pos.y-startpos.y
+        transform.value.x = (pos.x-startpos.x) / transform.value.scale
+        transform.value.y = (pos.y-startpos.y) / transform.value.scale
         return
     }
     if (zeigeRadierer.value) {
@@ -480,10 +480,10 @@ function importJson(jsonstr) {
     vorlagen.value = obj.vorlagen
 }
 
-async function gobottom() { transform.value.y -= 200;   await nextTick(); moveable_comp.value.updateRect()}
-async function gotop()    { transform.value.y += 200;   await nextTick(); moveable_comp.value.updateRect()}
-async function goleft()   { transform.value.x += 200;   await nextTick(); moveable_comp.value.updateRect()}
-async function goright()  { transform.value.x -= 200;   await nextTick(); moveable_comp.value.updateRect()}
+async function gobottom() { transform.value.y -= 200 / transform.value.scale;   await nextTick(); moveable_comp.value.updateRect()}
+async function gotop()    { transform.value.y += 200 / transform.value.scale;   await nextTick(); moveable_comp.value.updateRect()}
+async function goleft()   { transform.value.x += 200 / transform.value.scale;   await nextTick(); moveable_comp.value.updateRect()}
+async function goright()  { transform.value.x -= 200 / transform.value.scale;   await nextTick(); moveable_comp.value.updateRect()}
 async function zoomout() { transform.value.scale *= .9; await nextTick(); moveable_comp.value.updateRect()}
 async function zoomin() { transform.value.scale *= 1.1; await nextTick(); moveable_comp.value.updateRect()}
 async function zoomreset() { transform.value.scale = 1; await nextTick(); moveable_comp.value.updateRect()}
