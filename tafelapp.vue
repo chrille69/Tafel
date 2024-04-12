@@ -1,11 +1,7 @@
 <template>
-    <div @fullscreenchange="fullscreenchange">
-        <tafel :config="config" ref="tafel_comp" style="min-width: 100vw; height: 100vh;" @wheel="mausrad" @hatgemalt="() => ungespeichert = true"/>
-        <q-card class="go-left"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-left']" @click="() => tafel_comp.goleft()" /></q-card>
-        <q-card class="go-right"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-right']" @click="() => tafel_comp.goright()" /></q-card>
-        <q-card class="go-top"><q-btn size="10px" glossy dense class="full-width" :icon="icons['go-top']" @click="() => tafel_comp.gotop()" /></q-card>
+    <div @fullscreenchange="fullscreenchange" style="display: grid; grid-template-rows: 1fr auto; height: 100vh;">
+        <tafel :config="config" ref="tafel_comp" @wheel="mausrad" @hatgemalt="() => ungespeichert = true"/>
         <div class="control column items-center">
-            <q-card class="go-bottom q-ma-md" ><q-btn  size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => tafel_comp.gobottom()"/></q-card>
             <q-card square flat bordered class="full-width">
                 <div class="row full-width q-gutter-sm q-pa-xs">
                     <q-btn-toggle v-model="config.modus" dense push glossy toggle-color="primary" class="q-ml-none"
@@ -403,6 +399,7 @@ window.onbeforeunload = function(event) {
 }
 
 provide('config', config)
+provide('icons', icons)
 
 </script>
 
@@ -410,34 +407,8 @@ provide('config', config)
 :root {
     --gobuttonwidth: 200px;
     --gobuttongap: 10px;
-    --controlheight: 100px;
-}
-.go-left {
-    position: absolute;
-    top: calc(50% - 0.5 * var(--gobuttonwidth));
-    left: var(--gobuttongap);
-    height: var(--gobuttonwidth);
-}
-.go-right {
-    position: absolute;
-    top: calc(50% - 0.5 * var(--gobuttonwidth));
-    right: var(--gobuttongap);
-    height: var(--gobuttonwidth);
-}
-.go-top {
-    position: absolute;
-    left: calc(50% - 0.5 * var(--gobuttonwidth));
-    top: var(--gobuttongap);
-    width: var(--gobuttonwidth);
-}
-.go-bottom {
-    width: var(--gobuttonwidth);
 }
 .control {
-    position: absolute;
-    bottom: 0px;
-    left: 0%;
-    right: 0%;
     pointer-events: none;
 }
 .control > * {

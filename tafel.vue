@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="width: 100%; position: relative;">
         <moveablevue
             ref="moveable_comp"
             :style="moveablestyle"
@@ -10,6 +10,10 @@
             @change="commit"
             @transformItem="transformItem">
         </moveablevue>
+        <q-card class="go-left"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-left']" @click="() => goleft()" /></q-card>
+        <q-card class="go-right"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-right']" @click="() => goright()" /></q-card>
+        <q-card class="go-top"><q-btn size="10px" glossy dense class="full-width" :icon="icons['go-top']" @click="() => gotop()" /></q-card>
+        <q-card class="go-bottom"><q-btn size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => gobottom()"/></q-card>
         <svg id="tafel" xmlns="http://www.w3.org/2000/svg"
             @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" 
             @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
@@ -46,7 +50,7 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, watch, inject } from 'vue'
 import geodreieck from './geodreieck.vue'
 import pfadvue from './pfad.vue'
 import bildvue from './bild.vue'
@@ -55,6 +59,7 @@ import moveablevue from './moveable.vue'
 
 const props = defineProps(['config'])
 const emit = defineEmits(['hatgemalt'])
+const icons = inject('icons')
 
 const group_comp = ref(null)
 const geodreieck_comp = ref(null)
@@ -103,6 +108,9 @@ const radiergummiBox = computed(() => { return {
     }
 })
 
+watch(() => props.config.geodreieckaktiv, (neuerwert) => {
+    geodreieck_comp.value.setPosition(mittelpunkt())
+})
 
 let startpos = new DOMPoint(0,0)
 let itemid = 0
@@ -309,6 +317,14 @@ function obenlinks() {
     return svgpoint.matrixTransform(mtrx.inverse())
 }
 
+function mittelpunkt() {
+    const point = new DOMPoint(window.innerWidth/2, window.innerHeight/2)
+    let mtrx = document.getElementById('tafel').getScreenCTM()
+    const svgpoint = point.matrixTransform(mtrx.inverse())
+    mtrx = group_comp.value.getScreenCTM()
+    return svgpoint.matrixTransform(mtrx.inverse())
+}
+
 function getPosition(evt, tafel=false) {
     let CTM = group_comp.value.getScreenCTM()
     if (tafel)
@@ -502,10 +518,6 @@ defineExpose({
     importJson,
     undo,
     redo,
-    gobottom,
-    gotop,
-    goleft,
-    goright,
     zoomin,
     zoomout,
     zoomreset,
@@ -513,3 +525,30 @@ defineExpose({
 })
 
 </script>
+
+<style>
+.go-left {
+    position: absolute;
+    top: calc(50% - 0.5 * var(--gobuttonwidth));
+    left: var(--gobuttongap);
+    height: var(--gobuttonwidth);
+}
+.go-right {
+    position: absolute;
+    top: calc(50% - 0.5 * var(--gobuttonwidth));
+    right: var(--gobuttongap);
+    height: var(--gobuttonwidth);
+}
+.go-top {
+    position: absolute;
+    left: calc(50% - 0.5 * var(--gobuttonwidth));
+    top: var(--gobuttongap);
+    width: var(--gobuttonwidth);
+}
+.go-bottom {
+    position: absolute;
+    left: calc(50% - 0.5 * var(--gobuttonwidth));
+    bottom: var(--gobuttongap);
+    width: var(--gobuttonwidth);
+}
+</style>
