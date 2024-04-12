@@ -1,8 +1,11 @@
 <template>
     <div style="width: 100%; position: relative;">
+        <q-card class="go-left"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-left']" @click="() => goleft()" /></q-card>
+        <q-card class="go-right"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-right']" @click="() => goright()" /></q-card>
+        <q-card class="go-top"><q-btn size="10px" glossy dense class="full-width" :icon="icons['go-top']" @click="() => gotop()" /></q-card>
+        <q-card class="go-bottom"><q-btn size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => gobottom()"/></q-card>
         <moveablevue
             ref="moveable_comp"
-            :style="moveablestyle"
             :disabled="moveableDisabled"
             :selectableItemIds="itemIds"
             :selectedItemIds="selectedItemIds"
@@ -10,10 +13,6 @@
             @change="commit"
             @transformItem="transformItem">
         </moveablevue>
-        <q-card class="go-left"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-left']" @click="() => goleft()" /></q-card>
-        <q-card class="go-right"><q-btn size="10px" glossy dense class="full-height" :icon="icons['go-right']" @click="() => goright()" /></q-card>
-        <q-card class="go-top"><q-btn size="10px" glossy dense class="full-width" :icon="icons['go-top']" @click="() => gotop()" /></q-card>
-        <q-card class="go-bottom"><q-btn size="10px" class="full-width" dense glossy :icon="icons['go-bottom']" @click="() => gobottom()"/></q-card>
         <svg id="tafel" xmlns="http://www.w3.org/2000/svg"
             @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" 
             @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
@@ -50,7 +49,7 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick, watch, inject } from 'vue'
+import { ref, computed, nextTick, watch, inject, onMounted } from 'vue'
 import geodreieck from './geodreieck.vue'
 import pfadvue from './pfad.vue'
 import bildvue from './bild.vue'
@@ -69,11 +68,11 @@ const bilder = ref([])
 const vorlagen = ref([])
 const selectedItemIds = ref([])
 const transform = ref({x: 0, y: 0, scale: 1})
-const transformOrigin = ref({x: window.innerWidth/2, y: window.innerHeight/2})
 const touchradius = ref(0)
 const zeigeRadierer = ref(false)
 const isPanning = ref(false)
 const radiergummiPos = ref({x: 0, y: 0})
+const mitte = ref(new DOMPoint())
 
 const statusEditieren = computed(() => {emptyTargets(); return props.config.modus == 'editieren' })
 const statusZeichnen = computed(()  => {emptyTargets(); return props.config.modus == 'zeichnen' })
@@ -82,22 +81,20 @@ const moveableDisabled = computed(() => !statusEditieren.value || isPanning.valu
 const items = computed(() => [...pfade.value,...bilder.value,...(props.config.hilfslinienFixiert ? [] : vorlagen.value)])
 const itemIds = computed(() => {
     const list = items.value.map(item => item.id)
-    list.push('geodreieck')
+    if (props.config.geodreieckaktiv)
+        list.push('geodreieck')
     setSelectedItemIds(selectedItemIds.value.filter(id => list.includes(id)))
     return list
 })
 const itemsdict = computed(() => Object.fromEntries(items.value.map(item => [item.id, item])))
 const groupstyle = computed(() => {
+    const mx = mitte.value.x
+    const my = mitte.value.y
+    const tx = transform.value.x
+    const ty = transform.value.y
+    const s = transform.value.scale
     return {
-        transform: `scale(${transform.value.scale}) translate(${transform.value.x}px, ${transform.value.y}px)`,
-        transformOrigin: `${transformOrigin.value.x}px ${transformOrigin.value.y}px`
-    }
-})
-const moveablestyle = computed(() => {
-    const x = transformOrigin.value.x*(transform.value.scale-1)
-    const y = transformOrigin.value.y*(transform.value.scale-1)
-    return {
-        transform: `translate(${x}px, ${y}px)`
+        transform: `translate(${mx}px, ${my}px) scale(${transform.value.scale}) translate(${-mx+tx}px, ${-my+ty}px)`,
     }
 })
 const radiergummiBox = computed(() => { return {
@@ -109,8 +106,15 @@ const radiergummiBox = computed(() => { return {
 })
 
 watch(() => props.config.geodreieckaktiv, (neuerwert) => {
-    geodreieck_comp.value.setPosition(mittelpunkt())
+    const mtrx = group_comp.value.getCTM()
+    const point = mitte.value.matrixTransform(mtrx.inverse())
+    geodreieck_comp.value.setPosition(point)
 })
+
+onMounted(() => {
+    mitte.value = mittelpunkt()
+})
+
 
 let startpos = new DOMPoint(0,0)
 let itemid = 0
@@ -139,8 +143,7 @@ function emptyTargets() {
 }
 
 onresize = () => {
-    transformOrigin.value.x = window.innerWidth/2
-    transformOrigin.value.y = window.innerHeight/2
+    mitte.value = mittelpunkt()
     //await nextTick()
     moveable_comp.value.updateRect()
 }
@@ -318,11 +321,8 @@ function obenlinks() {
 }
 
 function mittelpunkt() {
-    const point = new DOMPoint(window.innerWidth/2, window.innerHeight/2)
-    let mtrx = document.getElementById('tafel').getScreenCTM()
-    const svgpoint = point.matrixTransform(mtrx.inverse())
-    mtrx = group_comp.value.getScreenCTM()
-    return svgpoint.matrixTransform(mtrx.inverse())
+    const svgrect = document.getElementById('tafel').getBoundingClientRect()
+    return new DOMPoint(svgrect.width/2, svgrect.height/2)
 }
 
 function getPosition(evt, tafel=false) {
@@ -496,10 +496,10 @@ function importJson(jsonstr) {
     vorlagen.value = obj.vorlagen
 }
 
-async function gobottom() { transform.value.y -= 200 / transform.value.scale;   await nextTick(); moveable_comp.value.updateRect()}
-async function gotop()    { transform.value.y += 200 / transform.value.scale;   await nextTick(); moveable_comp.value.updateRect()}
-async function goleft()   { transform.value.x += 200 / transform.value.scale;   await nextTick(); moveable_comp.value.updateRect()}
-async function goright()  { transform.value.x -= 200 / transform.value.scale;   await nextTick(); moveable_comp.value.updateRect()}
+async function gobottom() { transform.value.y -= 200/transform.value.scale; await nextTick(); moveable_comp.value.updateRect()}
+async function gotop()    { transform.value.y += 200/transform.value.scale; await nextTick(); moveable_comp.value.updateRect()}
+async function goleft()   { transform.value.x += 200/transform.value.scale; await nextTick(); moveable_comp.value.updateRect()}
+async function goright()  { transform.value.x -= 200/transform.value.scale; await nextTick(); moveable_comp.value.updateRect()}
 async function zoomout() { transform.value.scale *= .9; await nextTick(); moveable_comp.value.updateRect()}
 async function zoomin() { transform.value.scale *= 1.1; await nextTick(); moveable_comp.value.updateRect()}
 async function zoomreset() { transform.value.scale = 1; await nextTick(); moveable_comp.value.updateRect()}
@@ -516,6 +516,10 @@ defineExpose({
     copySelected,
     exportJson,
     importJson,
+    gobottom,
+    gotop,
+    goleft,
+    goright,
     undo,
     redo,
     zoomin,

@@ -89,8 +89,8 @@ import { ref, computed } from 'vue'
 const group = ref(null)
 
 const transform = ref({
-    x: 160,
-    y: 80,
+    x: 0,
+    y: 0,
     winkel: Math.PI,
     scale: 5
 })
@@ -116,6 +116,11 @@ function translate(pos) {
     transform.value.y = pos.y - startpos.y
 }
 
+function setPosition(pos) {
+    transform.value.x = pos.x - 80
+    transform.value.y = pos.y - 240
+}
+
 function getCTM() { return group.value.getCTM() }
 
 function setTransform(transformObject) {
@@ -125,7 +130,7 @@ function setTransform(transformObject) {
     transform.value.scale = transformObject.scale[0]
 }
 
-defineExpose({startRotate, rotate, startTranslate, translate, setTransform})
+defineExpose({startRotate, rotate, startTranslate, translate, setTransform, setPosition})
 </script>
 
 <style>
@@ -134,7 +139,6 @@ defineExpose({startRotate, rotate, startTranslate, translate, setTransform})
     pointer-events: fill;
     clip-rule:evenodd;
     fill-rule:evenodd;
-    image-rendering:optimizeQuality;
     shape-rendering:geometricPrecision;
     text-rendering:geometricPrecision;
 }
