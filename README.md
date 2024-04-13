@@ -18,7 +18,7 @@ Es wurde so konzipiert, dass alle Funktionen mit Klicks ausgeführt werden könn
 als Lehrer an der Tafel steht und währenddessen keine gleichzeitigen Tastatureingaben tätigen kann
 (Shift- oder Strg-Tasten).
 Die Menge an implementierten Funktionen sind auf ein Nötigstes reduziert. Man bedenke immer, dass die
-Schüler ein Heft und einen Stift in der Hand haben. Ein Verschieben der Objekte (o.ä.)
+Schüler ein Heft vor sich und einen Stift in der Hand haben. Ein Verschieben der Objekte (o.ä.)
 sollte daher vermieden werden.
 
 Es ist kein Zeichenprogramm! Wer mehr Funktionen möchte, erstelle sich z.B. mit Inkscape wunderschöne
