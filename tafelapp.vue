@@ -16,8 +16,7 @@
                         {value: 'editieren', slot: 'editieren'},
                         {value: 'radieren', slot: 'radieren'},
                         {value: 'zeichnen', slot: 'zeichnen'},
-                    ]"
-                >
+                    ]">
                     <template v-slot:editieren>
                         <q-icon :name="icons['editieren']" />
                     </template>
@@ -49,15 +48,25 @@
                         class="gt-sm"
                         dense
                         type="number"
-                        label="Radierergröße"
-                    />
+                        label="Radierergröße" />
                 </template>
                 <template v-else-if="config.modus == 'editieren'">
-                    <q-btn dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected"/>
-                    <q-btn dense :icon="icons['delete']" glossy @click="tafel_comp.deleteSelected"/>
-                    <q-checkbox label="Hilfslinien fixieren" v-model="config.hilfslinienFixiert" />
+                    <q-btn dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected" />
+                    <q-btn dense :icon="icons['delete']" glossy @click="tafel_comp.deleteSelected" />
+                    <q-checkbox class="gt-sm" label="Hilfslinien fixieren" v-model="config.hilfslinienFixiert" />
+                    <q-checkbox class="lt-md" label="HL fix" v-model="config.hilfslinienFixiert" />
                 </template>
                 <template v-else>
+                    <q-btn-toggle
+                        v-model="config.tool"
+                        class="gt-md"
+                        dense push glossy
+                        toggle-color="primary"
+                        :options="toolmenu.map(t => { return {value: t.value, slot: t.value} })">
+                        <template v-for="tool in toolmenu" #[tool.value]>
+                            <q-icon :name="icons[tool.value]" />
+                        </template>
+                    </q-btn-toggle>
                     <q-btn-toggle 
                         v-model="config.brushColor"
                         dense push glossy
@@ -68,25 +77,23 @@
                             {value: '#00ff00', slot: 'gruen'},
                             {value: '#4169e1', slot: 'blau'},
                             {value: freeColor, slot: 'free'},
-                        ]"
-                    >
-                        <template v-slot:standard>
+                        ]">
+                        <template #standard>
                             <q-icon :name="icons['defaultcolor']" />
                         </template>
-                        <template v-slot:rot>
+                        <template #rot>
                             <q-icon color="red" :name="icons['defaultcolor']" />
                         </template>
-                        <template v-slot:gruen>
+                        <template #gruen>
                             <q-icon color="green" :name="icons['defaultcolor']" />
                         </template>
-                        <template v-slot:blau>
+                        <template #blau>
                             <q-icon color="blue" :name="icons['defaultcolor']" />
                         </template>
-                        <template v-slot:free>
+                        <template #free>
                             <q-btn dense flat
                                 :icon="icons['freecolor']"
-                                :style="styleColorButton"
-                            >
+                                :style="styleColorButton">
                                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                                     <q-color
                                         v-model="freeColor"
@@ -95,7 +102,7 @@
                                         no-footer
                                         v-close-popup
                                         default-view="palette"
-                                        @update:modelValue="config.brushColor = freeColor"/>
+                                        @update:modelValue="config.brushColor = freeColor" />
                                 </q-popup-proxy>
                             </q-btn>
                         </template>
@@ -113,8 +120,7 @@
                         dense
                         shadow-text="px"
                         label="Linienstärke"
-                        input-style="width: 5.5em">
-                    </q-input>
+                        input-style="width: 5.5em" />
                 </template>
                 <q-space />
                 <q-btn dense class="lt-md q-ml-none" flat icon="menu">
@@ -200,17 +206,17 @@
                     <q-input
                         type="number"
                         v-model.number="groesse"
-                        label="Größe"></q-input>
+                        label="Größe" />
                     <q-input
                         type="number"
                         v-model.number="xdekaden"
                         label="Dekaden"
-                        hint="x-Achse (0: mm-Papier)"></q-input>
+                        hint="x-Achse (0: mm-Papier)" />
                     <q-input
                         type="number"
                         v-model.number="ydekaden"
                         label="Dekaden"
-                        hint="y-Achse (0: mm-Papier)"></q-input>
+                        hint="y-Achse (0: mm-Papier)" />
                 </q-card-section>
                 <q-separator />
                 <q-card-actions align="right">
@@ -334,19 +340,19 @@ const radiergummisizemenu = ref([
 ])
 
 const toolmenu = ref([
-    {value: 'ellipse', label: 'Ellipse'},
-    {value: 'ellipsef', label: 'Ellipse gef.'},
-    {value: 'kreis', label: 'Kreis'},
-    {value: 'kreisf', label: 'Kreis gef.'},
-    {value: 'rechteck', label: 'Rechteck'},
+    {value: 'ellipse',   label: 'Ellipse'},
+    {value: 'ellipsef',  label: 'Ellipse gef.'},
+    {value: 'kreis',     label: 'Kreis'},
+    {value: 'kreisf',    label: 'Kreis gef.'},
+    {value: 'rechteck',  label: 'Rechteck'},
     {value: 'rechteckf', label: 'Rechteck gef.'},
-    {value: 'quadrat',  label: 'Quadrat'},
-    {value: 'quadratf', label: 'Quadrat gef.'},
-    {value: 'linie', label: 'Linie'},
+    {value: 'quadrat',   label: 'Quadrat'},
+    {value: 'quadratf',  label: 'Quadrat gef.'},
+    {value: 'linie',     label: 'Linie'},
     {value: 'liniesnap', label: 'Linie hor/ver'},
-    {value: 'pfeil', label: 'Pfeil'},
+    {value: 'pfeil',     label: 'Pfeil'},
     {value: 'pfeilsnap', label: 'Pfeil hor/ver'},
-    {value: 'stift', label: 'Freihand'},
+    {value: 'stift',     label: 'Freihand'},
 ])
 
 const styleColorButton = computed(() => {
