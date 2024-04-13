@@ -62,7 +62,7 @@
                         class="gt-md"
                         dense push glossy
                         toggle-color="primary"
-                        :options="toolmenu.map(t => { return {value: t.value, slot: t.value} })">
+                        :options="toolmenu.map(t => { return {value: t.value, slot: t.value} }).reverse()">
                         <template v-for="tool in toolmenu" #[tool.value]>
                             <q-icon :name="icons[tool.value]" />
                         </template>
