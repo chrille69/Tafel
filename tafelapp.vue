@@ -24,20 +24,23 @@
                         <q-icon :name="icons['radieren']" />
                     </template>
                     <template v-slot:zeichnen>
-                            <q-icon :name="icons[config.tool]" />
-                            <q-btn dense flat icon="arrow_drop_up" size="sm">
-                                <mymenu v-model="config.tool" :icons="icons" :items="toolmenu" />
-                            </q-btn>
+                        <q-icon :name="icons[config.tool]" />
+                        <q-btn dense flat icon="arrow_drop_up" size="sm">
+                            <mymenu v-model="config.tool" :icons="icons" :items="toolmenu" />
+                        </q-btn>
                     </template>
                 </q-btn-toggle>
-                <q-btn dense no-caps class="lt-md" flat icon="menu">
-                    <mymenu v-model="dummyAction" :icons="icons" :items="tool1menu" />
-                </q-btn>
-                <q-btn dense class="gt-sm" :icon="icons['undo']" @click="() => tafel_comp.undo()" />
-                <q-btn dense class="gt-sm" :icon="icons['redo']" @click="() => tafel_comp.redo()" />
-                <q-btn dense class="gt-sm" :icon="icons['zoom-out']" @click="() => tafel_comp.zoomout()" />
-                <q-btn dense class="gt-sm" :icon="icons['zoom-reset']" @click="() => tafel_comp.zoomreset()" />
-                <q-btn dense class="gt-sm" :icon="icons['zoom-in']" @click="() => tafel_comp.zoomin()" />
+                <q-btn-toggle
+                    v-model="config.tool"
+                    class="gt-md"
+                    dense push glossy
+                    :toggle-color="config.modus == 'zeichnen' ? primary : 'grey-6'"
+                    @click="config.modus = 'zeichnen'"
+                    :options="toolmenu.map(t => { return {value: t.value, slot: t.value} }).reverse()">
+                    <template v-for="tool in toolmenu" #[tool.value]>
+                        <q-icon :name="icons[tool.value]" />
+                    </template>
+                </q-btn-toggle>
                 <q-space />
                 <template v-if="config.modus == 'radieren'">
                     <q-btn dense no-caps flat label="Größe">
@@ -57,16 +60,6 @@
                     <q-checkbox class="lt-md" label="HL fix" v-model="config.hilfslinienFixiert" />
                 </template>
                 <template v-else>
-                    <q-btn-toggle
-                        v-model="config.tool"
-                        class="gt-md"
-                        dense push glossy
-                        toggle-color="primary"
-                        :options="toolmenu.map(t => { return {value: t.value, slot: t.value} }).reverse()">
-                        <template v-for="tool in toolmenu" #[tool.value]>
-                            <q-icon :name="icons[tool.value]" />
-                        </template>
-                    </q-btn-toggle>
                     <q-btn-toggle 
                         v-model="config.brushColor"
                         dense push glossy
@@ -123,9 +116,14 @@
                         input-style="width: 5.5em" />
                 </template>
                 <q-space />
-                <q-btn dense class="lt-md q-ml-none" flat icon="menu">
-                    <mymenu v-model="dummyAction" :icons="icons" :items="tool2menu" />
+                <q-btn dense no-caps class="lt-md" flat icon="menu">
+                    <mymenu v-model="dummyAction" :icons="icons" :items="tool1menu" />
                 </q-btn>
+                <q-btn dense class="gt-sm" :icon="icons['undo']" @click="() => tafel_comp.undo()" />
+                <q-btn dense class="gt-sm" :icon="icons['redo']" @click="() => tafel_comp.redo()" />
+                <q-btn dense class="gt-sm" :icon="icons['zoom-out']" @click="() => tafel_comp.zoomout()" />
+                <q-btn dense class="gt-sm" :icon="icons['zoom-reset']" @click="() => tafel_comp.zoomreset()" />
+                <q-btn dense class="gt-sm" :icon="icons['zoom-in']" @click="() => tafel_comp.zoomin()" />
                 <q-btn
                     class="gt-sm"
                     dense
@@ -305,21 +303,18 @@ const icons = ref({
     'radiergummi-kalibrieren': 'svguse:icons.svg#radiergummi-kalibrieren|0 0 22.494 21.081',
 })
 
-const tool1menu = ref([
-    { noclose: true, value: 'undo', label: 'Undo', click: () => tafel_comp.value.undo() },
-    { noclose: true, value: 'redo', label: 'Redo', click: () => tafel_comp.value.redo()},
-    { noclose: true, value: 'zoom-out', label: 'Zoom out', click: () => tafel_comp.value.zoomout()},
-    { noclose: true, value: 'zoom-reset', label: 'Zoom reset', click: () => tafel_comp.value.zoomreset()},
-    { noclose: true, value: 'zoom-in', label: 'Zoom in', click: () => tafel_comp.value.zoomin()},
-])
-
 const vorlagenmenu = ref([
     { value: 'logpapier', label: 'LOG-Papier', click: () => mmlogDlg.value = true },
     { value: 'karopapier', label: 'Karopaier', click: () => tafel_comp.value.neueVorlage('karopapier')},
     { value: 'linienpapier', label: 'Linienpapier', click: () => tafel_comp.value.neueVorlage('linienpapier')},
 ])
 
-const tool2menu = ref([
+const tool1menu = ref([
+    { noclose: true, value: 'undo', label: 'Undo', click: () => tafel_comp.value.undo() },
+    { noclose: true, value: 'redo', label: 'Redo', click: () => tafel_comp.value.redo()},
+    { noclose: true, value: 'zoom-out', label: 'Zoom out', click: () => tafel_comp.value.zoomout()},
+    { noclose: true, value: 'zoom-reset', label: 'Zoom reset', click: () => tafel_comp.value.zoomreset()},
+    { noclose: true, value: 'zoom-in', label: 'Zoom in', click: () => tafel_comp.value.zoomin()},
     { value: 'geodreieck', label: 'Geodreieck', click: () => config.value.geodreieckaktiv = ! config.value.geodreieckaktiv},
     { value: 'logpapier', label: 'Vorlagen', config: {anchor: 'bottom right', self: 'bottom left'}, children: vorlagenmenu.value },
     { value: 'darkmode', label: 'Darkmode', click: toggleDarkmode},
