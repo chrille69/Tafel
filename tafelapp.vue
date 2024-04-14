@@ -8,6 +8,7 @@
         <q-card square flat bordered class="control full-width">
             <div class="row full-width q-gutter-sm q-pa-xs">
                 <q-btn-toggle
+                    :size="buttonsize" 
                     v-model="config.modus"
                     dense push glossy
                     toggle-color="primary"
@@ -43,7 +44,7 @@
                 </q-btn-toggle>
                 <q-space />
                 <template v-if="config.modus == 'radieren'">
-                    <q-btn dense no-caps flat label="Größe">
+                    <q-btn :size="buttonsize" dense no-caps flat label="Größe">
                         <mymenu v-model="config.rubbersize" :icons="icons" :items="radiergummisizemenu" />
                     </q-btn>
                     <q-input
@@ -54,13 +55,14 @@
                         label="Radierergröße" />
                 </template>
                 <template v-else-if="config.modus == 'editieren'">
-                    <q-btn dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected" />
-                    <q-btn dense :icon="icons['delete']" glossy @click="tafel_comp.deleteSelected" />
+                    <q-btn :size="buttonsize" dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected" />
+                    <q-btn :size="buttonsize" dense :icon="icons['delete']" glossy @click="tafel_comp.deleteSelected" />
                     <q-checkbox class="gt-sm" label="Hilfslinien fixieren" v-model="config.hilfslinienFixiert" />
-                    <q-checkbox class="lt-md" label="HL fix" v-model="config.hilfslinienFixiert" />
+                    <q-checkbox class="lt-md" :size="buttonsize" label="HL fix" v-model="config.hilfslinienFixiert" />
                 </template>
                 <template v-else>
                     <q-btn-toggle 
+                        :size="buttonsize" 
                         v-model="config.brushColor"
                         dense push glossy
                         toggle-color="primary"
@@ -84,7 +86,7 @@
                             <q-icon color="blue" :name="icons['defaultcolor']" />
                         </template>
                         <template #free>
-                            <q-btn dense flat
+                            <q-btn :size="buttonsize" dense flat
                                 :icon="icons['freecolor']"
                                 :style="styleColorButton">
                                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -101,6 +103,7 @@
                         </template>
                     </q-btn-toggle>
                     <q-btn
+                        :size="buttonsize" 
                         dense
                         flat
                         :icon="icons[config.brushWidth] ? icons[config.brushWidth] : icons['3']">
@@ -116,7 +119,7 @@
                         input-style="width: 5.5em" />
                 </template>
                 <q-space />
-                <q-btn dense no-caps class="lt-md" flat icon="menu">
+                <q-btn :size="buttonsize" dense no-caps class="lt-md" flat icon="menu">
                     <mymenu v-model="dummyAction" :icons="icons" :items="tool1menu" />
                 </q-btn>
                 <q-btn dense class="gt-sm" :icon="icons['undo']" @click="() => tafel_comp.undo()" />
@@ -142,7 +145,7 @@
                     :unelevated="!config.fullscreen"
                     :glossy="config.darkmode && config.fullscreen"
                     @click="toggleFullscreen" />
-                <q-btn dense label="Datei">
+                <q-btn :size="buttonsize" dense label="Datei">
                     <q-menu v-model="filemenu">
                         <q-list>
                             <q-item>
@@ -355,6 +358,8 @@ const styleColorButton = computed(() => {
         'backgroundColor': config.value.brushColor,
     }
 })
+
+const buttonsize = computed(() => Quasar.Screen.lt.sm ? 'xs' : 'md')
 
 const datetimelongformat = {
     weekday: "long",
