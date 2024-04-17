@@ -192,6 +192,11 @@
                     size="10px"
                     :icon="icons['radiergummi-kalibrieren']"
                     @click="radiergummiKalibrieren" />
+                <q-btn 
+                    dense
+                    size="10px"
+                    icon="done_all"
+                    @click="inSvgUmwandeln" />
                 <q-space />
                 <div class="lt-sm uhrzeit">
                     {{ datetimesm }}
@@ -459,6 +464,10 @@ function importImg(file) {
     filemenu.value = false
     imgfile.value = null
     ungespeichert.value = false
+}
+
+function inSvgUmwandeln() {
+    tafel_comp.value.inSvgUmwandeln()
 }
 
 function einfuegen(e) {

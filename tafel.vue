@@ -30,7 +30,7 @@
                         <bildvue :bild="bild" />
                     </template>
                 </g>
-                <g>
+                <g id="pfade">
                     <template v-for="pfad in pfade" :key="pfad.id" >
                         <pfadvue :pfad="pfad" />
                     </template>
@@ -125,8 +125,11 @@ let isPainting = false
 let touchcount = 0
 
 function neueId() {
-    return `item${++itemid}`
+    return "item"+"10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+    (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+  );
 }
+
 
 function transformItem(id, transform, transformObject) {
     if (id == 'geodreieck')
@@ -509,6 +512,13 @@ function radiergummiKalibrieren() {
     touchcount = 0
 }
 
+function inSvgUmwandeln() {
+    let g = document.getElementById('pfade').cloneNode(true)
+    g.removeAttribute('id')
+    group_comp.value.appendChild(g)
+    pfade.value = []
+}
+
 defineExpose({
     neuesBild,
     neueVorlage,
@@ -525,7 +535,8 @@ defineExpose({
     zoomin,
     zoomout,
     zoomreset,
-    radiergummiKalibrieren
+    radiergummiKalibrieren,
+    inSvgUmwandeln
 })
 
 </script>
