@@ -415,11 +415,18 @@ function fullscreenchange(evt) {
 }
 
 function exportSVG() {
-    const svgelement = document.getElementById('tafel').cloneNode(true)
+    const tafel = document.getElementById('tafel')
+    const gezeichnetes = tafel.getElementById("gezeichnetes")
+    const rect = gezeichnetes.getBoundingClientRect()
+    const svgelement = tafel.cloneNode(true)
+    svgelement.setAttribute("viewBox", `${rect.x-50} ${rect.y-50} ${rect.width+100} ${rect.height+100}`)
+    svgelement.setAttribute("width", `${rect.width+50}px`)
+    svgelement.setAttribute("height", `${rect.height+50}px`)
     if (config.value.darkmode) {
         svgelement.setAttribute("style", "background-color: #1d1d1d; color: #fff;")
     }
     svgelement.getElementById('geodreieck').remove()
+    svgelement.getElementById('touchradiustext').remove()
 
     let a = document.createElement("a");
     a.style = "display: none";

@@ -18,8 +18,8 @@
             @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
             style="touch-action: none; height: 100%; width: 100%"
             >
-            <text v-if="true" x="20" y="20" style="fill: red;">Touchradius: {{ touchradius }}</text>
-            <g ref="group_comp" :style="groupstyle">
+            <text v-if="true" id="touchradiustext" x="20" y="20" style="fill: red;">Touchradius: {{ touchradius }}</text>
+            <g id="gezeichnetes" ref="group_comp" :style="groupstyle">
                 <g>
                     <template v-for="vorlage in vorlagen" :key="vorlage.id">
                         <vorlagevue :vorlage="vorlage"/>
