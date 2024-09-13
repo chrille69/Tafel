@@ -457,24 +457,14 @@ function deleteSelected() {
 }
 
 function copySelected() {
-    let copyitems = pfade.value.filter((item) => selectedItemIds.value.includes(item.id) )
-    for (let item of copyitems) {
-        let newitem = {...item}
-        newitem.points = [...item.points]
-        newitem.id = neueId()
-        pfade.value.unshift(newitem)
-    }
-    copyitems = bilder.value.filter((item) => selectedItemIds.value.includes(item.id) )
-    for (let item of copyitems) {
-        let newitem = {...item}
-        newitem.id = neueId()
-        bilder.value.unshift(newitem)
-    }
-    copyitems = vorlagen.value.filter((item) => selectedItemIds.value.includes(item.id) )
-    for (let item of copyitems) {
-        let newitem = {...item}
-        newitem.id = neueId()
-        vorlagen.value.unshift(newitem)
+    for (let list of [pfade.value, bilder.value, vorlagen.value]) {
+        let copyitems = list.filter((item) => selectedItemIds.value.includes(item.id) )
+        for (let item of copyitems.reverse()) {
+            let newitem = {...item}
+            newitem.points = [...item.points]
+            newitem.id = neueId()
+            list.unshift(newitem)
+        }
     }
     commit()
     Quasar.Notify.create({
@@ -515,7 +505,7 @@ function radiergummiKalibrieren() {
 function inSvgUmwandeln() {
     let g = document.getElementById('pfade').cloneNode(true)
     g.removeAttribute('id')
-    group_comp.value.appendChild(g)
+    group_comp.value.prepend(g)
     pfade.value = []
 }
 
