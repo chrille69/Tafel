@@ -57,8 +57,12 @@
                 <template v-else-if="config.modus == 'editieren'">
                     <q-btn :size="buttonsize" dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected" />
                     <q-btn :size="buttonsize" dense :icon="icons['delete']" glossy @click="tafel_comp.deleteSelected" />
-                    <q-checkbox class="gt-sm" label="Hilfslinien fixieren" v-model="config.hilfslinienFixiert" />
-                    <q-checkbox class="lt-md" :size="buttonsize" label="HL fix" v-model="config.hilfslinienFixiert" />
+                    <q-checkbox class="gt-sm" label="Hilfslinien fixieren" v-model="config.hilfslinienFixiert">
+                        <q-tooltip>Verhindert, dass Karopapier, mm-Papier usw. verschoben werden</q-tooltip>
+                    </q-checkbox>
+                    <q-checkbox class="lt-md" :size="buttonsize" label="HL fix" v-model="config.hilfslinienFixiert">
+                        <q-tooltip>Verhindert, dass Karopapier, mm-Papier usw. verschoben werden</q-tooltip>
+                    </q-checkbox>
                 </template>
                 <template v-else>
                     <q-btn-toggle 
@@ -133,7 +137,9 @@
                     :icon="icons['geodreieck']"
                     :unelevated="!config.geodreieckaktiv"
                     :glossy="config.darkmode && config.geodreieckaktiv"
-                    @click="config.geodreieckaktiv = ! config.geodreieckaktiv" />
+                    @click="config.geodreieckaktiv = ! config.geodreieckaktiv">
+                    <q-tooltip>Blendet ein Geodreieck ein</q-tooltip>
+                </q-btn>
                 <q-btn class="gt-sm" dense :icon="icons['logpapier']">
                     <mymenu v-model="dummyAction" :icons="icons" :items="vorlagenmenu"></mymenu>
                 </q-btn>
@@ -191,12 +197,16 @@
                     dense
                     size="10px"
                     :icon="icons['radiergummi-kalibrieren']"
-                    @click="radiergummiKalibrieren" />
+                    @click="radiergummiKalibrieren">
+                    <q-tooltip>Radiergummi neu kalibrieren</q-tooltip>
+                </q-btn>
                 <q-btn 
                     dense
                     size="10px"
                     icon="done_all"
-                    @click="inSvgUmwandeln" />
+                    @click="inSvgUmwandeln">
+                    <q-tooltip>Tafelbild fixieren um Rechenzeit zu sparen</q-tooltip>
+                </q-btn>
                 <q-space />
                 <div class="lt-sm uhrzeit">
                     {{ datetimesm }}
