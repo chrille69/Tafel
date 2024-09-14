@@ -405,7 +405,7 @@ function toggleDarkmode() {
     config.value.darkmode = ! config.value.darkmode
     Quasar.Dark.set(config.value.darkmode)
 }
-
+// Bemerkung
 function toggleFullscreen() {
     config.value.fullscreen = ! config.value.fullscreen
     if (config.value.fullscreen) {
