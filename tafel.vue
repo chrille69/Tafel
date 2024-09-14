@@ -43,7 +43,7 @@
                     </template>
                 </geodreieck>
             </g>
-            <rect v-if="zeigeRadierer" :="radiergummiBox" style="stroke: red; stroke-width: 2px; fill: none;" />
+            <rect id="radiergummi" v-if="zeigeRadierer" :="radiergummiBox" style="stroke: red; stroke-width: 2px; fill: none;" />
         </svg>
     </div>
 </template>
@@ -59,6 +59,7 @@ import moveablevue from './moveable.vue'
 const props = defineProps(['config'])
 const emit = defineEmits(['hatgemalt'])
 const icons = inject('icons')
+const config = inject('config')
 
 const group_comp = ref(null)
 const geodreieck_comp = ref(null)
@@ -97,12 +98,15 @@ const groupstyle = computed(() => {
         transform: `translate(${mx}px, ${my}px) scale(${transform.value.scale}) translate(${-mx+tx}px, ${-my+ty}px)`,
     }
 })
-const radiergummiBox = computed(() => { return {
+const radiergummiBox = computed(() => {
+    const size = parseInt(config.value.rubbersize)
+    const rect = {
         x: radiergummiPos.value.x,
         y: radiergummiPos.value.y,
-        width: props.config.rubbersize/2,
-        height: props.config.rubbersize
+        width: size/2,
+        height: size
     }
+    return rect
 })
 
 watch(() => props.config.geodreieckaktiv, (neuerwert) => {
@@ -293,9 +297,10 @@ function draw(e) {
 function radiere(e) {
     if (! zeigeRadierer.value) return
 
+    const size = parseInt(config.value.rubbersize)
     let pos = getPosition(e, 'tafel')
-    radiergummiPos.value.x = pos.x - props.config.rubbersize/4
-    radiergummiPos.value.y = pos.y - props.config.rubbersize/2
+    radiergummiPos.value.x = pos.x - size/4
+    radiergummiPos.value.y = pos.y - size/2
     let removelist = []
     for (let item of pfade.value) {
         if (checkIntersection(radiergummiBox.value, item.el.getBoundingClientRect())) {

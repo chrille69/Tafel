@@ -437,6 +437,7 @@ function exportSVG() {
     }
     svgelement.getElementById('geodreieck').remove()
     svgelement.getElementById('touchradiustext').remove()
+    svgelement.getElementById('radiergummi').remove()
 
     let a = document.createElement("a");
     a.style = "display: none";
