@@ -435,9 +435,9 @@ function exportSVG() {
     if (config.value.darkmode) {
         svgelement.setAttribute("style", "background-color: #1d1d1d; color: #fff;")
     }
-    svgelement.getElementById('geodreieck').remove()
-    svgelement.getElementById('touchradiustext').remove()
-    svgelement.getElementById('radiergummi').remove()
+    svgelement.getElementById('geodreieck')?.remove()
+    svgelement.getElementById('touchradiustext')?.remove()
+    svgelement.getElementById('radiergummi')?.remove()
 
     let a = document.createElement("a");
     a.style = "display: none";
