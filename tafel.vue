@@ -15,11 +15,11 @@
         </moveablevue>
         <svg id="tafel" xmlns="http://www.w3.org/2000/svg"
             @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" 
-            @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" 
-            style="touch-action: none; height: 100%; width: 100%"
+            @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork"
+            height="100%" width="100%" style="touch-action: none;"
             >
             <text v-if="true" id="touchradiustext" x="20" y="20" style="fill: red;">Touchradius: {{ touchradius }}</text>
-            <g id="gezeichnetes" ref="group_comp" :style="groupstyle">
+            <g id="gezeichnetes" ref="group_comp" :transform="transformfn">
                 <g>
                     <template v-for="vorlage in vorlagen" :key="vorlage.id">
                         <vorlagevue :vorlage="vorlage"/>
@@ -35,7 +35,6 @@
                         <pfadvue :pfad="pfad" />
                     </template>
                 </g>
-
                 <geodreieck  id="geodreieck" ref="geodreieck_comp" v-show="props.config.geodreieckaktiv">
                     <template v-if="!statusEditieren">
                         <path id="verschiebegriff" style="pointer-events: bounding-box; fill: #0000ff; stroke-width:.26458" d="m80 40-3 3h2v4h-4v-2l-3 3 3 3v-2h4v4h-2l3 3 3-3h-2v-4h4v2l3-3-3-3v2h-4v-4h2z"/>
@@ -88,15 +87,13 @@ const itemIds = computed(() => {
     return list
 })
 const itemsdict = computed(() => Object.fromEntries(items.value.map(item => [item.id, item])))
-const groupstyle = computed(() => {
+const transformfn = computed(() => {
     const mx = mitte.value.x
     const my = mitte.value.y
     const tx = transform.value.x
     const ty = transform.value.y
     const s = transform.value.scale
-    return {
-        transform: `translate(${mx}px, ${my}px) scale(${transform.value.scale}) translate(${-mx+tx}px, ${-my+ty}px)`,
-    }
+    return `translate(${mx}, ${my}) scale(${transform.value.scale}) translate(${-mx+tx}, ${-my+ty})`
 })
 const radiergummiBox = computed(() => {
     const size = parseInt(config.value.rubbersize)
@@ -139,7 +136,7 @@ function transformItem(id, transform, transformObject) {
     if (id == 'geodreieck')
         geodreieck_comp.value.setTransform(transformObject)
     else
-        itemsdict.value[id].transform = transform
+        itemsdict.value[id].style.transform = transform
 }
 
 function setSelectedItemIds(targets) {
@@ -270,13 +267,18 @@ function startDraw(e) {
         startpos: startpos,
         selected: false,
         points: ref([['M', startpos.x, startpos.y]]),
-        attr: {
-            stroke: filledItem ? 'none' : color,
+        style: {
+            'stroke': filledItem ? 'none' : color,
             'stroke-width': props.config.brushWidth,
-            fill: filledItem || ispfeil ? color : 'none',
-            'vector-effect': "non-scaling-stroke"
+            'fill': filledItem || ispfeil ? color : 'none',
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round',
+            'vector-effect': 'non-scaling-stroke',
+            'transform': '',
+            'pointer-events': 'bounding-box',
+            'transform-origin': 'center',
+            'transform-box': 'fill-box',
         },
-        transform: '',
         id: neueId(),
     }
     if (props.config.tool == 'stift') 
