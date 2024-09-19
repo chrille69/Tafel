@@ -2,7 +2,7 @@
     <image
         :ref="(el) => bild.el = el"
         :=bild.attr
-        :style="'transform:'+bild.transform"
+        :style="bild.style"
         :id="bild.id"
     />
 </template>

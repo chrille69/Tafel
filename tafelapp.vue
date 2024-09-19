@@ -53,6 +53,11 @@
                         dense
                         type="number"
                         label="Radierergröße" />
+                    <div class="gt-sm" style="width: 150px">
+                        <div>Touchfaktor</div>
+                        <q-slider v-model="config.rubberfaktor" dense
+                            :min="1.5" :max="5.0" :step="0.05" label />
+                    </div>
                 </template>
                 <template v-else-if="config.modus == 'editieren'">
                     <q-btn :size="buttonsize" dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected" />
@@ -164,23 +169,6 @@
                                     @click="exportSVG" />
                             </q-item>
                             <q-item>
-                                <q-btn
-                                    v-close-popup
-                                    dense
-                                    :icon="icons['save']"
-                                    label="JSON"
-                                    glossy
-                                    @click="exportJson" />
-                            </q-item>
-                            <q-item>
-                                <q-file
-                                    dense
-                                    clearable
-                                    v-model="jsonfile"
-                                    label="Öffne JSON"
-                                    @update:modelValue="importJson" />
-                            </q-item>
-                            <q-item>
                                 <q-file
                                     dense
                                     clearable
@@ -207,6 +195,8 @@
                     @click="inSvgUmwandeln">
                     <q-tooltip>Tafelbild fixieren um Rechenzeit zu sparen</q-tooltip>
                 </q-btn>
+                <div class="q-pa-xs">TR-Mittel: {{ config.touchradiusmittel.toFixed(3) }}</div>
+                <div class="q-pa-xs">TR-Aktuell: {{ config.touchradiusaktuell.toFixed(3) }}</div>
                 <q-space />
                 <div class="lt-sm uhrzeit">
                     {{ datetimesm }}
@@ -261,10 +251,13 @@ const config = ref({
     brushColor: 'currentColor',
     brushWidth: 3,
     rubbersize: 100,
+    rubberfaktor: 2,
     darkmode: true,
     fullscreen: false,
     geodreieckaktiv: false,
-    hilfslinienFixiert: false
+    hilfslinienFixiert: false,
+    touchradiusaktuell: 0,
+    touchradiusmittel:0
 })
 const freeColor = ref('yellow')
 const filemenu = ref(false)
@@ -436,7 +429,6 @@ function exportSVG() {
         svgelement.setAttribute("style", "background-color: #1d1d1d; color: #fff;")
     }
     svgelement.getElementById('geodreieck')?.remove()
-    svgelement.getElementById('touchradiustext')?.remove()
     svgelement.getElementById('radiergummi')?.remove()
 
     let a = document.createElement("a");
@@ -449,31 +441,6 @@ function exportSVG() {
     a.click();
     a.remove();
     ungespeichert.value = false
-}
-
-function exportJson() {
-    let a = document.createElement("a");
-    a.style = "display: none";
-    document.body.appendChild(a);
-    let data = new Blob([tafel_comp.value.exportJson()])
-    let url = URL.createObjectURL(data);
-    a.href = url
-    a.download = 'tafelbild.json';
-    a.click();
-    a.remove();
-    ungespeichert.value = false
-}
-
-function importJson(file) {
-    if (!file) return
-
-    let fr = new FileReader()
-    fr.onload = function(e) {
-        tafel_comp.value.importJson(fr.result)
-    }
-    fr.readAsText(file)
-    filemenu.value = false
-    jsonfile.value = null
 }
 
 function importImg(file) {

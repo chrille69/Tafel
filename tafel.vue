@@ -18,7 +18,6 @@
             @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork"
             height="100%" width="100%" style="touch-action: none;"
             >
-            <text v-if="true" id="touchradiustext" x="20" y="20" style="fill: red;">Touchradius: {{ touchradius }}</text>
             <g id="gezeichnetes" ref="group_comp" :transform="transformfn">
                 <g>
                     <template v-for="vorlage in vorlagen" :key="vorlage.id">
@@ -68,7 +67,6 @@ const bilder = ref([])
 const vorlagen = ref([])
 const selectedItemIds = ref([])
 const transform = ref({x: 0, y: 0, scale: 1})
-const touchradius = ref(0)
 const zeigeRadierer = ref(false)
 const isPanning = ref(false)
 const radiergummiPos = ref({x: 0, y: 0})
@@ -118,7 +116,6 @@ onMounted(() => {
 
 
 let startpos = new DOMPoint(0,0)
-let itemid = 0
 let neuerPfad = null
 let dreheGD = false
 let schiebeGD = false
@@ -162,7 +159,7 @@ async function startWork(e) {
     if (e.buttons && e.button > 1) return
     //console.log(e)
     e.preventDefault()
-    if (e.touches?.length > 1 || e.button == 1) {
+    if (e.touches?.length > 1 || e.button == 1 ) {
         emptyTargets()
         isPanning.value = true
         if(isPainting) {
@@ -188,7 +185,7 @@ async function startWork(e) {
         return
     }
 
-    if (statusRadieren.value || eventradius(e) > 2*touchradius.value ) {
+    if (statusRadieren.value || eventradius(e) > parseFloat(config.value.rubberfaktor)*config.value.touchradiusmittel ) {
         zeigeRadierer.value = true
         radiere(e)
         return
@@ -206,15 +203,15 @@ async function startWork(e) {
 
 async function furtherWork(e) {
     e.preventDefault()
-    eventradius(e) // Zum Messen des durchschnittlichen Radius
+    eventradius(e) // Zum Anzeigen des aktuellen und Messen des durchschnittlichen Radius
+    if (zeigeRadierer.value) {
+        radiere(e)
+        return
+    }
     if(isPanning.value) {
         let pos = getPosition(e,'tafel')
         transform.value.x = (pos.x-startpos.x) / transform.value.scale
         transform.value.y = (pos.y-startpos.y) / transform.value.scale
-        return
-    }
-    if (zeigeRadierer.value) {
-        radiere(e)
         return
     }
     if (dreheGD) {
@@ -367,9 +364,10 @@ function eventradius(e) {
     if (! e.touches) return radius
 
     radius = e.touches[0].radiusX**2 + e.touches[0].radiusY**2
+    config.value.touchradiusaktuell = radius
     if (touchcount < 50) {
         touchcount ++
-        touchradius.value = (touchradius.value*(touchcount-1)+radius)/touchcount
+        config.value.touchradiusmittel = (config.value.touchradiusmittel*(touchcount-1)+radius)/touchcount
     }
     return radius
 }
@@ -419,7 +417,12 @@ function neueVorlage(typ, groesse=2500, xdekaden=0, ydekaden=0) {
         groesse: groesse,
         xdekaden: xdekaden,
         ydekaden: ydekaden,
-        transform: `translate(${ol.x}px, ${ol.y}px)`,
+        style: {
+            transform: `translate(${ol.x}px, ${ol.y}px)`,
+            pointerEvents: 'bounding-box',
+            transformOrigin: 'center',
+            transformBox: 'fill-box',
+        },
         el: null,
         id: neueId()
     }
@@ -436,7 +439,12 @@ function neuesBild(file) {
             href: null
         },
         selected: false,
-        transform: `translate(${ol.x}px, ${ol.y}px)`,
+        style: {
+            transform: `translate(${ol.x}px, ${ol.y}px)`,
+            pointerEvents: 'bounding-box',
+            transformOrigin: 'center',
+            transformBox: 'fill-box',
+        },
         el: null,
         id: neueId()
     }
@@ -468,7 +476,9 @@ function copySelected() {
         let copyitems = list.filter((item) => selectedItemIds.value.includes(item.id) )
         for (let item of copyitems.reverse()) {
             let newitem = {...item}
-            newitem.points = [...item.points]
+            if (item.points)
+                newitem.points = [...item.points]
+            newitem.style = {...item.style}
             newitem.id = neueId()
             list.unshift(newitem)
         }
@@ -505,7 +515,7 @@ async function zoomin() { transform.value.scale *= 1.1; await nextTick(); moveab
 async function zoomreset() { transform.value.scale = 1; await nextTick(); moveable_comp.value.updateRect()}
 
 function radiergummiKalibrieren() {
-    touchradius.value = 0
+    config.value.touchradiusmittel = 0
     touchcount = 0
 }
 

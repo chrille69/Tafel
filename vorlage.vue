@@ -1,7 +1,7 @@
 <template>
     <component
         :ref="(el) => vorlage.el = el"
-        :style="stylefn.call(vorlage)"
+        :style="vorlage.style"
         :is="comp[vorlage.typ]"
         :groesse="vorlage.groesse"
         :xdekaden="vorlage.typ == 'mmlogpapier' ? vorlage.xdekaden : null"
@@ -24,14 +24,5 @@ const comp = ref({
     'karopapier': markRaw(karopapier),
     'mmlogpapier': markRaw(mmlogpapier)
 })
-
-function stylefn() {
-    return {
-        transform: this.transform,
-        pointerEvents: 'bounding-box',
-        transformOrigin: 'center',
-        transformBox: 'fill-box',
-    }
-}
 
 </script>
