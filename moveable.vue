@@ -23,6 +23,7 @@ watch(() => props.selectableItemIds, (neu, alt) => {
 
 onMounted(() => {
     moveable = new Moveable(moveable_comp.value, {
+        cspNonce: "Tafel",
         draggable: true,
         rotatable: true,
         scalable: true,
@@ -31,7 +32,10 @@ onMounted(() => {
     .on("clickGroup", (e) => {
         selectable.clickTarget(e.inputEvent, e.inputTarget)
     })
-    .on("renderEnd", (e) => { if(e.isDrag) emit('change') })
+    .on("renderEnd", (e) => {
+        convertTransformToAttribut(e)
+        if(e.isDrag) emit('change')
+    })
     .on("renderGroupEnd", (e) => { if(e.isDrag) emit('change') })
     .on("render", (e) => {
         emit('transformItem', e.target.id, e.transform, e.transformObject)
@@ -91,6 +95,14 @@ onMounted(() => {
 
 function updateRect() {
     moveable.updateRect()
+}
+
+function convertTransformToAttribut(e) {
+    const transform = getComputedStyle(e.target).transform
+    if (transform != 'none') {
+        e.target.style.transform = ''
+        e.target.setAttribute('transform', transform)
+    }
 }
 
 defineExpose({updateRect})

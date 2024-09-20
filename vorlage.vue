@@ -1,6 +1,7 @@
 <template>
     <component
         :ref="(el) => vorlage.el = el"
+        :="vorlage.attr"
         :style="vorlage.style"
         :is="comp[vorlage.typ]"
         :groesse="vorlage.groesse"

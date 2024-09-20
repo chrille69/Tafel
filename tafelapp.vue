@@ -422,11 +422,22 @@ function exportSVG() {
     const gezeichnetes = tafel.getElementById("gezeichnetes")
     const rect = gezeichnetes.getBoundingClientRect()
     const svgelement = tafel.cloneNode(true)
-    svgelement.setAttribute("viewBox", `${rect.x-50} ${rect.y-50} ${rect.width+100} ${rect.height+100}`)
-    svgelement.setAttribute("width", `${rect.width+100}px`)
-    svgelement.setAttribute("height", `${rect.height+100}px`)
+    const x = rect.x-50
+    const y = rect.y-50
+    const width = rect.width+100
+    const height = rect.height+100
+    svgelement.setAttribute("viewBox", `${x} ${y} ${width} ${height}`)
+    svgelement.setAttribute("width", `${width}px`)
+    svgelement.setAttribute("height", `${height}px`)
     if (config.value.darkmode) {
-        svgelement.setAttribute("style", "background-color: #1d1d1d; color: #fff;")
+        const hintergrund = document.createElement('rect')
+        hintergrund.setAttribute("x", x)
+        hintergrund.setAttribute("y", y)
+        hintergrund.setAttribute("width", width)
+        hintergrund.setAttribute("height", height)
+        hintergrund.setAttribute("fill", "#1d1d1d")
+        svgelement.insertBefore(hintergrund, svgelement.firstChild)
+        svgelement.setAttribute("color", "#fff")
     }
     svgelement.getElementById('geodreieck')?.remove()
     svgelement.getElementById('radiergummi')?.remove()

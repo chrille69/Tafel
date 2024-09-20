@@ -1,7 +1,7 @@
 <template>
     <image
         :ref="(el) => bild.el = el"
-        :=bild.attr
+        :="bild.attr"
         :style="bild.style"
         :id="bild.id"
     />

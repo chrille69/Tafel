@@ -3,6 +3,7 @@
         :ref="(el) => init(pfad, el)"
         :d="pfadstring(pfad.points)"
         :style="pfad.style"
+        :="pfad.attr"
         :id="pfad.id"
     />
 </template>

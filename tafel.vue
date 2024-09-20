@@ -132,8 +132,9 @@ function neueId() {
 function transformItem(id, transform, transformObject) {
     if (id == 'geodreieck')
         geodreieck_comp.value.setTransform(transformObject)
-    else
+    else {
         itemsdict.value[id].style.transform = transform
+    }
 }
 
 function setSelectedItemIds(targets) {
@@ -264,15 +265,16 @@ function startDraw(e) {
         startpos: startpos,
         selected: false,
         points: ref([['M', startpos.x, startpos.y]]),
-        style: {
+        attr: {
             'stroke': filledItem ? 'none' : color,
             'stroke-width': props.config.brushWidth,
             'fill': filledItem || ispfeil ? color : 'none',
             'stroke-linecap': 'round',
             'stroke-linejoin': 'round',
             'vector-effect': 'non-scaling-stroke',
-            'transform': '',
             'pointer-events': 'bounding-box',
+        },
+        style: {
             'transform-origin': 'center',
             'transform-box': 'fill-box',
         },
@@ -417,9 +419,11 @@ function neueVorlage(typ, groesse=2500, xdekaden=0, ydekaden=0) {
         groesse: groesse,
         xdekaden: xdekaden,
         ydekaden: ydekaden,
-        style: {
+        attr: {
             transform: `translate(${ol.x}px, ${ol.y}px)`,
             pointerEvents: 'bounding-box',
+        },
+        style: {
             transformOrigin: 'center',
             transformBox: 'fill-box',
         },
@@ -436,15 +440,15 @@ function neuesBild(file) {
         attr: {
             width: 500,
             height: 500,
-            href: null
-        },
-        selected: false,
-        style: {
+            href: null,
             transform: `translate(${ol.x}px, ${ol.y}px)`,
             pointerEvents: 'bounding-box',
+        },
+        style: {
             transformOrigin: 'center',
             transformBox: 'fill-box',
         },
+        selected: false,
         el: null,
         id: neueId()
     }
@@ -478,6 +482,7 @@ function copySelected() {
             let newitem = {...item}
             if (item.points)
                 newitem.points = [...item.points]
+            newitem.attr = {...item.attr}
             newitem.style = {...item.style}
             newitem.id = neueId()
             list.unshift(newitem)
@@ -489,21 +494,6 @@ function copySelected() {
         color: 'positive',
         position: 'top'
     })
-}
-
-function exportJson() {
-    return JSON.stringify({
-        bilder: bilder.value,
-        pfade:pfade.value,
-        vorlagen: vorlagen.value
-    })
-}
-
-function importJson(jsonstr) {
-    const obj = JSON.parse(jsonstr)
-    pfade.value = obj.pfade
-    bilder.value = obj.bilder
-    vorlagen.value = obj.vorlagen
 }
 
 async function gobottom() { transform.value.y -= 200/transform.value.scale; await nextTick(); moveable_comp.value.updateRect()}
@@ -531,8 +521,6 @@ defineExpose({
     neueVorlage,
     deleteSelected,
     copySelected,
-    exportJson,
-    importJson,
     gobottom,
     gotop,
     goleft,
