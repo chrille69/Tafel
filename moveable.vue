@@ -33,7 +33,7 @@ onMounted(() => {
         selectable.clickTarget(e.inputEvent, e.inputTarget)
     })
     .on("renderEnd", (e) => {
-        convertTransformToAttribut(e)
+        //convertTransformToAttribut(e)
         if(e.isDrag) emit('change')
     })
     .on("renderGroupEnd", (e) => { if(e.isDrag) emit('change') })
