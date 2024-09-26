@@ -275,11 +275,11 @@ function startDraw(e) {
             'stroke-linecap': 'round',
             'stroke-linejoin': 'round',
             'vector-effect': 'non-scaling-stroke',
-            'pointer-events': 'bounding-box',
         },
         style: {
             'transform-origin': 'center',
             'transform-box': 'fill-box',
+            'pointer-events': 'bounding-box',
         },
         id: neueId(),
     }
@@ -433,12 +433,12 @@ function neueVorlage(typ, groesse=2500, xdekaden=0, ydekaden=0) {
         xdekaden: xdekaden,
         ydekaden: ydekaden,
         attr: {
-            transform: `translate(${ol.x}px, ${ol.y}px)`,
-            pointerEvents: 'bounding-box',
+            transform: `translate(${ol.x}, ${ol.y})`,
         },
         style: {
             transformOrigin: 'center',
             transformBox: 'fill-box',
+            pointerEvents: 'bounding-box',
         },
         el: null,
         id: neueId()
@@ -454,12 +454,12 @@ function neuesBild(file) {
             width: 500,
             height: 500,
             href: null,
-            transform: `translate(${ol.x}px, ${ol.y}px)`,
-            pointerEvents: 'bounding-box',
+            transform: `translate(${ol.x}, ${ol.y})`,
         },
         style: {
             transformOrigin: 'center',
             transformBox: 'fill-box',
+            pointerEvents: 'bounding-box',
         },
         selected: false,
         el: null,
