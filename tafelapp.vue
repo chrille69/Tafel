@@ -165,9 +165,18 @@
                                     v-close-popup
                                     dense
                                     :icon="icons['save']"
-                                    label="SVG"
+                                    label="SVG-Export"
                                     glossy
-                                    @click="exportSVG" />
+                                    @click="() => exportBild('SVG')" />
+                            </q-item>
+                            <q-item>
+                                <q-btn
+                                    v-close-popup
+                                    dense
+                                    :icon="icons['save']"
+                                    label="PNG-Export"
+                                    glossy
+                                    @click="() => exportBild('PNG')" />
                             </q-item>
                             <q-item>
                                 <q-file
@@ -418,7 +427,7 @@ function fullscreenchange(evt) {
     }
 }
 
-function exportSVG() {
+async function exportBild(typ) {
     const tafel = document.getElementById('tafel')
     const gezeichnetes = tafel.getElementById("gezeichnetes")
     const rect = gezeichnetes.getBoundingClientRect()
@@ -443,16 +452,49 @@ function exportSVG() {
     svgelement.getElementById('geodreieck')?.remove()
     svgelement.getElementById('radiergummi')?.remove()
 
+    let url = null
+    let name = 'tafelbild'
+    if (typ == 'PNG') {
+        url = await base64SvgToBase64Png('data:image/svg+xml;base64,'+btoa(svgelement.outerHTML), width, height)
+        name += '.png'
+    }
+    else {
+        let data = new Blob([svgelement.outerHTML])
+        url = URL.createObjectURL(data);
+        name += '.svg'
+    }
+
     let a = document.createElement("a");
     a.style = "display: none";
     document.body.appendChild(a);
-    let data = new Blob([svgelement.outerHTML])
-    let url = URL.createObjectURL(data);
     a.href = url
-    a.download = 'tafelbild.svg';
+    a.download = name;
     a.click();
     a.remove();
     ungespeichert.value = false
+}
+
+function base64SvgToBase64Png (originalBase64, width, height) {
+    return new Promise((resolve, reject) => {
+        let canvas = document.createElement("canvas");
+        let img = new Image()
+        img.onload = function (ev) {
+            canvas.width = width;
+            canvas.height = height;
+            let ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+            try {
+                let data = canvas.toDataURL('image/png');
+                resolve(data);
+            } catch (error) {
+                reject(error,ev);
+            }
+        };
+        img.onerror = function(ev) {
+            reject(ev);
+        };
+        img.src = originalBase64;
+    });
 }
 
 function importImg(file) {
