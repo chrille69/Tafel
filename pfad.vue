@@ -51,7 +51,7 @@ function drawliniesnap(pos) {
 
 function drawpfeil(pos) {
     let dpos = {x: pos.x - this.startpos.x, y: pos.y - this.startpos.y}
-    let lw = this.attr['stroke-width'] * 5 / 3
+    let lw = this.style['stroke-width'] * 5 / 3
     let laenge = Math.sqrt(dpos.x**2 + dpos.y**2)
     this.points = [
         ['M', this.startpos.x, this.startpos.y],

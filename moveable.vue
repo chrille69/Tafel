@@ -33,7 +33,6 @@ onMounted(() => {
         selectable.clickTarget(e.inputEvent, e.inputTarget)
     })
     .on("renderEnd", (e) => {
-        //convertTransformToAttribut(e)
         if(e.isDrag) emit('change')
     })
     .on("renderGroupEnd", (e) => { if(e.isDrag) emit('change') })
@@ -95,14 +94,6 @@ onMounted(() => {
 
 function updateRect() {
     moveable.updateRect()
-}
-
-function convertTransformToAttribut(e) {
-    const transform = getComputedStyle(e.target).transform
-    if (transform != 'none') {
-        e.target.style.transform = ''
-        e.target.setAttribute('transform', transform)
-    }
 }
 
 defineExpose({updateRect})

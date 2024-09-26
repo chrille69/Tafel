@@ -269,14 +269,14 @@ function startDraw(e) {
         selected: false,
         points: ref([['M', startpos.x, startpos.y]]),
         attr: {
+        },
+        style: {
             'stroke': filledItem ? 'none' : color,
             'stroke-width': config.value.brushWidth,
             'fill': filledItem || ispfeil ? color : 'none',
             'stroke-linecap': 'round',
             'stroke-linejoin': 'round',
             'vector-effect': 'non-scaling-stroke',
-        },
-        style: {
             'transform-origin': 'center',
             'transform-box': 'fill-box',
             'pointer-events': 'bounding-box',
@@ -433,7 +433,6 @@ function neueVorlage(typ, groesse=2500, xdekaden=0, ydekaden=0) {
         xdekaden: xdekaden,
         ydekaden: ydekaden,
         attr: {
-            transform: `translate(${ol.x}, ${ol.y})`,
         },
         style: {
             transformOrigin: 'center',
@@ -454,7 +453,6 @@ function neuesBild(file) {
             width: 500,
             height: 500,
             href: null,
-            transform: `translate(${ol.x}, ${ol.y})`,
         },
         style: {
             transformOrigin: 'center',
