@@ -53,11 +53,12 @@
                         dense
                         type="number"
                         label="Radierergröße" />
-                    <div class="gt-sm" style="width: 150px">
+                    <div class="gt-sm" style="width: 150px" v-if="! config.ignoreradius">
                         <div>Touchfaktor</div>
                         <q-slider v-model="config.rubberfaktor" dense
                             :min="1.5" :max="5.0" :step="0.05" label />
                     </div>
+                    <q-checkbox v-model="config.ignoreradius" label="Ignoriere Touchradius"></q-checkbox>
                 </template>
                 <template v-else-if="config.modus == 'editieren'">
                     <q-btn :size="buttonsize" dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected" />
@@ -251,17 +252,17 @@ const config = ref({
     brushColor: 'currentColor',
     brushWidth: 3,
     rubbersize: 100,
-    rubberfaktor: 2,
+    rubberfaktor: 3,
     darkmode: true,
     fullscreen: false,
     geodreieckaktiv: false,
     hilfslinienFixiert: false,
     touchradiusaktuell: 0,
-    touchradiusmittel:0
+    touchradiusmittel: 0,
+    ignoreradius: false
 })
 const freeColor = ref('yellow')
 const filemenu = ref(false)
-const jsonfile = ref(null)
 const imgfile = ref(null)
 const ungespeichert = ref(false)
 const mmlogDlg = ref(false)

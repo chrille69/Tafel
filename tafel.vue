@@ -34,7 +34,7 @@
                         <pfadvue :pfad="pfad" />
                     </template>
                 </g>
-                <geodreieck  id="geodreieck" ref="geodreieck_comp" v-show="props.config.geodreieckaktiv">
+                <geodreieck  id="geodreieck" ref="geodreieck_comp" v-show="config.geodreieckaktiv">
                     <template v-if="!statusEditieren">
                         <path id="verschiebegriff" style="pointer-events: bounding-box; fill: #0000ff; stroke-width:.26458" d="m80 40-3 3h2v4h-4v-2l-3 3 3 3v-2h4v4h-2l3 3 3-3h-2v-4h4v2l3-3-3-3v2h-4v-4h2z"/>
                         <path id="drehgriff" style="pointer-events: bounding-box; fill: #ff0000; stroke-width:.026458" d="m79.368 11 c-.21279.0071-.3996.02137-.53513.04429-1.6929.26686-3.1357.95898-4.3198 2.0598-1.2426 1.1759-2.0097 2.5607-2.385 4.3203-.05013.22512-.06674.22488-.75887.25004l-.70905.02491 1.3175 1.9768c.71729 1.0924 1.3262 1.9763 1.3512 1.9763.02497 0 .63391-.88387 1.3512-1.9763l1.3175-1.9768-.91756-.02491-.9171-.02492.04982-.22512c.317-1.3261 1.4682-2.844 2.719-3.5863.98397-.58367 2.4351-.91716 3.4857-.8087 1.2926.14182 2.5934.65881 3.2606 1.2926l.35891.34184.67537-.67538.66707-.67583-.33353-.29156c-1.0091-.89228-2.4937-1.6431-3.7279-1.9016-.43775-.09378-1.3116-.14056-1.95-.11948zm7.3045 5.3315c-.02517 0-.63438.88433-1.3517 1.9768l-1.3175 1.9763 1.8347.04983-.04982.22513c-.317 1.3259-1.4675 2.8438-2.7186 3.5858-.98397.58386-2.4351.91762-3.4857.80916-1.2926-.14183-2.5939-.65882-3.2611-1.2926l-.35844-.34184-.67583.67583-.66707.67537.33353.29202c.58386.51714 1.7016 1.2089 2.4021 1.4924 2.7188 1.1008 5.9207.48388 8.0976-1.551 1.2676-1.1841 2.035-2.5688 2.4187-4.3452.04994-.22512.06674-.22488.75887-.25004l.70859-.02492-1.3175-1.9768c-.71729-1.0924-1.3256-1.9763-1.3507-1.9763z"/>
@@ -54,7 +54,6 @@ import bildvue from './bild.vue'
 import vorlagevue from './vorlage.vue'
 import moveablevue from './moveable.vue'
 
-const props = defineProps(['config'])
 const emit = defineEmits(['hatgemalt'])
 const icons = inject('icons')
 const config = inject('config')
@@ -72,14 +71,14 @@ const isPanning = ref(false)
 const radiergummiPos = ref({x: 0, y: 0})
 const mitte = ref(new DOMPoint())
 
-const statusEditieren = computed(() => {emptyTargets(); return props.config.modus == 'editieren' })
-const statusZeichnen = computed(()  => {emptyTargets(); return props.config.modus == 'zeichnen' })
-const statusRadieren = computed(()  => {emptyTargets(); return props.config.modus == 'radieren' })
+const statusEditieren = computed(() => {emptyTargets(); return config.value.modus == 'editieren' })
+const statusZeichnen = computed(()  => {emptyTargets(); return config.value.modus == 'zeichnen' })
+const statusRadieren = computed(()  => {emptyTargets(); return config.value.modus == 'radieren' })
 const moveableDisabled = computed(() => !statusEditieren.value || isPanning.value || zeigeRadierer.value)
-const items = computed(() => [...pfade.value,...bilder.value,...(props.config.hilfslinienFixiert ? [] : vorlagen.value)])
+const items = computed(() => [...pfade.value,...bilder.value,...(config.value.hilfslinienFixiert ? [] : vorlagen.value)])
 const itemIds = computed(() => {
     const list = items.value.map(item => item.id)
-    if (props.config.geodreieckaktiv)
+    if (config.value.geodreieckaktiv)
         list.push('geodreieck')
     setSelectedItemIds(selectedItemIds.value.filter(id => list.includes(id)))
     return list
@@ -104,7 +103,7 @@ const radiergummiBox = computed(() => {
     return rect
 })
 
-watch(() => props.config.geodreieckaktiv, (neuerwert) => {
+watch(() => config.value.geodreieckaktiv, (neuerwert) => {
     const mtrx = group_comp.value.getCTM()
     const point = mitte.value.matrixTransform(mtrx.inverse())
     geodreieck_comp.value.setPosition(point)
@@ -156,10 +155,11 @@ onresize = () => {
 //
 /////////////////////////////////////////////////////
 
-async function startWork(e) {
+function startWork(e) {
     if (e.buttons && e.button > 1) return
-    //console.log(e)
+
     e.preventDefault()
+    eventradius(e)
     if (e.touches?.length > 1 || e.button == 1 ) {
         emptyTargets()
         isPanning.value = true
@@ -186,7 +186,7 @@ async function startWork(e) {
         return
     }
 
-    if (statusRadieren.value || eventradius(e) > parseFloat(config.value.rubberfaktor)*config.value.touchradiusmittel ) {
+    if (statusRadieren.value || radierbedingung() ) {
         zeigeRadierer.value = true
         radiere(e)
         return
@@ -195,17 +195,20 @@ async function startWork(e) {
     if (!statusZeichnen.value)
         return
 
-    if (props.config.geodreieckaktiv) {
+    if (config.value.geodreieckaktiv) {
         startpos=geosnap(startpos)
     }
 
     startDraw(e)
 }
 
-async function furtherWork(e) {
+function furtherWork(e) {
+    if (e.buttons && e.button > 1) return
+
     e.preventDefault()
     eventradius(e) // Zum Anzeigen des aktuellen und Messen des durchschnittlichen Radius
-    if (zeigeRadierer.value) {
+    if (zeigeRadierer.value || radierbedingung()) {
+        zeigeRadierer.value = true
         radiere(e)
         return
     }
@@ -229,7 +232,7 @@ async function furtherWork(e) {
     draw(e)
 }
 
-async function endWork(e) {
+function endWork(e) {
     e.preventDefault()
     if(isPanning.value) {
         isPanning.value = false
@@ -257,17 +260,17 @@ async function endWork(e) {
 
 function startDraw(e) {
     isPainting = true;
-    let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(props.config.tool) >= 0
-    let ispfeil = ['pfeil','pfeilsnap'].indexOf(props.config.tool) >= 0
-    const color = props.config.brushColor
+    let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(config.value.tool) >= 0
+    let ispfeil = ['pfeil','pfeilsnap'].indexOf(config.value.tool) >= 0
+    const color = config.value.brushColor
     neuerPfad = {
-        tool: props.config.tool,
+        tool: config.value.tool,
         startpos: startpos,
         selected: false,
         points: ref([['M', startpos.x, startpos.y]]),
         attr: {
             'stroke': filledItem ? 'none' : color,
-            'stroke-width': props.config.brushWidth,
+            'stroke-width': config.value.brushWidth,
             'fill': filledItem || ispfeil ? color : 'none',
             'stroke-linecap': 'round',
             'stroke-linejoin': 'round',
@@ -280,7 +283,7 @@ function startDraw(e) {
         },
         id: neueId(),
     }
-    if (props.config.tool == 'stift') 
+    if (config.value.tool == 'stift') 
         neuerPfad.points.value.push(['L', startpos.x, startpos.y])
     pfade.value.push(neuerPfad)
 }
@@ -289,7 +292,7 @@ function draw(e) {
     if (!isPainting) return
 
     let pos = getPosition(e)
-    if (props.config.geodreieckaktiv) {
+    if (config.value.geodreieckaktiv) {
         pos=geosnap(pos)
     }
     neuerPfad.draw(pos)
@@ -362,16 +365,26 @@ function geosnap(pos) {
 }
 
 function eventradius(e) {
-    let radius = 0
-    if (! e.touches) return radius
-
-    radius = e.touches[0].radiusX**2 + e.touches[0].radiusY**2
-    config.value.touchradiusaktuell = radius
-    if (touchcount < 50) {
-        touchcount ++
-        config.value.touchradiusmittel = (config.value.touchradiusmittel*(touchcount-1)+radius)/touchcount
+    if (! e.touches) {
+        config.value.touchradiusaktuell = 0
+        return
     }
-    return radius
+
+    config.value.touchradiusaktuell = e.touches[0].radiusX**2 + e.touches[0].radiusY**2
+    radiusmittel()
+}
+
+function radiusmittel() {
+    if (config.value.touchradiusaktuell > 0 && touchcount < 50) {
+        touchcount ++
+        config.value.touchradiusmittel = (config.value.touchradiusmittel*(touchcount-1)+config.value.touchradiusaktuell)/touchcount
+    }
+}
+
+function radierbedingung() {
+    return config.value.touchradiusaktuell > config.value.rubberfaktor*config.value.touchradiusmittel &&
+           config.value.touchradiusaktuell < 400*config.value.touchradiusmittel &&
+           ! config.value.ignoreradius
 }
 
 ////////////////////////////////////////////////////////////////////////
