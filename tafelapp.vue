@@ -53,12 +53,12 @@
                         dense
                         type="number"
                         label="Radierergröße" />
-                    <div class="gt-sm" style="width: 150px" v-if="! config.ignoreradius">
-                        <div>Touchfaktor</div>
+                    <div class="gt-sm" style="width: 150px;" v-if="! config.ignoreradius">
+                        <div style="font-size: 10.5px; color: hsla(0, 0%, 100%, .7);">Touchfaktor</div>
                         <q-slider v-model="config.rubberfaktor" dense
                             :min="1.5" :max="5.0" :step="0.05" label />
                     </div>
-                    <q-checkbox v-model="config.ignoreradius" label="Ignoriere Touchradius"></q-checkbox>
+                    <q-checkbox v-model="config.ignoreradius" dense label="Ignoriere Touchradius"></q-checkbox>
                 </template>
                 <template v-else-if="config.modus == 'editieren'">
                     <q-btn :size="buttonsize" dense :icon="icons['copy']" glossy @click="tafel_comp.copySelected" />
