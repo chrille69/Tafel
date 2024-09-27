@@ -14,8 +14,8 @@
             @transformItem="transformItem">
         </moveablevue>
         <svg id="tafel" xmlns="http://www.w3.org/2000/svg"
-            @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" 
-            @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork"
+            @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" @mousecancel="endWork" 
+            @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" @touchcancel="endWork"
             height="100%" width="100%" style="touch-action: none;"
             >
             <g id="gezeichnetes" ref="group_comp" :transform="transformfn">
@@ -159,10 +159,11 @@ function startWork(e) {
     if (e.buttons && e.button > 1) return
 
     e.preventDefault()
-    eventradius(e)
+    const radius = eventradius(e)
     if (e.touches?.length > 1 || e.button == 1 ) {
         emptyTargets()
         isPanning.value = true
+        zeigeRadierer.value = false
         if(isPainting) {
             isPainting = false
             pfade.value.pop()
@@ -186,7 +187,7 @@ function startWork(e) {
         return
     }
 
-    if (statusRadieren.value || radierbedingung() ) {
+    if (statusRadieren.value || radierbedingung(radius) ) {
         zeigeRadierer.value = true
         radiere(e)
         return
@@ -206,16 +207,16 @@ function furtherWork(e) {
     if (e.buttons && e.button > 1) return
 
     e.preventDefault()
-    eventradius(e) // Zum Anzeigen des aktuellen und Messen des durchschnittlichen Radius
-    if (zeigeRadierer.value || radierbedingung()) {
-        zeigeRadierer.value = true
-        radiere(e)
-        return
-    }
+    const radius = eventradius(e) // Zum Anzeigen des aktuellen und Messen des durchschnittlichen Radius
     if(isPanning.value) {
         let pos = getPosition(e,'tafel')
         transform.value.x = (pos.x-startpos.x) / transform.value.scale
         transform.value.y = (pos.y-startpos.y) / transform.value.scale
+        return
+    }
+    if (zeigeRadierer.value || radierbedingung(radius)) {
+        zeigeRadierer.value = true
+        radiere(e)
         return
     }
     if (dreheGD) {
@@ -370,20 +371,22 @@ function eventradius(e) {
         return
     }
 
-    config.value.touchradiusaktuell = e.touches[0].radiusX**2 + e.touches[0].radiusY**2
-    radiusmittel()
+    const radius = Math.sqrt(e.touches[0].radiusX**2 + e.touches[0].radiusY**2)
+    config.value.touchradiusaktuell = radius
+    radiusmittel(radius)
+    return radius
 }
 
-function radiusmittel() {
-    if (config.value.touchradiusaktuell > 0 && touchcount < 50) {
+function radiusmittel(radius) {
+    if (radius > 0 && touchcount < 50) {
         touchcount ++
-        config.value.touchradiusmittel = (config.value.touchradiusmittel*(touchcount-1)+config.value.touchradiusaktuell)/touchcount
+        config.value.touchradiusmittel = (config.value.touchradiusmittel*(touchcount-1)+radius)/touchcount
     }
 }
 
-function radierbedingung() {
-    return config.value.touchradiusaktuell > config.value.rubberfaktor*config.value.touchradiusmittel &&
-           config.value.touchradiusaktuell < 400*config.value.touchradiusmittel &&
+function radierbedingung(radius) {
+    return radius > config.value.rubberfaktor*config.value.touchradiusmittel &&
+           radius < 20*config.value.touchradiusmittel &&
            ! config.value.ignoreradius
 }
 
@@ -435,6 +438,7 @@ function neueVorlage(typ, groesse=2500, xdekaden=0, ydekaden=0) {
         attr: {
         },
         style: {
+            transform: `translate(${ol.x}px, ${ol.y}px)`,
             transformOrigin: 'center',
             transformBox: 'fill-box',
             pointerEvents: 'bounding-box',
@@ -455,6 +459,7 @@ function neuesBild(file) {
             href: null,
         },
         style: {
+            transform: `translate(${ol.x}px, ${ol.y}px)`,
             transformOrigin: 'center',
             transformBox: 'fill-box',
             pointerEvents: 'bounding-box',

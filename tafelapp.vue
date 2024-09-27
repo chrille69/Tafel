@@ -261,7 +261,7 @@ const config = ref({
     brushColor: 'currentColor',
     brushWidth: 3,
     rubbersize: 100,
-    rubberfaktor: 3,
+    rubberfaktor: 2,
     darkmode: true,
     fullscreen: false,
     geodreieckaktiv: false,
@@ -455,7 +455,7 @@ async function exportBild(typ) {
     let url = null
     let name = 'tafelbild'
     if (typ == 'PNG') {
-        url = await base64SvgToBase64Png('data:image/svg+xml;base64,'+btoa(svgelement.outerHTML), width, height)
+        url = await base64SvgToBase64Png('data:image/svg+xml;base64,'+btoa(svgelement.outerHTML), width, height).catch(console.log)
         name += '.png'
     }
     else {
@@ -476,23 +476,25 @@ async function exportBild(typ) {
 
 function base64SvgToBase64Png (originalBase64, width, height) {
     return new Promise((resolve, reject) => {
-        let canvas = document.createElement("canvas");
-        let img = new Image()
-        img.onload = function (ev) {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image()
+
+        img.onerror = reject
+        img.onload = function () {
             canvas.width = width;
             canvas.height = height;
-            let ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0, width, height);
             try {
                 let data = canvas.toDataURL('image/png');
                 resolve(data);
             } catch (error) {
-                reject(error,ev);
+                reject(error);
             }
         };
-        img.onerror = function(ev) {
-            reject(ev);
-        };
+
+        // Durch die folgende Zuweisung wird das Bild geladen,
+        // so dass onload asynchron aufgerufen wird
         img.src = originalBase64;
     });
 }
