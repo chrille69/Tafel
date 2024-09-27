@@ -439,6 +439,7 @@ async function exportBild(typ) {
     svgelement.setAttribute("viewBox", `${x} ${y} ${width} ${height}`)
     svgelement.setAttribute("width", `${width}px`)
     svgelement.setAttribute("height", `${height}px`)
+    svgelement.removeAttribute("style")
     if (config.value.darkmode) {
         const hintergrund = document.createElement('rect')
         hintergrund.setAttribute("x", x)

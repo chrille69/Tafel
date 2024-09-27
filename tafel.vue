@@ -386,7 +386,7 @@ function radiusmittel(radius) {
 
 function radierbedingung(radius) {
     return radius > config.value.rubberfaktor*config.value.touchradiusmittel &&
-           radius < 20*config.value.touchradiusmittel &&
+           radius < 10*config.value.touchradiusmittel &&
            ! config.value.ignoreradius
 }
 
