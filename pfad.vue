@@ -1,9 +1,8 @@
 <template>
-    <path
+    <path class="pfad"
         :ref="(el) => init(pfad, el)"
         :d="pfadstring(pfad.points)"
         :style="pfad.style"
-        :="pfad.attr"
         :id="pfad.id"
     />
 </template>
@@ -188,3 +187,14 @@ function pointPos(point) {
         return null
 }
 </script>
+
+<style>
+.pfad {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    transform-origin: center;
+    transform-box: fill-box;
+    pointer-events: bounding-box;
+}
+</style>

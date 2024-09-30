@@ -7,24 +7,23 @@
         <moveablevue
             ref="moveable_comp"
             :disabled="moveableDisabled"
-            :selectableItemIds="itemIds"
-            :selectedItemIds="selectedItemIds"
-            @update:selectedItemIds="setSelectedItemIds"
+            :items="items"
+            :geodreieck="geodreieck_comp"
             @change="commit"
             @transformItem="transformItem">
         </moveablevue>
         <svg id="tafel" xmlns="http://www.w3.org/2000/svg"
-            @mousedown="startWork" @mousemove="furtherWork" @mouseup="endWork" @mousecancel="endWork" 
-            @touchstart="startWork" @touchmove="furtherWork" @touchend="endWork" @touchcancel="endWork"
-            height="100%" width="100%" style="touch-action: none;"
+            @mousedown="(e)=>startWork(e,'mouse')" @mousemove="(e)=>furtherWork(e,'mouse')" @mouseup="(e)=>endWork(e,'mouse')" @mousecancel="(e)=>endWork(e,'mouse')" 
+            @touchstart="(e)=>startWork(e,'touch')" @touchmove="(e)=>furtherWork(e,'touch')" @touchend="(e)=>endWork(e,'touch')" @touchcancel="(e)=>endWork(e,'touch')"
+            height="100%" width="100%"
             >
             <g id="gezeichnetes" ref="group_comp" :transform="transformfn">
-                <g>
+                <g id="vorlagen">
                     <template v-for="vorlage in vorlagen" :key="vorlage.id">
-                        <vorlagevue :vorlage="vorlage"/>
+                        <vorlagevue :vorlage="vorlage" />
                     </template>
                 </g>
-                <g>
+                <g id="bilder">
                     <template v-for="bild in bilder" :key="bild.id">
                         <bildvue :bild="bild" />
                     </template>
@@ -64,26 +63,19 @@ const moveable_comp = ref(null)
 const pfade = ref([])
 const bilder = ref([])
 const vorlagen = ref([])
-const selectedItemIds = ref([])
 const transform = ref({x: 0, y: 0, scale: 1})
 const zeigeRadierer = ref(false)
 const isPanning = ref(false)
 const radiergummiPos = ref({x: 0, y: 0})
 const mitte = ref(new DOMPoint())
 
-const statusEditieren = computed(() => {emptyTargets(); return config.value.modus == 'editieren' })
-const statusZeichnen = computed(()  => {emptyTargets(); return config.value.modus == 'zeichnen' })
-const statusRadieren = computed(()  => {emptyTargets(); return config.value.modus == 'radieren' })
+const statusEditieren = computed(() => {moveable_comp.value?.deselectAll(); return config.value.modus == 'editieren' })
+const statusZeichnen = computed(()  => {moveable_comp.value?.deselectAll(); return config.value.modus == 'zeichnen' })
+const statusRadieren = computed(()  => {moveable_comp.value?.deselectAll(); return config.value.modus == 'radieren' })
 const moveableDisabled = computed(() => !statusEditieren.value || isPanning.value || zeigeRadierer.value)
+
 const items = computed(() => [...pfade.value,...bilder.value,...(config.value.hilfslinienFixiert ? [] : vorlagen.value)])
-const itemIds = computed(() => {
-    const list = items.value.map(item => item.id)
-    if (config.value.geodreieckaktiv)
-        list.push('geodreieck')
-    setSelectedItemIds(selectedItemIds.value.filter(id => list.includes(id)))
-    return list
-})
-const itemsdict = computed(() => Object.fromEntries(items.value.map(item => [item.id, item])))
+
 const transformfn = computed(() => {
     const mx = mitte.value.x
     const my = mitte.value.y
@@ -103,7 +95,7 @@ const radiergummiBox = computed(() => {
     return rect
 })
 
-watch(() => config.value.geodreieckaktiv, (neuerwert) => {
+watch(() => config.value.geodreieckaktiv, () => {
     const mtrx = group_comp.value.getCTM()
     const point = mitte.value.matrixTransform(mtrx.inverse())
     geodreieck_comp.value.setPosition(point)
@@ -112,7 +104,6 @@ watch(() => config.value.geodreieckaktiv, (neuerwert) => {
 onMounted(() => {
     mitte.value = mittelpunkt()
 })
-
 
 let startpos = new DOMPoint(0,0)
 let neuerPfad = null
@@ -127,22 +118,6 @@ function neueId() {
   );
 }
 
-
-function transformItem(id, transform, transformObject) {
-    if (id == 'geodreieck')
-        geodreieck_comp.value.setTransform(transformObject)
-    else {
-        itemsdict.value[id].style.transform = transform
-    }
-}
-
-function setSelectedItemIds(targets) {
-    selectedItemIds.value = targets
-}
-function emptyTargets() {
-    setSelectedItemIds([])
-}
-
 onresize = () => {
     mitte.value = mittelpunkt()
     //await nextTick()
@@ -155,13 +130,13 @@ onresize = () => {
 //
 /////////////////////////////////////////////////////
 
-function startWork(e) {
+function startWork(e, typ) {
     if (e.buttons && e.button > 1) return
 
     e.preventDefault()
-    const radius = eventradius(e)
+    const radius = typ == 'touch' ? eventradius(e) : 0
     if (e.touches?.length > 1 || e.button == 1 ) {
-        emptyTargets()
+        moveable_comp.value?.deselectAll()
         isPanning.value = true
         zeigeRadierer.value = false
         if(isPainting) {
@@ -203,11 +178,11 @@ function startWork(e) {
     startDraw(e)
 }
 
-function furtherWork(e) {
+function furtherWork(e, typ) {
     if (e.buttons && e.button > 1) return
 
     e.preventDefault()
-    const radius = eventradius(e) // Zum Anzeigen des aktuellen und Messen des durchschnittlichen Radius
+    const radius = typ == 'touch' ? eventradius(e) : 0 // Zum Anzeigen des aktuellen und Messen des durchschnittlichen Radius
     if(isPanning.value) {
         let pos = getPosition(e,'tafel')
         transform.value.x = (pos.x-startpos.x) / transform.value.scale
@@ -215,6 +190,7 @@ function furtherWork(e) {
         return
     }
     if (zeigeRadierer.value || radierbedingung(radius)) {
+        isPainting = false
         zeigeRadierer.value = true
         radiere(e)
         return
@@ -233,7 +209,7 @@ function furtherWork(e) {
     draw(e)
 }
 
-function endWork(e) {
+function endWork(e, typ) {
     e.preventDefault()
     if(isPanning.value) {
         isPanning.value = false
@@ -267,21 +243,13 @@ function startDraw(e) {
     neuerPfad = {
         tool: config.value.tool,
         startpos: startpos,
-        selected: false,
         points: ref([['M', startpos.x, startpos.y]]),
-        attr: {
-        },
         style: {
             'stroke': filledItem ? 'none' : color,
             'stroke-width': config.value.brushWidth,
             'fill': filledItem || ispfeil ? color : 'none',
-            'stroke-linecap': 'round',
-            'stroke-linejoin': 'round',
-            'vector-effect': 'non-scaling-stroke',
-            'transform-origin': 'center',
-            'transform-box': 'fill-box',
-            'pointer-events': 'bounding-box',
         },
+        el: null,
         id: neueId(),
     }
     if (config.value.tool == 'stift') 
@@ -370,6 +338,8 @@ function eventradius(e) {
         config.value.touchradiusaktuell = 0
         return
     }
+    console.log(e)
+
 
     const radius = Math.sqrt(e.touches[0].radiusX**2 + e.touches[0].radiusY**2)
     config.value.touchradiusaktuell = radius
@@ -385,8 +355,8 @@ function radiusmittel(radius) {
 }
 
 function radierbedingung(radius) {
-    return radius > config.value.rubberfaktor*config.value.touchradiusmittel &&
-           radius < 10*config.value.touchradiusmittel &&
+    return radius > config.value.rubberfaktor.min*config.value.touchradiusmittel &&
+           radius < config.value.rubberfaktor.max*config.value.touchradiusmittel &&
            ! config.value.ignoreradius
 }
 
@@ -404,14 +374,14 @@ function undo() {
     pfadhistory.undo()
     bildhistory.undo()
     vorlagenhistory.undo()
-    emptyTargets()
+    moveable_comp.value?.deselectAll()
 }
 
 function redo() {
     pfadhistory.redo()
     bildhistory.redo()
     vorlagenhistory.redo()
-    emptyTargets()
+    moveable_comp.value?.deselectAll()
 }
 
 function commit() {
@@ -431,12 +401,9 @@ function neueVorlage(typ, groesse=2500, xdekaden=0, ydekaden=0) {
     let ol = obenlinks()
     const vorlage = {
         typ: typ,
-        selected: false,
         groesse: groesse,
         xdekaden: xdekaden,
         ydekaden: ydekaden,
-        attr: {
-        },
         style: {
             transform: `translate(${ol.x}px, ${ol.y}px)`,
             transformOrigin: 'center',
@@ -464,7 +431,6 @@ function neuesBild(file) {
             transformBox: 'fill-box',
             pointerEvents: 'bounding-box',
         },
-        selected: false,
         el: null,
         id: neueId()
     }
@@ -485,15 +451,21 @@ function neuesBild(file) {
 
 
 function deleteSelected() {
-    pfade.value = pfade.value.filter((item) => ! selectedItemIds.value.includes(item.id) )
-    bilder.value = bilder.value.filter((item) => ! selectedItemIds.value.includes(item.id) )
-    vorlagen.value = vorlagen.value.filter((item) => ! selectedItemIds.value.includes(item.id) )
+    const selected = moveable_comp.value.selectedItems()
+    if (selected.length == 0)
+        return
+    pfade.value = pfade.value.filter((item) => ! selected.includes(item) )
+    bilder.value = bilder.value.filter((item) => ! selected.includes(item) )
+    vorlagen.value = vorlagen.value.filter((item) => ! selected.includes(item) )
     commit()
 }
 
 function copySelected() {
+    const selected = moveable_comp.value.selectedItems()
+    if (selected.length == 0)
+        return
     for (let list of [pfade.value, bilder.value, vorlagen.value]) {
-        let copyitems = list.filter((item) => selectedItemIds.value.includes(item.id) )
+        let copyitems = list.filter((item) => selected.includes(item) )
         for (let item of copyitems.reverse()) {
             let newitem = {...item}
             if (item.points)
