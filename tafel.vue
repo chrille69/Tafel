@@ -232,7 +232,26 @@ function endWork(e, typ) {
         return
 
     isPainting = false;
+    if (config.value.tool == 'stift')
+        point2dot()
+
     commit();
+}
+
+function point2dot() {
+    neuerPfad = pfade.value.at(-1)
+    if (neuerPfad.points.length > 1)
+        return
+    const r = config.value.brushWidth/2
+    const zusatzpoint1 = ['m',-r,0]
+    const zusatzpoint2 = ['a',r,r,0,1,0,r,-r]
+    const zusatzpoint3 = ['a',r,r,0,0,0,-r,r]
+    neuerPfad.points.push(zusatzpoint1)
+    neuerPfad.points.push(zusatzpoint2)
+    neuerPfad.points.push(zusatzpoint3)
+    neuerPfad.style.fill = config.value.brushColor
+    neuerPfad.style.stroke = 'none'
+    return
 }
 
 function startDraw(e) {
@@ -248,12 +267,16 @@ function startDraw(e) {
             'stroke': filledItem ? 'none' : color,
             'stroke-width': config.value.brushWidth,
             'fill': filledItem || ispfeil ? color : 'none',
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round',
+            'vector-effect': 'non-scaling-stroke',
+            'transform-origin': 'center',
+            'transform-box': 'fill-box',
+            'pointer-events': 'bounding-box',
         },
         el: null,
         id: neueId(),
     }
-    if (config.value.tool == 'stift') 
-        neuerPfad.points.value.push(['L', startpos.x, startpos.y])
     pfade.value.push(neuerPfad)
 }
 
