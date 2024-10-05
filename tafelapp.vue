@@ -116,7 +116,7 @@
                         :size="buttonsize" 
                         dense
                         flat
-                        :icon="icons[config.brushWidth] ? icons[config.brushWidth] : icons['3']">
+                        :icon="icons[config.brushWidth] ? icons[config.brushWidth] : icons['10']">
                         <mymenu v-model="config.brushWidth" :icons="icons" :items="linewidthmenu" />
                     </q-btn>
                     <q-input
