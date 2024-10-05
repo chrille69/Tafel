@@ -301,10 +301,11 @@ const icons = ref({
     'geodreieck': 'svguse:icons.svg#geodreieck|0 0 16 16',
     'defaultcolor': 'svguse:icons.svg#defaultcolor|0 0 16 16',
     'freecolor': 'svguse:icons.svg#freecolor|0 0 16 16',
-    '1': 'svguse:icons.svg#pensize-1px|0 0 16 16',
-    '3': 'svguse:icons.svg#pensize-3px|0 0 16 16',
-    '5': 'svguse:icons.svg#pensize-5px|0 0 16 16',
-    '20': 'svguse:icons.svg#pensize-20px|0 0 16 16',
+    '1' : 'svguse:icons.svg#pensize-1px',
+    '3' : 'svguse:icons.svg#pensize-3px',
+    '5' : 'svguse:icons.svg#pensize-5px',
+    '10': 'svguse:icons.svg#pensize-10px',
+    '20': 'svguse:icons.svg#pensize-20px',
     'copy': 'svguse:icons.svg#copy|0 0 16 16',
     'delete': 'svguse:icons.svg#delete|0 0 16 16',
     'fromclipboard': 'svguse:icons.svg#fromclipboard|0 0 16 16',
@@ -346,6 +347,7 @@ const linewidthmenu = ref([
     { value: '1', label: '1px'},
     { value: '3', label: '3px'},
     { value: '5', label: '5px'},
+    { value: '10', label: '10px'},
     { value: '20', label: '20px'},
 ])
 

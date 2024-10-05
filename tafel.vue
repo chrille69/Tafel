@@ -133,6 +133,7 @@ onresize = () => {
 function startWork(e, typ) {
     if (e.buttons && e.button > 1) return
 
+    //console.log(e)
     e.preventDefault()
     const radius = typ == 'touch' ? eventradius(e) : 0
     if (e.touches?.length > 1 || e.button == 1 ) {
@@ -361,7 +362,7 @@ function eventradius(e) {
         config.value.touchradiusaktuell = 0
         return
     }
-    console.log(e)
+    //console.log(e)
 
 
     const radius = Math.sqrt(e.touches[0].radiusX**2 + e.touches[0].radiusY**2)
