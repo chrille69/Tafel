@@ -29,15 +29,14 @@ Folgende Funktionen stehen zur Verfügung:
 * Hell- und Dunkelmodus
 * Vollbildschirm
 * Vier vordefinierte Farben
-* Vier vordefinierte Stiftgrößen
+* Fünf vordefinierte Stiftgrößen
 * Linien
 * Pfeile
 * Einfache geometrische Formen wie Kreise, Ellipsen, Quadrate und Rechtecke
 * Kariertes Papier, liniertes Papier, Logarithmuspapier, Millimeterpapier
 * Einblenden eines Geodreiecks mit Snap-Funktion
 * Verschieben und Löschen einzelner Elemente
-* Speichern der Inhalte als SVG-Dateien
-* Speichern der Inhalte als JSON-Datei, damit die Elemente wieder geladen werden können
+* Speichern der Inhalte als SVG- oder PNG-Dateien
 * Laden von SVGs und Bitmaps
 * Einfügen der Zwischenablage als Grafik
 * Zoomen einzelner Elemente oder der gesamten Zeichenfläche
