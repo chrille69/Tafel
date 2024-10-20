@@ -13,8 +13,8 @@
             @transformItem="transformItem">
         </moveablevue>
         <svg id="tafel" xmlns="http://www.w3.org/2000/svg"
-            @mousedown="(e)=>startWork(e,'mouse')" @mousemove="(e)=>furtherWork(e,'mouse')" @mouseup="(e)=>endWork(e,'mouse')" @mousecancel="(e)=>endWork(e,'mouse')" 
-            @touchstart="(e)=>startWork(e,'touch')" @touchmove="(e)=>furtherWork(e,'touch')" @touchend="(e)=>endWork(e,'touch')" @touchcancel="(e)=>endWork(e,'touch')"
+            @mousedown="mousedown" @mousemove="mousemove" @mouseup="mouseup"
+            @touchstart="touchstart" @touchmove="touchmove" @touchend="touchend" @touchcancel="touchend"
             height="100%" width="100%"
             >
             <g id="gezeichnetes" ref="group_comp" :transform="transformfn">
@@ -105,6 +105,12 @@ onMounted(() => {
     mitte.value = mittelpunkt()
 })
 
+// Die folgenden Variablen werden für das Event-Handling benötigt
+let position = new DOMPoint()      // Wird von der Funktion setEventParameter gesetzt
+let tafelposition = new DOMPoint() // Wird von der Funktion setEventParameter gesetzt
+let touchradius = 0                // Wird von der Funktion setEventParameter gesetzt
+let targetid = null                // Wird von der Funktion setEventParameter gesetzt
+let secondTouchAllowed = false     // Wird mit Hilfe von secondTouchTimer bestimmt.
 let startpos = new DOMPoint(0,0)
 let neuerPfad = null
 let dreheGD = false
@@ -130,13 +136,37 @@ onresize = () => {
 //
 /////////////////////////////////////////////////////
 
-function startWork(e, typ) {
-    if (e.buttons && e.button > 1) return
+function setEventParameter(evt) {
+    position = getPosition(evt)
+    tafelposition = getPosition(evt, 'tafel')
+    touchradius = eventradius(evt)
+    targetid = evt.target.id
+}
 
-    //console.log(e)
-    e.preventDefault()
-    const radius = typ == 'touch' ? eventradius(e) : 0
-    if (e.touches?.length > 1 || e.button == 1 ) {
+function secondTouchTimer(evt) {
+    // Oft ist es so, dass der zweite Finger ein Event ist, das eine
+    // kurze Zeit nach dem ersten Finger gesendet wird. Oder die Größe
+    // des Touchradius ist im ersten Event noch zu klein im weiteren
+    // groß genug. Es wäre kein Radieren oder
+    // Verschieben bei Touch-Devices möglich, wenn man sich nur nach
+    // dem ersten Touch-Event richtet. Daher erlaube ich den Wechsel
+    // zum Radieren oder Verschieben bis zu 100ms nach dem ersten
+    // Touch-Event.
+    if (evt.touches.length > 1) return
+    secondTouchAllowed = true
+    window.setTimeout(() => secondTouchAllowed = false, 100)
+}
+
+const mousedown = (e) => { if (e.button > 1) return; e.preventDefault(); setEventParameter(e); startWork(e.button == 1) }
+const mousemove = (e) => { if (e.button > 1) return; e.preventDefault(); setEventParameter(e); furtherWork() }
+const mouseup   = (e) => { if (e.button > 1) return; e.preventDefault(); endWork() }
+
+const touchstart = (e) => { e.preventDefault(); setEventParameter(e); secondTouchTimer(e); startWork(e.touches.length > 1 && secondTouchAllowed) }
+const touchmove  = (e) => { e.preventDefault(); setEventParameter(e); furtherWork() }
+const touchend   = (e) => { e.preventDefault(); if (e.touches.length > 0) return; endWork() }
+
+function startWork(doPanning) {
+    if (doPanning) {
         moveable_comp.value?.deselectAll()
         isPanning.value = true
         zeigeRadierer.value = false
@@ -144,28 +174,28 @@ function startWork(e, typ) {
             isPainting = false
             pfade.value.pop()
         }
-        startpos = getPosition(e,'tafel')
+        startpos = new DOMPoint(tafelposition.x, tafelposition.y)
         startpos.x -= transform.value.x * transform.value.scale
         startpos.y -= transform.value.y * transform.value.scale
         return
     }
 
-    startpos = getPosition(e)
+    startpos = new DOMPoint(position.x, position.y)
 
-    if(e.target.id == 'drehgriff') {
+    if(targetid == 'drehgriff') {
         dreheGD = true
-        geodreieck_comp.value.startRotate(getPosition(e))
+        geodreieck_comp.value.startRotate(startpos)
         return
     }
-    if(e.target.id == 'verschiebegriff') {
+    if(targetid == 'verschiebegriff') {
         schiebeGD = true
-        geodreieck_comp.value.startTranslate(getPosition(e))
+        geodreieck_comp.value.startTranslate(startpos)
         return
     }
 
-    if (statusRadieren.value || radierbedingung(radius) ) {
+    if (statusRadieren.value || radierbedingung(touchradius) ) {
         zeigeRadierer.value = true
-        radiere(e)
+        radiere(tafelposition)
         return
     }
     
@@ -176,42 +206,36 @@ function startWork(e, typ) {
         startpos=geosnap(startpos)
     }
 
-    startDraw(e)
+    startDraw()
 }
 
-function furtherWork(e, typ) {
-    if (e.buttons && e.button > 1) return
-
-    e.preventDefault()
-    const radius = typ == 'touch' ? eventradius(e) : 0 // Zum Anzeigen des aktuellen und Messen des durchschnittlichen Radius
+function furtherWork() {
     if(isPanning.value) {
-        let pos = getPosition(e,'tafel')
-        transform.value.x = (pos.x-startpos.x) / transform.value.scale
-        transform.value.y = (pos.y-startpos.y) / transform.value.scale
+        transform.value.x = (tafelposition.x-startpos.x) / transform.value.scale
+        transform.value.y = (tafelposition.y-startpos.y) / transform.value.scale
         return
     }
-    if (zeigeRadierer.value || radierbedingung(radius)) {
+    if (zeigeRadierer.value || radierbedingung(touchradius)) {
         isPainting = false
         zeigeRadierer.value = true
-        radiere(e)
+        radiere(tafelposition)
         return
     }
     if (dreheGD) {
-        geodreieck_comp.value.rotate(getPosition(e))
+        geodreieck_comp.value.rotate(position)
         return
     }
     if (schiebeGD) {
-        geodreieck_comp.value.translate(getPosition(e))
+        geodreieck_comp.value.translate(position)
         return
     }
     if (!statusZeichnen.value || !isPainting)
         return
 
-    draw(e)
+    draw(position)
 }
 
-function endWork(e, typ) {
-    e.preventDefault()
+function endWork() {
     if(isPanning.value) {
         isPanning.value = false
         return
@@ -247,7 +271,7 @@ function point2dot() {
     return
 }
 
-function startDraw(e) {
+function startDraw() {
     isPainting = true;
     let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(config.value.tool) >= 0
     let ispfeil = ['pfeil','pfeilsnap'].indexOf(config.value.tool) >= 0
@@ -273,23 +297,21 @@ function startDraw(e) {
     pfade.value.push(neuerPfad)
 }
 
-function draw(e) {
+function draw(pos) {
     if (!isPainting) return
 
-    let pos = getPosition(e)
     if (config.value.geodreieckaktiv) {
         pos=geosnap(pos)
     }
     neuerPfad.draw(pos)
 }
 
-function radiere(e) {
+function radiere(tafelpos) {
     if (! zeigeRadierer.value) return
 
     const size = parseInt(config.value.rubbersize)
-    let pos = getPosition(e, 'tafel')
-    radiergummiPos.value.x = pos.x - size/4
-    radiergummiPos.value.y = pos.y - size/2
+    radiergummiPos.value.x = tafelpos.x - size/4
+    radiergummiPos.value.y = tafelpos.y - size/2
     let removelist = []
     for (let item of pfade.value) {
         if (checkIntersection(radiergummiBox.value, item.el.getBoundingClientRect())) {
@@ -322,10 +344,10 @@ function mittelpunkt() {
     return new DOMPoint(svgrect.width/2, svgrect.height/2)
 }
 
-function getPosition(evt, tafel=false) {
+function getPosition(evt, id) {
     let CTM = group_comp.value.getScreenCTM()
-    if (tafel)
-        CTM = document.getElementById('tafel').getScreenCTM()
+    if (id)
+        CTM = document.getElementById(id).getScreenCTM()
     let p = new DOMPoint()
     if (evt.touches) {
         p.x = evt.touches[0].clientX
@@ -352,10 +374,8 @@ function geosnap(pos) {
 function eventradius(e) {
     if (! e.touches) {
         config.value.touchradiusaktuell = 0
-        return
+        return 0
     }
-    //console.log(e)
-
 
     const radius = Math.sqrt(e.touches[0].radiusX**2 + e.touches[0].radiusY**2)
     config.value.touchradiusaktuell = radius
@@ -373,7 +393,7 @@ function radiusmittel(radius) {
 function radierbedingung(radius) {
     return radius > config.value.rubberfaktor.min*config.value.touchradiusmittel &&
            radius < config.value.rubberfaktor.max*config.value.touchradiusmittel &&
-           ! config.value.ignoreradius
+           secondTouchAllowed && ! config.value.ignoreradius
 }
 
 ////////////////////////////////////////////////////////////////////////
