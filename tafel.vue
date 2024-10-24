@@ -112,6 +112,7 @@ let touchradius = 0                // Wird von der Funktion setEventParameter ge
 let targetid = null                // Wird von der Funktion setEventParameter gesetzt
 let secondTouchAllowed = false     // Wird mit Hilfe von secondTouchTimer bestimmt.
 let startpos = new DOMPoint(0,0)
+let touchId = null
 let neuerPfad = null
 let dreheGD = false
 let schiebeGD = false
@@ -161,9 +162,47 @@ const mousedown = (e) => { if (e.button > 1) return; e.preventDefault(); setEven
 const mousemove = (e) => { if (e.button > 1) return; e.preventDefault(); setEventParameter(e); furtherWork() }
 const mouseup   = (e) => { if (e.button > 1) return; e.preventDefault(); endWork() }
 
-const touchstart = (e) => { e.preventDefault(); setEventParameter(e); secondTouchTimer(e); startWork(e.touches.length > 1 && secondTouchAllowed) }
-const touchmove  = (e) => { e.preventDefault(); setEventParameter(e); furtherWork() }
-const touchend   = (e) => { e.preventDefault(); if (e.touches.length > 0) return; endWork() }
+const touchstart = (e) => {
+    e.preventDefault()
+    merkeTouch(e)
+    setEventParameter(e)
+    secondTouchTimer(e)
+    startWork(e.touches.length > 1 && secondTouchAllowed)
+}
+const touchmove  = (e) => {
+    e.preventDefault()
+    if (! checkTouch(e)) return
+    setEventParameter(e)
+    furtherWork()
+}
+const touchend   = (e) => {
+    e.preventDefault()
+    vergissTouch(e)
+    if (e.touches.length > 0) return
+    endWork()
+}
+
+function merkeTouch(evt) {
+    if (touchId === null) {
+        touchId = evt.touches[0].identifier
+        return
+    }
+}
+
+function checkTouch(evt) {
+    for (let touch of evt.changedTouches) {
+        if (touchId == touch.identifier)
+            return true
+    }
+    return false
+}
+
+function vergissTouch(evt) {
+    for (let touch of evt.changedTouches) {
+        if (touchId == touch.identifier)
+            touchId = null
+    }
+}
 
 function startWork(doPanning) {
     if (doPanning) {
