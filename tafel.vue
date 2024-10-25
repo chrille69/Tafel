@@ -165,22 +165,31 @@ const mouseup   = (e) => { if (e.button > 1) return; e.preventDefault(); endWork
 function touchstart(e) {
     e.preventDefault()
     let doPanning = false
-    if (e.touches.length == e.changedTouches.length && e.changedTouches.length > 1) {
-        // Es wurden mindestens zwei neue Touchpunkte erzeugt. Da es Touchstart ist,
-        // beginnt sofort das Verschieben der Tafel.
-        console.log('Sofort Panning')
-        doPanning = true
+    if (e.touches.length != e.changedTouches.length) {
+        // Es ist ein neuer Touchpunkt hinzugekommen.
+        if (secondTouchAllowed) {
+            // Das war innerhalb des Timeouts:
+            // Beginne das Verschieben der Tafel.
+            console.log('Verzögertes Panning')
+            doPanning = true
+        }
+        else {
+            // Mach gar nichts, wenn der zweite Touchpunkt zu spät kommt.
+            return
+        }
     }
-    if (e.touches.length != e.changedTouches.length && secondTouchAllowed) {
-        // Es ist ein neuer Touchpunkt innerhalb des Timeouts hinzugekommen.
-        // Beginne das Verschieben der Tafel.
-        console.log('Verzögertes Panning')
-        doPanning = true
-    }
-    if (e.touches.length == e.changedTouches.length && e.changedTouches.length == 1) {
-        // Es ist genau ein Touchpunkt hinzugekommen. Beginne mit der eingestellten Aktion.
-        secondTouchTimer(e)
+    else {
         merkeTouch(e)
+        if (e.changedTouches.length > 1) {
+            // Es wurden mindestens zwei neue Touchpunkte erzeugt. Da es Touchstart ist,
+            // beginnt sofort das Verschieben der Tafel.
+            console.log('Sofort Panning')
+            doPanning = true
+        }
+        else {
+            // Es ist genau ein Touchpunkt hinzugekommen. Beginne mit der eingestellten Aktion.
+            secondTouchTimer(e)
+        }
     }
     setEventParameter(e)
     startWork(doPanning)
