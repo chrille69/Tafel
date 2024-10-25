@@ -162,30 +162,51 @@ const mousedown = (e) => { if (e.button > 1) return; e.preventDefault(); setEven
 const mousemove = (e) => { if (e.button > 1) return; e.preventDefault(); setEventParameter(e); furtherWork() }
 const mouseup   = (e) => { if (e.button > 1) return; e.preventDefault(); endWork() }
 
-const touchstart = (e) => {
+function touchstart(e) {
     e.preventDefault()
-    merkeTouch(e)
+    let doPanning = false
+    if (e.touches.length == e.changedTouches.length && e.changedTouches.length > 1) {
+        // Es wurden mindestens zwei neue Touchpunkte erzeugt. Da es Touchstart ist,
+        // beginnt sofort das Verschieben der Tafel.
+        console.log('Sofort Panning')
+        doPanning = true
+    }
+    if (e.touches.length != e.changedTouches.length && secondTouchAllowed) {
+        // Es ist ein neuer Touchpunkt innerhalb des Timeouts hinzugekommen.
+        // Beginne das Verschieben der Tafel.
+        console.log('Verzögertes Panning')
+        doPanning = true
+    }
+    if (e.touches.length == e.changedTouches.length && e.changedTouches.length == 1) {
+        // Es ist genau ein Touchpunkt hinzugekommen. Beginne mit der eingestellten Aktion.
+        secondTouchTimer(e)
+        merkeTouch(e)
+    }
     setEventParameter(e)
-    secondTouchTimer(e)
-    startWork(e.touches.length > 1 && secondTouchAllowed)
+    startWork(doPanning)
 }
-const touchmove  = (e) => {
+function touchmove(e) {
     e.preventDefault()
-    if (! checkTouch(e)) return
+    if (! checkTouch(e)) {
+        // Wenn der gemerkte Touchpoint nicht im Event ist:
+        return
+    }
     setEventParameter(e)
     furtherWork()
 }
-const touchend   = (e) => {
+function touchend(e) {
     e.preventDefault()
+    if (! checkTouch(e)) {
+        // Wenn der gemerkte Touchpoint nicht im Event ist:
+        return
+    }
     vergissTouch(e)
-    if (e.touches.length > 0) return
     endWork()
 }
 
 function merkeTouch(evt) {
     if (touchId === null) {
-        touchId = evt.touches[0].identifier
-        return
+        touchId = evt.changedTouches[0].identifier
     }
 }
 
