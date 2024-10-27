@@ -109,15 +109,14 @@ onMounted(() => {
 let position = new DOMPoint()      // Wird von der Funktion setEventParameter gesetzt
 let tafelposition = new DOMPoint() // Wird von der Funktion setEventParameter gesetzt
 let touchradius = 0                // Wird von der Funktion setEventParameter gesetzt
-let targetid = null                // Wird von der Funktion setEventParameter gesetzt
+let targetid = null                // Das Target des Events. Wird von der Funktion setEventParameter gesetzt
 let secondTouchAllowed = false     // Wird mit Hilfe von secondTouchTimer bestimmt.
-let startpos = new DOMPoint(0,0)
-let touchId = null
-let neuerPfad = null
-let dreheGD = false
-let schiebeGD = false
-let isPainting = false
-let touchcount = 0
+let startpos = new DOMPoint(0,0)   // Startposition des Touch- oder Mouse-Events im SVG
+let touchId = null                 // Touch.identifier des ersten Touchpunktes
+let neuerPfad = null               // Der Pfad, der gerade neu gezeichnet wird. Wenn null: es wird nicht gezeichnet
+let dreheGD = false                // Wahr, wenn das geodreieck gedreht wird
+let schiebeGD = false              // Wahr, wenn das Geodreieck verschoben wird
+let touchcount = 0                 // Für die Ermittlung des mittleren Touchradius
 
 function neueId() {
     return "item"+"10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
@@ -127,7 +126,6 @@ function neueId() {
 
 onresize = () => {
     mitte.value = mittelpunkt()
-    //await nextTick()
     moveable_comp.value.updateRect()
 }
 
@@ -239,9 +237,9 @@ function startWork(doPanning) {
         moveable_comp.value?.deselectAll()
         isPanning.value = true
         zeigeRadierer.value = false
-        if(isPainting) {
-            isPainting = false
+        if (neuerPfad) {
             pfade.value.pop()
+            neuerPfad = null
         }
         startpos = new DOMPoint(tafelposition.x, tafelposition.y)
         startpos.x -= transform.value.x * transform.value.scale
@@ -251,12 +249,12 @@ function startWork(doPanning) {
 
     startpos = new DOMPoint(position.x, position.y)
 
-    if(targetid == 'drehgriff') {
+    if (targetid == 'drehgriff') {
         dreheGD = true
         geodreieck_comp.value.startRotate(startpos)
         return
     }
-    if(targetid == 'verschiebegriff') {
+    if (targetid == 'verschiebegriff') {
         schiebeGD = true
         geodreieck_comp.value.startTranslate(startpos)
         return
@@ -279,13 +277,16 @@ function startWork(doPanning) {
 }
 
 function furtherWork() {
-    if(isPanning.value) {
+    if (isPanning.value) {
         transform.value.x = (tafelposition.x-startpos.x) / transform.value.scale
         transform.value.y = (tafelposition.y-startpos.y) / transform.value.scale
         return
     }
     if (zeigeRadierer.value || radierbedingung(touchradius)) {
-        isPainting = false
+        if (neuerPfad) {
+            pfade.value.pop()
+            neuerPfad = null
+        }
         zeigeRadierer.value = true
         radiere(tafelposition)
         return
@@ -298,14 +299,14 @@ function furtherWork() {
         geodreieck_comp.value.translate(position)
         return
     }
-    if (!statusZeichnen.value || !isPainting)
+    if (!statusZeichnen.value || !neuerPfad)
         return
 
     draw(position)
 }
 
 function endWork() {
-    if(isPanning.value) {
+    if (isPanning.value) {
         isPanning.value = false
         return
     }
@@ -325,9 +326,9 @@ function endWork() {
     if (!statusZeichnen.value)
         return
 
-    isPainting = false;
     if (config.value.tool == 'stift')
         point2dot()
+    neuerPfad = null
 
     commit();
 }
@@ -341,7 +342,6 @@ function point2dot() {
 }
 
 function startDraw() {
-    isPainting = true;
     let filledItem = ['rechteckf','ellipsef','kreisf','quadratf'].indexOf(config.value.tool) >= 0
     let ispfeil = ['pfeil','pfeilsnap'].indexOf(config.value.tool) >= 0
     const color = config.value.brushColor
@@ -367,7 +367,7 @@ function startDraw() {
 }
 
 function draw(pos) {
-    if (!isPainting) return
+    if (! neuerPfad) return
 
     if (config.value.geodreieckaktiv) {
         pos=geosnap(pos)
@@ -434,8 +434,18 @@ function geosnap(pos) {
     let p = new DOMPoint(pos.x, pos.y)
     let geomtrx = geodreieck_comp.value.$el.getCTM()
     let groupmtrx = group_comp.value.getScreenCTM()
+
+    // Ermittle die Punktkoordinaten bezüglich des Geodreiecks
     let geop = p.matrixTransform(groupmtrx).matrixTransform(geomtrx.inverse())
-    if (geop.y < 90 && geop.y > 70 && Math.abs(geop.x-80) < 80) geop.y = 80
+
+    // Setze den y-Wert des Punktes auf 80, falls der Punkt in der Nähe
+    // der Geodreiecklinie ist. Die Werte 90, 70 und 80 hängen von dem
+    // Geodreieck ab
+    if (geop.y < 90 && geop.y > 70 && Math.abs(geop.x-80) < 80) {
+        geop.y = 80
+    }
+
+    // Rücktransformation der Punktkoordinaten
     p = geop.matrixTransform(geomtrx).matrixTransform(groupmtrx.inverse())
     return p
 }
