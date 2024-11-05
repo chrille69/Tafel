@@ -117,6 +117,7 @@ let neuerPfad = null               // Der Pfad, der gerade neu gezeichnet wird. 
 let dreheGD = false                // Wahr, wenn das geodreieck gedreht wird
 let schiebeGD = false              // Wahr, wenn das Geodreieck verschoben wird
 let touchcount = 0                 // Für die Ermittlung des mittleren Touchradius
+let radiusarray = []               // Hier stehen im Laufe der Zeit die letzten 50 Touchradien drin
 
 function neueId() {
     return "item"+"10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
@@ -185,7 +186,8 @@ function touchstart(e) {
             doPanning = true
         }
         else {
-            // Es ist genau ein Touchpunkt hinzugekommen. Beginne mit der eingestellten Aktion.
+            // Es ist genau ein Touchpunkt hinzugekommen.
+            // Starte den Timer und beginne mit der eingestellten Aktion.
             secondTouchTimer(e)
         }
     }
@@ -463,9 +465,18 @@ function eventradius(e) {
 }
 
 function radiusmittel(radius) {
-    if (radius > 0 && touchcount < 50) {
-        touchcount ++
-        config.value.touchradiusmittel = (config.value.touchradiusmittel*(touchcount-1)+radius)/touchcount
+    if(true) {
+        if (radius > 0 && touchcount < 50) {
+            touchcount ++
+            config.value.touchradiusmittel = (config.value.touchradiusmittel*(touchcount-1)+radius)/touchcount
+        }
+    }
+    else {
+        radiusarray.push(radius)
+        if (radiusarray.length > 50) {
+            radiusarray.shift()
+        }
+        config.value.touchradiusmittel = radiusarray.reduce((p, c) => p+c, 0) / radiusarray.length
     }
 }
 
