@@ -482,7 +482,7 @@ function radiusmittel(radius) {
 
 function radierbedingung(radius) {
     return radius > config.value.rubberfaktor.min*config.value.touchradiusmittel &&
-           radius < config.value.rubberfaktor.max*config.value.touchradiusmittel &&
+//           radius < config.value.rubberfaktor.max*config.value.touchradiusmittel &&
            secondTouchAllowed && ! config.value.ignoreradius
 }
 

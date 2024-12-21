@@ -55,8 +55,9 @@
                         label="Radierergröße" />
                     <div class="gt-sm" style="width: 150px;" v-if="! config.ignoreradius">
                         <div style="font-size: 10.5px; color: hsla(0, 0%, 100%, .7);">Touchfaktor</div>
-                         <q-range v-model="config.rubberfaktor" dense
-                            :min="1.5" :max="10.0" :step="0.05" label />
+                        <q-slider v-model="config.rubberfaktor.min" :step="0.1" :min="1.5" :max="10" dense label/>
+                        <!--q-range v-model="config.rubberfaktor" dense
+                            :min="1.5" :max="10.0" :step="0.05" label /-->
                     </div>
                     <q-checkbox v-model="config.ignoreradius" dense label="Ignoriere Touchradius"></q-checkbox>
                 </template>
@@ -261,7 +262,7 @@ const config = ref({
     brushColor: 'currentColor',
     brushWidth: 3,
     rubbersize: 100,
-    rubberfaktor: {min: 2, max: 5},
+    rubberfaktor: {min: 1.5, max: 5},
     darkmode: true,
     fullscreen: false,
     geodreieckaktiv: false,
