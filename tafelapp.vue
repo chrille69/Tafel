@@ -262,7 +262,7 @@ const config = ref({
     brushColor: 'currentColor',
     brushWidth: 3,
     rubbersize: 100,
-    rubberfaktor: {min: 1.5, max: 5},
+    rubberfaktor: {min: 2.5, max: 5},
     darkmode: true,
     fullscreen: false,
     geodreieckaktiv: false,

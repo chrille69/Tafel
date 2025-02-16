@@ -458,7 +458,11 @@ function eventradius(e) {
         return 0
     }
 
-    const radius = Math.sqrt(e.touches[0].radiusX**2 + e.touches[0].radiusY**2)
+    const radiusX = e.touches[0].radiusX
+    const radiusY = e.touches[0].radiusY
+    console.log(`radiusX: ${radiusX}`)
+    console.log(`radiusY: ${radiusY}`)
+    const radius = Math.sqrt(radiusX**2 + radiusY**2)
     config.value.touchradiusaktuell = radius
     radiusmittel(radius)
     return radius
