@@ -460,8 +460,10 @@ function eventradius(e) {
 
     const radiusX = e.touches[0].radiusX
     const radiusY = e.touches[0].radiusY
-    console.log(`radiusX: ${radiusX}`)
-    console.log(`radiusY: ${radiusY}`)
+    config.value.radiusX = radiusX
+    config.value.radiusY = radiusY
+    if (radiusX == 25 && radiusY == 25 && navigator.userAgentData.platform == 'Windows')
+        throw new Error('Chrome bug on Windows')
     const radius = Math.sqrt(radiusX**2 + radiusY**2)
     config.value.touchradiusaktuell = radius
     radiusmittel(radius)

@@ -55,7 +55,7 @@
                         label="Radierergröße" />
                     <div class="gt-sm" style="width: 150px;" v-if="! config.ignoreradius">
                         <div style="font-size: 10.5px; color: hsla(0, 0%, 100%, .7);">Touchfaktor</div>
-                        <q-slider v-model="config.rubberfaktor.min" :step="0.1" :min="1.5" :max="10" dense label/>
+                        <q-slider v-model="config.rubberfaktor.min" :step="0.01" :min="1.0" :max="5" dense label/>
                         <!--q-range v-model="config.rubberfaktor" dense
                             :min="1.5" :max="10.0" :step="0.05" label /-->
                     </div>
@@ -206,8 +206,9 @@
                     @click="inSvgUmwandeln">
                     <q-tooltip>Tafelbild fixieren um Rechenzeit zu sparen</q-tooltip>
                 </q-btn>
-                <div class="q-pa-xs">TR-Mittel: {{ config.touchradiusmittel.toFixed(3) }}</div>
-                <div class="q-pa-xs">TR-Aktuell: {{ config.touchradiusaktuell.toFixed(3) }}</div>
+                <div class="q-pa-xs">TR-Mittel: {{ config.touchradiusmittel.toFixed(2) }}</div>
+                <div class="q-pa-xs">TR-Aktuell: {{ config.touchradiusaktuell.toFixed(2) }} ({{config.radiusX.toFixed(2)}}, {{config.radiusY.toFixed(2)}})</div>
+                <div class="q-pa-xs">PixelRatio: {{ pixelratio }}</div>
                 <q-space />
                 <div class="lt-sm uhrzeit">
                     {{ datetimesm }}
@@ -262,11 +263,14 @@ const config = ref({
     brushColor: 'currentColor',
     brushWidth: 3,
     rubbersize: 100,
-    rubberfaktor: {min: 2.5, max: 5},
+    rubberfaktor: {min: 1.85, max: 10},
     darkmode: true,
     fullscreen: false,
     geodreieckaktiv: false,
     hilfslinienFixiert: false,
+    touchradiusaktuell: 0,
+    radiusX: 0,
+    radiusY: 0,
     touchradiusaktuell: 0,
     touchradiusmittel: 0,
     ignoreradius: false
@@ -280,6 +284,7 @@ const groesse = ref(1000)
 const xdekaden = ref(0)
 const ydekaden = ref(0)
 const dummyAction = ref('')
+const pixelratio = ref(window.devicePixelRatio)
 
 const icons = ref({
     'editieren': 'svguse:icons.svg#edit|0 0 16 16',
