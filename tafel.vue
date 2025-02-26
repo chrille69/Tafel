@@ -73,6 +73,15 @@ const statusEditieren = computed(() => {moveable_comp.value?.deselectAll(); retu
 const statusZeichnen = computed(()  => {moveable_comp.value?.deselectAll(); return config.value.modus == 'zeichnen' })
 const statusRadieren = computed(()  => {moveable_comp.value?.deselectAll(); return config.value.modus == 'radieren' })
 const moveableDisabled = computed(() => !statusEditieren.value || isPanning.value || zeigeRadierer.value)
+const rubbersize = computed(() => {
+    if (config.value.touchradiusaktuell > 1.2*config.value.rubberfaktor.min*config.value.touchradiusmittel) {
+        return 150
+    }
+    if (config.value.touchradiusaktuell > config.value.rubberfaktor.min*config.value.touchradiusmittel) {
+        return 50
+    }
+    return config.value.rubbersize
+})
 
 const items = computed(() => [...pfade.value,...bilder.value,...(config.value.hilfslinienFixiert ? [] : vorlagen.value)])
 
@@ -85,7 +94,7 @@ const transformfn = computed(() => {
     return `translate(${mx}, ${my}) scale(${transform.value.scale}) translate(${-mx+tx}, ${-my+ty})`
 })
 const radiergummiBox = computed(() => {
-    const size = parseInt(config.value.rubbersize)
+    const size = parseInt(rubbersize.value)
     const rect = {
         x: radiergummiPos.value.x,
         y: radiergummiPos.value.y,
@@ -380,7 +389,7 @@ function draw(pos) {
 function radiere(tafelpos) {
     if (! zeigeRadierer.value) return
 
-    const size = parseInt(config.value.rubbersize)
+    const size = parseInt(rubbersize.value)
     radiergummiPos.value.x = tafelpos.x - size/4
     radiergummiPos.value.y = tafelpos.y - size/2
     let removelist = []
