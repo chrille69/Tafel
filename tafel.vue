@@ -74,7 +74,7 @@ const statusZeichnen = computed(()  => {moveable_comp.value?.deselectAll(); retu
 const statusRadieren = computed(()  => {moveable_comp.value?.deselectAll(); return config.value.modus == 'radieren' })
 const moveableDisabled = computed(() => !statusEditieren.value || isPanning.value || zeigeRadierer.value)
 const rubbersize = computed(() => {
-    if (config.value.touchradiusaktuell > 1.2*config.value.rubberfaktor.min*config.value.touchradiusmittel) {
+    if (config.value.touchradiusaktuell > 1.5*config.value.rubberfaktor.min*config.value.touchradiusmittel) {
         return 150
     }
     if (config.value.touchradiusaktuell > config.value.rubberfaktor.min*config.value.touchradiusmittel) {
