@@ -42,6 +42,8 @@
                         <q-icon :name="icons[tool.value]" />
                     </template>
                 </q-btn-toggle>
+                <q-btn dense class="gt-sm" :icon="icons['undo']" @click="() => tafel_comp.undo()" />
+                <q-btn dense class="gt-sm" :icon="icons['redo']" @click="() => tafel_comp.redo()" />
                 <q-space />
                 <template v-if="config.modus == 'radieren'">
                     <q-btn :size="buttonsize" dense no-caps flat label="Größe">
@@ -178,6 +180,15 @@
                                     label="PNG-Export"
                                     glossy
                                     @click="() => exportBild('PNG')" />
+                            </q-item>
+                            <q-item>
+                                <q-btn
+                                    v-close-popup
+                                    dense
+                                    :icon="icons['save']"
+                                    label="PDF-Export"
+                                    glossy
+                                    @click="() => exportBild('PDF')" />
                             </q-item>
                             <q-item>
                                 <q-file
@@ -333,7 +344,7 @@ const icons = ref({
 
 const vorlagenmenu = ref([
     { value: 'logpapier', label: 'LOG-Papier', click: () => mmlogDlg.value = true },
-    { value: 'karopapier', label: 'Karopaier', click: () => tafel_comp.value.neueVorlage('karopapier')},
+    { value: 'karopapier', label: 'Karopapier', click: () => tafel_comp.value.neueVorlage('karopapier')},
     { value: 'linienpapier', label: 'Linienpapier', click: () => tafel_comp.value.neueVorlage('linienpapier')},
 ])
 
@@ -466,6 +477,16 @@ async function exportBild(typ) {
     if (typ == 'PNG') {
         url = await base64SvgToBase64Png('data:image/svg+xml;base64,'+btoa(svgelement.outerHTML), width, height).catch(console.log)
         name += '.png'
+    }
+    else if (typ == 'PDF') {
+        const img = new Image()
+        img.src = await base64SvgToBase64Png('data:image/svg+xml;base64,'+btoa(svgelement.outerHTML), width, height).catch(console.log)
+        img.onload = function() {
+            const doc = new jspdf.jsPDF({format: [width, height]})
+            doc.addImage(img, 'PNG', 0, 0, width, height)
+            doc.save('tafel.pdf')
+        }
+        return
     }
     else {
         let data = new Blob([svgelement.outerHTML])
