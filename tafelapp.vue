@@ -42,8 +42,8 @@
                         <q-icon :name="icons[tool.value]" />
                     </template>
                 </q-btn-toggle>
-                <q-btn dense class="gt-sm" :icon="icons['undo']" @click="() => tafel_comp.undo()" />
-                <q-btn dense class="gt-sm" :icon="icons['redo']" @click="() => tafel_comp.redo()" />
+                <q-btn dense class="gt-xs" :icon="icons['undo']" @click="() => tafel_comp.undo()" />
+                <q-btn dense class="gt-xs" :icon="icons['redo']" @click="() => tafel_comp.redo()" />
                 <q-space />
                 <template v-if="config.modus == 'radieren'">
                     <q-btn :size="buttonsize" dense no-caps flat label="Größe">
@@ -485,6 +485,7 @@ async function exportBild(typ) {
             const doc = new jspdf.jsPDF({format: [width, height]})
             doc.addImage(img, 'PNG', 0, 0, width, height)
             doc.save('tafel.pdf')
+            ungespeichert.value = false
         }
         return
     }
