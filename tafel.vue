@@ -91,7 +91,7 @@ const transformfn = computed(() => {
     const tx = transform.value.x
     const ty = transform.value.y
     const s = transform.value.scale
-    return `translate(${mx}, ${my}) scale(${transform.value.scale}) translate(${-mx+tx}, ${-my+ty})`
+    return `translate(${mx}, ${my}) scale(${s}) translate(${-mx+tx}, ${-my+ty})`
 })
 const radiergummiBox = computed(() => {
     const size = parseInt(rubbersize.value)
@@ -337,9 +337,11 @@ function endWork() {
     if (!statusZeichnen.value)
         return
 
-    if (config.value.tool == 'stift')
+    if (config.value.tool == 'stift') {
         point2dot()
-    
+        neuerPfad.fertig = true
+    }
+
     neuerPfad = null
 
     commit();
@@ -361,6 +363,8 @@ function startDraw() {
         tool: config.value.tool,
         startpos: startpos,
         points: ref([['M', startpos.x, startpos.y]]),
+        fertig: false,
+        transform: transform,
         style: {
             'stroke': filledItem ? 'none' : color,
             'stroke-width': config.value.brushWidth,

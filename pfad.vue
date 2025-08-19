@@ -1,14 +1,49 @@
 <template>
     <path
         :ref="(el) => init(pfad, el)"
-        :d="pfadstring(pfad.points)"
+        :d="pfadstring"
         :style="pfad.style"
         :id="pfad.id"
     />
 </template>
 
 <script setup>
+
+import {computed, ref} from 'vue'
+
 const props = defineProps(['pfad'])
+const fertig = ref(false)
+
+const pfadstring = computed(() => {
+    let str = ''
+    const points = props.pfad.points
+
+    if (props.pfad.fertig && props.pfad.tool == 'stift' && points.length > 10) {
+        const listofarrays = []
+        let idx = -1
+        for(let point of points) {
+            if (pointIsMove(point)) {
+                idx++
+                listofarrays[idx] = []
+            }
+            listofarrays[idx].push(point)
+        }
+        for (let pfd of listofarrays) {
+            if(pfd.length > 10)
+                str += simplifySvgPath(pfd.map(point => [point[1], point[2]]), {
+                    tolerance: 2 / props.pfad.transform.scale,
+                    precision: 3,
+                })
+            else
+                str += rawpfadstring(pfd)
+        }
+        console.log(rawpfadstring(points))
+        console.log(str)
+        return str
+    }
+
+    return rawpfadstring(points)
+})
 
 const drawarray = {
     'stift': drawstift,
@@ -121,31 +156,6 @@ function rawpfadstring(points) {
     return str
 }
 
-function pfadstring(points) {
-    let str = ''
-
-    if (props.pfad.tool == 'gibt es nicht -> zum deaktivieren' && points.length > 10) {
-        const listofarrays = []
-        let idx = -1
-        for(let point of points) {
-            if (pointIsMove(point)) {
-                idx++
-                listofarrays[idx] = []
-            }
-            listofarrays[idx].push(point)
-        }
-        for (let pfd of listofarrays) {
-            if(pfd.length > 10)
-                str += simplifySvgPath(pfd.map(point => [point[1], point[2]]))
-            else
-                str += rawpfadstring(pfd)
-        }
-        return str
-    }
-
-    return rawpfadstring(points)
-}
-
 function removePointsInRect(rect) {
     const mtrx = this.el.getCTM()
     for (let idx in this.points) {
@@ -211,4 +221,5 @@ function pointPos(point) {
     else if (pointTyp(point) == 'Z')
         return null
 }
+
 </script>
