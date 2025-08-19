@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-defineProps(['pfad'])
+const props = defineProps(['pfad'])
 
 const drawarray = {
     'stift': drawstift,
@@ -110,7 +110,7 @@ function drawkreis(pos) {
     }
 }
 
-function pfadstring(points) {
+function rawpfadstring(points) {
     let str = ''
     for (let point of points) {
         if (pointIsArc(point))
@@ -119,6 +119,31 @@ function pfadstring(points) {
             str += `${point[0]} ${point[1]} ${point[2]} `
     }
     return str
+}
+
+function pfadstring(points) {
+    let str = ''
+
+    if (props.pfad.tool == 'gibt es nicht -> zum deaktivieren' && points.length > 10) {
+        const listofarrays = []
+        let idx = -1
+        for(let point of points) {
+            if (pointIsMove(point)) {
+                idx++
+                listofarrays[idx] = []
+            }
+            listofarrays[idx].push(point)
+        }
+        for (let pfd of listofarrays) {
+            if(pfd.length > 10)
+                str += simplifySvgPath(pfd.map(point => [point[1], point[2]]))
+            else
+                str += rawpfadstring(pfd)
+        }
+        return str
+    }
+
+    return rawpfadstring(points)
 }
 
 function removePointsInRect(rect) {

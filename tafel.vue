@@ -339,6 +339,7 @@ function endWork() {
 
     if (config.value.tool == 'stift')
         point2dot()
+    
     neuerPfad = null
 
     commit();
