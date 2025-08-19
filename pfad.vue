@@ -37,8 +37,8 @@ const pfadstring = computed(() => {
             else
                 str += rawpfadstring(pfd)
         }
-        console.log(rawpfadstring(points))
-        console.log(str)
+        // console.log(rawpfadstring(points))
+        // console.log(str)
         return str
     }
 
