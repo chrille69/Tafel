@@ -76,6 +76,26 @@
                 <template v-else>
                     <q-btn-toggle 
                         :size="buttonsize" 
+                        v-model="config.linestyle"
+                        dense push glossy
+                        toggle-color="primary"
+                        :options="[
+                            {value: 'solid', slot: 'solid'},
+                            {value: 'dashed', slot: 'dashed'},
+                            {value: 'dotted', slot: 'dotted'},
+                        ]">
+                        <template #solid>
+                            <q-icon :name="icons['solid']" />
+                        </template>
+                        <template #dashed>
+                            <q-icon :name="icons['dashed']" />
+                        </template>
+                        <template #dotted>
+                            <q-icon :name="icons['dotted']" />
+                        </template>
+                    </q-btn-toggle>
+                    <q-btn-toggle 
+                        :size="buttonsize" 
                         v-model="config.brushColor"
                         dense push glossy
                         toggle-color="primary"
@@ -284,7 +304,8 @@ const config = ref({
     radiusY: 0,
     touchradiusaktuell: 0,
     touchradiusmittel: 0,
-    ignoreradius: false
+    ignoreradius: false,
+    linestyle: 'solid'
 })
 const freeColor = ref('yellow')
 const filemenu = ref(false)
@@ -340,6 +361,9 @@ const icons = ref({
     'zoom-out': 'svguse:icons.svg#zoom-out|0 0 16 16',
     'zoom-reset': 'svguse:icons.svg#zoom-reset|0 0 16 16',
     'radiergummi-kalibrieren': 'svguse:icons.svg#radiergummi-kalibrieren|0 0 22.494 21.081',
+    'solid': 'svguse:icons/solid.svg|0 0 16 16',
+    'dashed': 'svguse:icons/dashed.svg|0 0 16 16',
+    'dotted': 'svguse:icons/dotted.svg|0 0 16 16'
 })
 
 const vorlagenmenu = ref([

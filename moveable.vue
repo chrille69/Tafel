@@ -59,7 +59,7 @@ onMounted(() => {
 
     selectable = new Selecto({
         selectByClick: true,
-        selectFromInside: false,
+        selectFromInside: true,
     })
     .on("dragStart",(e) => {
         const target = e.inputEvent.target
@@ -106,6 +106,10 @@ function transformItem(id, transform, transformObject) {
     if (id == 'geodreieck')
         props.geodreieck.setTransform(transformObject)
     else {
+//        if(transformObject.scale[0] == 0 && transformObject.scale[1] != 0)
+//            transformObject.scale[0] = transformObject.scale[1]
+//        if(transformObject.scale[1] == 0 && transformObject.scale[0] != 0)
+//            transformObject.scale[1] = transformObject.scale[0]
         itemsdict.value[id].style.transform = transform
     }
 }

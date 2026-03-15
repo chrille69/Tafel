@@ -91,7 +91,7 @@ const transformfn = computed(() => {
     const tx = transform.value.x
     const ty = transform.value.y
     const s = transform.value.scale
-    return `translate(${mx}, ${my}) scale(${s}) translate(${-mx+tx}, ${-my+ty})`
+    return `translate(${mx.toPrecision(4)}, ${my.toPrecision(4)}) scale(${s.toPrecision(4)}) translate(${(-mx+tx).toPrecision(4)}, ${(-my+ty).toPrecision(4)})`
 })
 const radiergummiBox = computed(() => {
     const size = parseInt(rubbersize.value)
@@ -351,8 +351,14 @@ function point2dot() {
     neuerPfad = pfade.value.at(-1)
     if (neuerPfad.points.length > 1)
         return
-    neuerPfad.points.push(['l',0,0])
+    neuerPfad.points.push(['l',0.01,0.01])
     return
+}
+
+const dasharray = {
+    'solid': '',
+    'dashed': '10',
+    'dotted': '1 10'
 }
 
 function startDraw() {
@@ -375,6 +381,7 @@ function startDraw() {
             'transform-origin': 'center',
             'transform-box': 'fill-box',
             'pointer-events': 'bounding-box',
+            'stroke-dasharray': dasharray[config.value.linestyle]
         },
         el: null,
         id: neueId(),

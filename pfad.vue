@@ -1,10 +1,13 @@
 <template>
-    <path
+    <g 
         :ref="(el) => init(pfad, el)"
-        :d="pfadstring"
         :style="pfad.style"
-        :id="pfad.id"
-    />
+        :id="pfad.id">
+        <path
+            :d="pfadstring"
+        />
+        <path v-if="pfeilspitze" style="stroke-dasharray: none;" :d="pfeilspitze" />
+    </g>
 </template>
 
 <script setup>
@@ -45,12 +48,31 @@ const pfadstring = computed(() => {
     return rawpfadstring(points)
 })
 
+const pfeilspitze = computed(() => {
+    if (props.pfad.tool != 'pfeil' && props.pfad.tool != 'pfeilsnap')
+        return null
+    if (props.pfad.points.length < 2)
+        return null
+    const [c, x, y] = props.pfad.points[1]
+    let dpos = {x: x - props.pfad.startpos.x, y: y - props.pfad.startpos.y}
+    let lw = props.pfad.style['stroke-width'] * 5 / 3
+    let laenge = Math.sqrt(dpos.x**2 + dpos.y**2)
+
+    const pfeilspitze = [
+        ['M', x, y],
+        ['L', x - 5*lw*dpos.x/laenge - lw*dpos.y/laenge, y - 5*lw*dpos.y/laenge + lw*dpos.x/laenge],
+        ['L', x - 5*lw*dpos.x/laenge + lw*dpos.y/laenge, y - 5*lw*dpos.y/laenge - lw*dpos.x/laenge],
+        ['L', x, y]
+    ]
+    return rawpfadstring(pfeilspitze)
+})
+
 const drawarray = {
     'stift': drawstift,
     'linie': drawlinie,
     'liniesnap': drawliniesnap,
-    'pfeil': drawpfeil,
-    'pfeilsnap': drawpfeilsnap,
+    'pfeil': drawlinie,
+    'pfeilsnap': drawliniesnap,
     'rechteck': drawrechteck,
     'rechteckf': drawrechteck,
     'ellipse': drawellipse,
@@ -65,6 +87,7 @@ function init(pfad, el) {
     pfad.el = el
     pfad.draw = drawarray[pfad.tool].bind(pfad)
     pfad.removePoints = removePointsInRect.bind(pfad)
+    pfad.pfeilspitze = ''
 }
 
 function drawstift(pos) {
@@ -81,28 +104,6 @@ function drawliniesnap(pos) {
     if (Math.abs(dpos.y) <= Math.abs(dpos.x))
         endpos = {x: pos.x, y: this.startpos.y}
     drawlinie.call(this, endpos)
-}
-
-function drawpfeil(pos) {
-    let dpos = {x: pos.x - this.startpos.x, y: pos.y - this.startpos.y}
-    let lw = this.style['stroke-width'] * 5 / 3
-    let laenge = Math.sqrt(dpos.x**2 + dpos.y**2)
-    this.points = [
-        ['M', this.startpos.x, this.startpos.y],
-        ['L', pos.x, pos.y],
-        ['M', pos.x, pos.y],
-        ['L', pos.x - 5*lw*dpos.x/laenge - lw*dpos.y/laenge, pos.y - 5*lw*dpos.y/laenge + lw*dpos.x/laenge],
-        ['L', pos.x - 5*lw*dpos.x/laenge + lw*dpos.y/laenge, pos.y - 5*lw*dpos.y/laenge - lw*dpos.x/laenge],
-        ['L', pos.x, pos.y]
-    ]
-}
-
-function drawpfeilsnap(pos) {
-    let dpos = {x: pos.x - this.startpos.x, y: pos.y - this.startpos.y}
-    let endpos = {x: this.startpos.x, y: pos.y}
-    if (Math.abs(dpos.y) <= Math.abs(dpos.x))
-        endpos = {x: pos.x, y: this.startpos.y}
-    drawpfeil.call(this, endpos)
 }
 
 function drawrechteck(pos) {
@@ -151,7 +152,7 @@ function rawpfadstring(points) {
         if (pointIsArc(point))
             str+= `${point[0]} ${point[1]} ${point[2]} ${point[3]} ${point[4]} ${point[5]} ${point[6]} ${point[7]} `
         else
-            str += `${point[0]} ${point[1]} ${point[2]} `
+            str += `${point[0]} ${point[1].toPrecision(4)} ${point[2].toPrecision(4)} `
     }
     return str
 }
