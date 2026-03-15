@@ -1,60 +1,67 @@
-<svg width="612" height="396" style="background-color: white;" viewBox="0 0 204 132" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg width="612" height="396" style="background-color:white" version="1.1" viewBox="0 0 204 132" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>.iconframe {
+  fill: none;
+  stroke: lightgray;
+  stroke-width: .2
+}</style>
+  </defs>
   <g transform="translate(4,4)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="zoom-in">
       <path d="m3 2c-.55 0-1 .446-1 1v10c0 .554.45 1 1 1h10c.55 0 1-.446 1-1v-10c0-.554-.45-1-1-1zm4 3h2v2h2v2h-2v2h-2v-2h-2v-2h2z"/>
     </g>
   </g>
   <g transform="translate(24,4)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="zoom-reset">
       <path d="m3 2c-.55 0-1 .446-1 1v10c0 .554.45 1 1 1h10c.55 0 1-.446 1-1v-10c0-.554-.45-1-1-1zm4 3h2v6h-2v-4h-1v-1s1 0 1-1z"/>
     </g>
   </g>
   <g transform="translate(44,4)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="zoom-out">
       <path d="m3 2c-.55 0-1 .446-1 1v10c0 .554.45 1 1 1h10c.55 0 1-.446 1-1v-10c0-.554-.45-1-1-1zm2 5h6v2h-6z"/>
     </g>
   </g>
   <g transform="translate(64,4)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="pensize-20px">
       <path d="m8 8v0" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:20;stroke:currentColor;vector-effect:non-scaling-stroke"/>
     </g>
   </g>
   <g transform="translate(84,4)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="pensize-10px">
       <path d="m8 8v0" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:10;stroke:currentColor;vector-effect:non-scaling-stroke"/>
     </g>
   </g>
   <g transform="translate(104,4)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="pensize-5px">
       <path d="m8 8v0" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:5;stroke:currentColor;vector-effect:non-scaling-stroke"/>
     </g>
   </g>
   <g transform="translate(124,4)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="pensize-3px">
       <path d="m8 8v0" style="stroke-linecap:round;stroke-linejoin:round;stroke-width:3;stroke:currentColor;vector-effect:non-scaling-stroke"/>
     </g>
   </g>
   <g transform="translate(144,4)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="pensize-1px">
       <path d="m8 8v0" style="stroke-linecap:round;stroke-linejoin:round;stroke:currentColor;vector-effect:non-scaling-stroke"/>
     </g>
   </g>
   <g transform="translate(4,24)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="defaultcolor">
       <rect x="2" y="3" width="12" height="10" style="fill:currentColor"/>
     </g>
   </g>
   <g transform="translate(24,24)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="freecolor">
       <rect x="1.5" y="2.5" width="6" height="5" style="fill:#ffcc00;stroke-opacity:0"/>
       <rect x="8.5" y="2.5" width="6" height="5" style="fill:#ff00cc;stroke-opacity:0"/>
@@ -63,7 +70,7 @@
     </g>
   </g>
   <g transform="translate(44,24)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="linienpapier">
       <path d="m2 2h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
       <path d="m2 6h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
@@ -71,8 +78,8 @@
       <path d="m2 14h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
     </g>
   </g>
-  <g transform="translate(64, 24)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+  <g transform="translate(64 24)">
+    <rect class="iconframe" width="16" height="16"/>
     <g id="karopapier">
       <path d="m2 2h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
       <path d="m2 6h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
@@ -85,7 +92,7 @@
     </g>
   </g>
   <g transform="translate(84 24)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="logpapier">
       <path d="m2 2h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
       <path d="m2 4h12" style="fill:none;stroke-linecap:square;stroke-width:1px;stroke:currentColor"/>
@@ -98,219 +105,217 @@
     </g>
   </g>
   <g transform="translate(104 24)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="go-right">
       <path d="m13.999 9.9988c.92278.016981 1.7893-.68916 1.9588-1.5964.196-.87657-.28571-1.8429-1.1051-2.2122-.84258-.41778-1.951-.12868-2.4822.64746-.56094.75513-.47283 1.8972.19676 2.5577.37067.38304.89864.60558 1.4317.60345z"/>
       <path d="m-.001225 6.9988h7l-3.5-3.5 1.5-1.5 6 6-6 6-1.5-1.5 3.5-3.5h-7z"/>
     </g>
   </g>
   <g transform="translate(124 24)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="go-top">
       <path d="m10 2c.016981-.92278-.68916-1.7893-1.5964-1.9588-.87657-.196-1.8429.28571-2.2122 1.1051-.41778.84258-.12868 1.951.64746 2.4822.75513.56094 1.8972.47283 2.5577-.19676.38304-.37067.60558-.89864.60345-1.4317z"/>
       <path d="m7 16v-7l-3.5 3.5-1.5-1.5 6-6 6 6-1.5 1.5-3.5-3.5v7z"/>
     </g>
   </g>
   <g transform="translate(144 24)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="go-left">
       <path d="m2.0012 5.9988c-.92278-.016981-1.7893.68916-1.9588 1.5964-.196.87657.28571 1.8429 1.1051 2.2122.84258.41778 1.951.12868 2.4822-.64746.56094-.75513.47283-1.8972-.19676-2.5577-.37067-.38304-.89864-.60558-1.4317-.60345z"/>
       <path d="m16.001 8.9988h-7l3.5 3.5-1.5 1.5-6-6 6-6 1.5 1.5-3.5 3.5h7z"/>
     </g>
   </g>
   <g transform="translate(164 24)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="go-bottom">
       <path d="m10 14a2 2 0 01-2 2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 012 2z"/>
       <path d="m7 0v7l-3.5-3.5-1.5 1.5 6 6 6-6-1.5-1.5-3.5 3.5v-7z"/>
     </g>
   </g>
   <g transform="translate(184 24)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="save">
       <path d="m6 1v6h-2.5l4.5 6 4.5-6h-2.5v-6zm-5 13v2h14v-2z"/>
     </g>
   </g>
   <g transform="translate(4 44)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="stift">
       <path d="m0 13v2.999l3 .001 8-8-3-3zm14-8c.3-.3.3-.7 0-1l-2-2c-.3-.3-.7-.3-1 0l-2 2 3 3z"/>
     </g>
   </g>
   <g transform="translate(24 44)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="linie">
       <path d="m12.778 13.778s.5.5 1 0 0-1 0-1l-10.554-10.554s-.5-.5-1 0 0 1 0 1z"/>
     </g>
   </g>
   <g transform="translate(44 44)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="liniesnap">
       <path d="m2 14s0 .56841.70711.56841.70711-.56841.70711-.56841v-11.998s0-.56841-.70711-.56841-.70711.56841-.70711.56841z"/>
       <path d="m5 8s-.44599 0-.44599.70711.44599.70711.44599.70711h9.4142s.44599 0 .44599-.70711-.44599-.70711-.44599-.70711z"/>
     </g>
   </g>
   <g transform="translate(64 44)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="pfeil">
       <path d="m5.5929 3.0962-3.5912-1.0943 1.0943 3.5912.74849-.74848 8.7115 8.7115s.5.5 1 0 0-1 0-1l-8.7115-8.7115.74848-.74849z"/>
     </g>
   </g>
   <g transform="translate(84 44)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="pfeilsnap">
       <path d="m4.4726 5-1.7656-3.3131-1.7656 3.3131 1.0585 7.1e-6v8.9675s0 .70711.70711.70711.70711-.70711.70711-.70711v-8.9675l1.0585-7.1e-6z"/>
       <path d="m11.687 11.766 3.3131-1.7656-3.3131-1.7656-7e-6 1.0585h-6.856s-.70711 0-.70711.70711.70711.70711.70711.70711h6.856l7e-6 1.0585z"/>
     </g>
   </g>
   <g transform="translate(104 44)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="rechteck">
       <path d="m1 4v8h14v-8zm2 2h10v4h-10z"/>
     </g>
   </g>
   <g transform="translate(124 44)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="rechteckf">
       <rect x="2" y="5" width="12" height="6"/>
     </g>
   </g>
   <g transform="translate(144 44)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="quadrat">
       <rect x="2" y="2" width="12" height="12" style="fill:none;stroke-width:2;stroke:currentColor"/>
     </g>
   </g>
   <g transform="translate(164 44)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="quadratf">
       <rect x="2" y="2" width="12" height="12"/>
     </g>
   </g>
   <g transform="translate(184 44)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="ellipse">
       <ellipse cx="8" cy="8" rx="7" ry="5" style="fill:none;stroke-width:2;stroke:currentColor"/>
       <path d="m10 6-4 4m0-4 4 4" style="fill:none;stroke-width:1px;stroke:currentColor"/>
     </g>
   </g>
   <g transform="translate(4 64)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="ellipsef">
       <path d="m7.9824 3a7 5 0 00-6.9824 5 7 5 0 007 5 7 5 0 007-5 7 5 0 00-7-5 7 5 0 00-.017578 0zm-1.6289 2.6465 1.6465 1.6465 1.6465-1.6465.70703.70703-1.6465 1.6465 1.6465 1.6465-.70703.70703-1.6465-1.6465-1.6465 1.6465-.70703-.70703 1.6465-1.6465-1.6465-1.6465z"/>
     </g>
   </g>
   <g transform="translate(24 64)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="kreis">
       <circle cx="8" cy="8" r="7" style="fill:none;stroke-width:2;stroke:currentColor"/>
       <path d="m10 6-4 4m0-4 4 4" style="fill:none;stroke-width:1px;stroke:currentColor"/>
     </g>
   </g>
   <g transform="translate(44 64)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="kreisf">
       <path d="m7.9062 1a7 7 0 00-6.9062 7 7 7 0 007 7 7 7 0 007-7 7 7 0 00-7-7 7 7 0 00-.09375 0zm-1.5527 4.6465 1.6465 1.6465 1.6465-1.6465.70703.70703-1.6465 1.6465 1.6465 1.6465-.70703.70703-1.6465-1.6465-1.6465 1.6465-.70703-.70703 1.6465-1.6465-1.6465-1.6465z"/>
     </g>
   </g>
   <g transform="translate(64 64)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="edit">
       <path d="m11.899 13.314-4.2426-4.2426-1.4142 2.8284-4.2426-9.8995 9.8995 4.2426-2.8284 1.4142 4.2426 4.2426z"/>
     </g>
   </g>
   <g transform="translate(84 64)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="geodreieck">
       <path d="m11.762 5.7511a4.25 4.25 0 01-.012073 6.0098 4.25 4.25 0 01-6.0098-.010959" style="fill:none;stroke:currentColor"/>
       <path d="m2.5 15h12.5v-12.5z" style="fill:none;stroke-width:1px;stroke:currentColor"/>
     </g>
   </g>
   <g transform="translate(104 64)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="undo">
       <path d="m7 2-5 3 5 3v-2h3c1.68 0 3 1.321 3 3s-1.32 3-3 3h-5v2h5c2.75 0 5-2.247 5-5s-2.25-5-5-5h-3z"/>
     </g>
   </g>
   <g transform="translate(124 64)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="redo">
       <path d="m9 2 5 3-5 3v-2h-3c-1.68 0-3 1.321-3 3s1.32 3 3 3h5v2h-5c-2.75 0-5-2.247-5-5s2.25-5 5-5h3z"/>
     </g>
   </g>
   <g transform="translate(144 64)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="dark">
       <path d="m10 9h-8v-6h8z" style="fill:none;stroke-width:1px;stroke:currentColor"/>
       <path d="m14 13h-8v-6h8z" style="fill:currentColor;stroke-width:1px;stroke:currentColor"/>
     </g>
   </g>
   <g transform="translate(164 64)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="copy">
       <path d="m2.0762.61816v11.193h3.375v3.5703h8.4727v-11.193h-3.375v-3.5703zm1.3184 1.3184h5.8359v2.252h-3.7793v6.3047h-2.0566zm3.375 3.5703h5.8359v8.5566h-5.8359z" style="fill:currentColor;stroke-linejoin:round;stroke-width:.65135"/>
     </g>
   </g>
   <g transform="translate(184 64)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="delete">
       <path d="M 3.5,2 2,3.5 6.5,8 2,12.5 3.5,14 8,9.5 12.5,14 14,12.5 9.5000001,8 14,3.5 12.5,2 8,6.5 Z"/>
     </g>
   </g>
   <g transform="translate(4 84)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="trash">
       <path d="m10 7.5-.5 5m-2-5v5m-2.5-5 .5 5m-3-7.5 1 10h8l1-10z" style="fill:none;stroke-width:1px;stroke:currentColor"/>
       <path d="m5 3.5.5-2h4l.5 2m-8 0h11" style="fill:none;stroke-width:1px;stroke:currentColor"/>
     </g>
   </g>
   <g transform="translate(24 84)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="erease-noborder">
-      <path d="m8 1c3.5973 0 6.5135 2.9162 6.5135 6.5135s-2.9162 6.5135-6.5135 6.5135-6.5135-2.9162-6.5135-6.5135 2.9162-6.5135 6.5135-6.5135z" style="fill:none;stroke-dasharray:2.60539, 1.3027;stroke-width:.65135;stroke:currentColor"/>
+      <circle cx="8" cy="8" r="6" style="fill:none;stroke:currentColor;stroke-dasharray:3,2.3"/>
     </g>
   </g>
   <g transform="translate(44 84)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="fullscreen">
       <path d="m14 9v4h-4m-8-4v4h4m8-6v-4h-4m-8 4v-4h4" style="fill:none;stroke-width:1px;stroke:currentColor"/>
     </g>
   </g>
   <g transform="translate(64 84)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="exit">
       <path d="m6 2.5742c-2.5064.84091-4.3242 3.2102-4.3242 5.9922 2e-7 3.4807 2.8435 6.3242 6.3242 6.3242s6.3242-2.8435 6.3242-6.3242c0-2.782-1.8178-5.1513-4.3242-5.9922v2.1758c1.3787.71968 2.3242 2.1441 2.3242 3.8164 0 2.3998-1.9244 4.3242-4.3242 4.3242s-4.3242-1.9244-4.3242-4.3242c0-1.6723.94552-3.0967 2.3242-3.8164z" style="fill:currentColor"/>
       <path d="m7 1v6h2v-6z" style="fill:currentColor"/>
     </g>
   </g>
   <g transform="translate(84 84)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="open">
       <path d="m8 1-4.5 6h2.5v6h4v-6h2.5zm-7 13v2h14v-2z" style="fill:currentColor"/>
     </g>
   </g>
   <g transform="translate(104 84)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="dashed">
-      <path style="fill:none;stroke:currentColor;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:3;stroke-dashoffset:0" d="M 1.8897638,13.228347 V 1.8897638 L 13.228347,13.228347" />
+      <path d="m1.8898 13.228v-11.339l11.339 11.339" style="fill:none;stroke-dasharray:3;stroke-linecap:round;stroke-linejoin:round;stroke:currentColor"/>
     </g>
   </g>
   <g transform="translate(124 84)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="dotted">
-      <path style="fill:none;stroke:currentColor;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-dasharray:0.01,2;stroke-dashoffset:0" d="M 1.8897638,13.228347 V 1.8897638 L 13.228347,13.228347" />
+      <path d="m1.8898 13.228v-11.339l11.339 11.339" style="fill:none;stroke-dasharray:0.01,2;stroke-linecap:round;stroke-linejoin:round;stroke:currentColor"/>
     </g>
   </g>
   <g transform="translate(144 84)">
-    <rect x="0" y="0" width="16" height="16" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="16" height="16"/>
     <g id="solid">
-      <path style="fill:none;stroke:currentColor;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" d="M 1.8897638,13.228347 V 1.8897638 L 13.228347,13.228347"/>
+      <path d="m1.8898 13.228v-11.339l11.339 11.339" style="fill:none;stroke-linecap:round;stroke-linejoin:round;stroke:currentColor"/>
     </g>
   </g>
-
-
   <g transform="translate(4 104)">
-    <rect x="0" y="0" width="24" height="24" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="24" height="24"/>
     <g id="radiergummi-kalibrieren">
       <g transform="matrix(1.5451,0,0,1.5451,-12.361,-12.659)" style="stroke-width:.71191;stroke:currentColor">
         <path d="m13.979 11.935a2.2371 2.2371 0 01-2.2371 2.2371 2.2371 2.2371 0 01-2.2371-2.2371 2.2371 2.2371 0 012.2371-2.2371 2.2371 2.2371 0 012.2371 2.2371z" style="fill:none;opacity:.992;stroke-width:.71191;stroke:currentColor"/>
@@ -326,13 +331,13 @@
     </g>
   </g>
   <g transform="translate(32 104)">
-    <rect x="0" y="0" width="24" height="24" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="24" height="24"/>
     <g id="radiergummi">
       <path d="m18.289 19.647h5.7106v2.3529h-8.1151zm-15.028 2.3529-2.5548-2.5c-.46085-.45096-.69631-1.0098-.70631-1.6765-.010009-.66666.2154-1.2353.67626-1.7059l13.225-13.412c.46085-.47057 1.0269-.70588 1.6982-.70588.67124 0 1.2373.22549 1.6982.67647l5.9811 5.8529c.46085.45097.69129 1.0098.69129 1.6765s-.23043 1.2255-.69129 1.6765l-10.099 10.118zm8.8966-2.3529 6.8452-6.9338-5.9511-5.8236-10.692 10.875 1.9236 1.8824z"/>
     </g>
   </g>
   <g transform="translate(60 104)">
-    <rect x="0" y="0" width="24" height="24" style="fill:none;stroke:blue;stroke-width:0.5px;"/>
+    <rect class="iconframe" width="24" height="24"/>
     <g id="settings">
       <path d="m0 0h24v24h-24z" fill="none"/>
       <path d="m19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.09-.16-.26-.25-.44-.25-.06 0-.12.01-.17.03l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65c-.03-.24-.24-.42-.49-.42h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.06-.02-.12-.03-.18-.03-.17 0-.34.09-.43.25l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.09.16.26.25.44.25.06 0 .12-.01.17-.03l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.06.02.12.03.18.03.17 0 .34-.09.43-.25l2-3.46c.12-.22.07-.49-.12-.64zm-1.98-1.71c.04.31.05.52.05.73s-.02.43-.05.73l-.14 1.13.89.7 1.08.84-.7 1.21-1.27-.51-1.04-.42-.9.68c-.43.32-.84.56-1.25.73l-1.06.43-.16 1.13-.2 1.35h-1.4l-.19-1.35-.16-1.13-1.06-.43c-.43-.18-.83-.41-1.23-.71l-.91-.7-1.06.43-1.27.51-.7-1.21 1.08-.84.89-.7-.14-1.13c-.03-.31-.05-.54-.05-.74s.02-.43.05-.73l.14-1.13-.89-.7-1.08-.84.7-1.21 1.27.51 1.04.42.9-.68c.43-.32.84-.56 1.25-.73l1.06-.43.16-1.13.2-1.35h1.39l.19 1.35.16 1.13 1.06.43c.43.18.83.41 1.23.71l.91.7 1.06-.43 1.27-.51.7 1.21-1.07.85-.89.7zm-5.45-3.27c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
