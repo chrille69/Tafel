@@ -59,7 +59,7 @@ onMounted(() => {
 
     selectable = new Selecto({
         selectByClick: true,
-        selectFromInside: true,
+        selectFromInside: false,
     })
     .on("dragStart",(e) => {
         const target = e.inputEvent.target
