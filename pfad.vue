@@ -55,13 +55,13 @@ const pfeilspitze = computed(() => {
         return null
     const [c, x, y] = props.pfad.points[1]
     let dpos = {x: x - props.pfad.startpos.x, y: y - props.pfad.startpos.y}
-    let lw = props.pfad.style['stroke-width'] * 5 / 3
     let laenge = Math.sqrt(dpos.x**2 + dpos.y**2)
+    let lw = props.pfad.style['stroke-width'] / laenge * 5 / 3
 
     const pfeilspitze = [
         ['M', x, y],
-        ['L', x - 5*lw*dpos.x/laenge - lw*dpos.y/laenge, y - 5*lw*dpos.y/laenge + lw*dpos.x/laenge],
-        ['L', x - 5*lw*dpos.x/laenge + lw*dpos.y/laenge, y - 5*lw*dpos.y/laenge - lw*dpos.x/laenge],
+        ['L', x - 5*lw*dpos.x - lw*dpos.y, y - 5*lw*dpos.y + lw*dpos.x],
+        ['L', x - 5*lw*dpos.x + lw*dpos.y, y - 5*lw*dpos.y - lw*dpos.x],
         ['L', x, y]
     ]
     return rawpfadstring(pfeilspitze)
